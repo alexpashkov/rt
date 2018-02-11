@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "nodemon": "./node_modules/.bin/nodemon src/server/index.js",
+    "start": "node src/server/index.js",
+    "start-dev": "./node_modules/.bin/nodemon src/server/index.js",
     "test": "jest"
   },
   "author": "Alex Pashkov alexpashkov123@gmail.com",
