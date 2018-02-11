@@ -1,4 +1,4 @@
-import { getPieceCells } from "./index";
+import { getPieceCells } from "./selectors";
 
 describe("getPieceCells ", () => {
   test("Calculates cell coordinates from piece code", () => {
