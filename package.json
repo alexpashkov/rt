@@ -4,20 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server/index.js",
-    "start-dev": "./node_modules/.bin/nodemon src/server/index.js",
+    "start-server": "node src/server/index.js",
+    "start-server:watch": "./node_modules/.bin/nodemon src/server/index.js",
+    "build-client": "./node_modules/.bin/webpack",
+    "build-client:watch": "./node_modules/.bin/webpack --watch",
     "test": "jest"
   },
   "author": "Alex Pashkov alexpashkov123@gmail.com",
   "license": "ISC",
   "devDependencies": {
     "jest": "^22.2.2",
-    "nodemon": "^1.14.12"
+    "nodemon": "^1.14.12",
+    "webpack": "^3.11.0"
   },
   "dependencies": {
     "dotenv": "^5.0.0",
     "express": "^4.16.2",
-    "socket-io": "^1.0.0",
     "socket.io": "^2.0.4",
     "winston": "^2.4.0"
   }
