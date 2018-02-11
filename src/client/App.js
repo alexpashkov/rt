@@ -1,13 +1,9 @@
-import React, { Component, Fragment } from "react";
-import {
-  HashRouter as Router,
-  Route,
-  Switch,
-  Redirect
-} from "react-router-dom";
-import "./styles/index.scss";
+import React, {Component, Fragment} from 'react';
+import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
+import './styles/index.scss';
 
-import Game from "./scenes/Game";
+import Lobby from './containers/Lobby';
+import Game from './containers/Game';
 
 class App extends Component {
   render() {
@@ -15,8 +11,9 @@ class App extends Component {
       <Router>
         <Fragment>
           <Switch>
-            <Route exact path="/game" component={Game} />
-            <Redirect to="/game" />
+            <Route exact path="/" component={Lobby} />
+            <Route exact path="/:id" component={Game} />
+            <Redirect to="/" />
           </Switch>
         </Fragment>
       </Router>

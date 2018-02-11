@@ -23090,7 +23090,9 @@ var _reactRouterDom = __webpack_require__(94);
 
 __webpack_require__(120);
 
-var _Game = _interopRequireDefault(__webpack_require__(124));
+var _Lobby = _interopRequireDefault(__webpack_require__(163));
+
+var _Game = _interopRequireDefault(__webpack_require__(161));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23124,10 +23126,14 @@ function (_Component) {
     value: function render() {
       return _react.default.createElement(_reactRouterDom.HashRouter, null, _react.default.createElement(_react.Fragment, null, _react.default.createElement(_reactRouterDom.Switch, null, _react.default.createElement(_reactRouterDom.Route, {
         exact: true,
-        path: "/game",
+        path: "/",
+        component: _Lobby.default
+      }), _react.default.createElement(_reactRouterDom.Route, {
+        exact: true,
+        path: "/:id",
         component: _Game.default
       }), _react.default.createElement(_reactRouterDom.Redirect, {
-        to: "/game"
+        to: "/"
       }))));
     }
   }]);
@@ -26331,161 +26337,7 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 124 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getPieceCells = exports.default = void 0;
-
-var _react = _interopRequireDefault(__webpack_require__(0));
-
-var _reactRedux = __webpack_require__(34);
-
-var _reselect = __webpack_require__(125);
-
-var _index = __webpack_require__(126);
-
-var _Board = _interopRequireDefault(__webpack_require__(151));
-
-var pieceActions = _interopRequireWildcard(__webpack_require__(55));
-
-var _piece2 = __webpack_require__(154);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-var Game =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(Game, _React$Component);
-
-  function Game() {
-    var _ref;
-
-    var _temp, _this;
-
-    _classCallCheck(this, Game);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _possibleConstructorReturn(_this, (_temp = _this = _possibleConstructorReturn(this, (_ref = Game.__proto__ || Object.getPrototypeOf(Game)).call.apply(_ref, [this].concat(args))), Object.defineProperty(_assertThisInitialized(_this), "handleKeyPress", {
-      configurable: true,
-      enumerable: true,
-      writable: true,
-      value: function value(evt) {
-        var _this$props = _this.props,
-            pieceMoveLeft = _this$props.pieceMoveLeft,
-            pieceMoveRight = _this$props.pieceMoveRight,
-            pieceMoveDown = _this$props.pieceMoveDown,
-            pieceRotate = _this$props.pieceRotate;
-
-        switch (evt.code) {
-          case 'ArrowLeft':
-            return pieceMoveLeft();
-
-          case 'ArrowRight':
-            return pieceMoveRight();
-
-          case 'ArrowDown':
-            return pieceMoveDown();
-
-          case 'ArrowUp':
-            return pieceRotate();
-        }
-      }
-    }), Object.defineProperty(_assertThisInitialized(_this), "putRandomPiece", {
-      configurable: true,
-      enumerable: true,
-      writable: true,
-      value: function value() {
-        return _this.props.pieceCreate((0, _piece2.getRandomPieceCode)());
-      }
-    }), _temp));
-  }
-
-  _createClass(Game, [{
-    key: "componentWillMount",
-    value: function componentWillMount() {
-      // FIXME remove random piece creation later
-      this.props.pieceCreate((0, _piece2.getRandomPieceCode)());
-      document.addEventListener('keyup', this.handleKeyPress);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return _react.default.createElement("div", null, _react.default.createElement(_Board.default, {
-        board: this.props.board
-      }), ' ');
-    }
-  }]);
-
-  return Game;
-}(_react.default.Component);
-
-var _default = (0, _reactRedux.connect)(function (state) {
-  return {
-    board: boardSelector(state)
-  };
-}, pieceActions)(Game);
-
-exports.default = _default;
-var boardSelector = (0, _reselect.createSelector)(function (state) {
-  return state.game.board;
-}, function (state) {
-  return state.game.piece;
-}, function (board, piece) {
-  if (!piece) {
-    return board;
-  }
-
-  var pieceCells = getPieceCells(piece.code);
-  return board.map(function (row, y) {
-    return pieceCells.find(function (cell) {
-      return cell.y + piece.y === y;
-    }) ? row.map(function (cell, x) {
-      return !!pieceCells.find(function (cell) {
-        return cell.x + piece.x === x && cell.y + piece.y === y;
-      });
-    }) : row;
-  });
-});
-
-var getPieceCells = function getPieceCells(pieceCode) {
-  return (0, _index.numToBinary16String)(pieceCode).split('').reduce(function (acc, curr, i) {
-    return curr === '1' ? _toConsumableArray(acc).concat([{
-      x: i % 4,
-      y: Math.floor(i / 4)
-    }]) : acc;
-  }, []);
-};
-
-exports.getPieceCells = getPieceCells;
-
-/***/ }),
+/* 124 */,
 /* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27623,7 +27475,12 @@ var _reducers = _interopRequireDefault(__webpack_require__(157));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _default = (0, _redux.createStore)(_reducers.default, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), (0, _redux.applyMiddleware)(_reduxLogger.default));
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var composeEnhancers = (typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({// Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+}) : _redux.compose;
+
+var _default = (0, _redux.createStore)(_reducers.default, composeEnhancers((0, _redux.applyMiddleware)(_reduxLogger.default)));
 
 exports.default = _default;
 
@@ -27776,6 +27633,230 @@ var pieceReducer = function pieceReducer() {
 
 var rotationMap = new Map([[0x0f00, 0x2222], [0x2222, 0x00f0], [0x00f0, 0x4444], [0x4444, 0x0f00], [0x44c0, 0x8e00], [0x8e00, 0x6440], [0x6440, 0x0e20], [0x0e20, 0x44c0], [0x4460, 0x0e80], [0x0e80, 0xc440], [0xc440, 0x2e00], [0x2e00, 0x4460], [0x0660, 0x0660], [0x06c0, 0x8c40], [0x8c40, 0x6c00], [0x6c00, 0x4620], [0x4620, 0x06c0], [0x0e40, 0x4c40], [0x4c40, 0x4e00], [0x4e00, 0x4640], [0x4640, 0x0e40], [0x0c60, 0x4c80], [0x4c80, 0xc600], [0xc600, 0x2640], [0x2640, 0x0c60]]);
 var _default = pieceReducer;
+exports.default = _default;
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(__webpack_require__(0));
+
+var _reactRedux = __webpack_require__(34);
+
+var _Board = _interopRequireDefault(__webpack_require__(151));
+
+var pieceActions = _interopRequireWildcard(__webpack_require__(55));
+
+var _selectors = __webpack_require__(162);
+
+var _piece2 = __webpack_require__(154);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+// TODO Remove later
+var Game =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Game, _React$Component);
+
+  function Game() {
+    var _ref;
+
+    var _temp, _this;
+
+    _classCallCheck(this, Game);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _possibleConstructorReturn(_this, (_temp = _this = _possibleConstructorReturn(this, (_ref = Game.__proto__ || Object.getPrototypeOf(Game)).call.apply(_ref, [this].concat(args))), Object.defineProperty(_assertThisInitialized(_this), "handleKeyPress", {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function value(evt) {
+        var _this$props = _this.props,
+            pieceMoveLeft = _this$props.pieceMoveLeft,
+            pieceMoveRight = _this$props.pieceMoveRight,
+            pieceMoveDown = _this$props.pieceMoveDown,
+            pieceRotate = _this$props.pieceRotate;
+
+        switch (evt.code) {
+          case 'ArrowLeft':
+            return pieceMoveLeft();
+
+          case 'ArrowRight':
+            return pieceMoveRight();
+
+          case 'ArrowDown':
+            return pieceMoveDown();
+
+          case 'ArrowUp':
+            return pieceRotate();
+        }
+      }
+    }), Object.defineProperty(_assertThisInitialized(_this), "putRandomPiece", {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function value() {
+        return _this.props.pieceCreate((0, _piece2.getRandomPieceCode)());
+      }
+    }), _temp));
+  }
+
+  _createClass(Game, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      this.props.pieceCreate((0, _piece2.getRandomPieceCode)()); // TODO Remove later
+
+      document.addEventListener('keyup', this.handleKeyPress);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("div", null, _react.default.createElement(_Board.default, {
+        board: this.props.board
+      }));
+    }
+  }]);
+
+  return Game;
+}(_react.default.Component);
+
+var _default = (0, _reactRedux.connect)(function (state) {
+  return {
+    board: (0, _selectors.boardSelector)(state)
+  };
+}, pieceActions)(Game);
+
+exports.default = _default;
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getPieceCells = exports.boardSelector = void 0;
+
+var _reselect = __webpack_require__(125);
+
+var _index = __webpack_require__(126);
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var boardSelector = (0, _reselect.createSelector)(function (state) {
+  return state.game.board;
+}, function (state) {
+  return state.game.piece;
+}, function (board, piece) {
+  if (!piece) {
+    return board;
+  }
+
+  var pieceCells = getPieceCells(piece.code);
+  return board.map(function (row, y) {
+    return pieceCells.find(function (cell) {
+      return cell.y + piece.y === y;
+    }) ? row.map(function (cell, x) {
+      return !!pieceCells.find(function (cell) {
+        return cell.x + piece.x === x && cell.y + piece.y === y;
+      });
+    }) : row;
+  });
+});
+exports.boardSelector = boardSelector;
+
+var getPieceCells = function getPieceCells(pieceCode) {
+  return (0, _index.numToBinary16String)(pieceCode).split('').reduce(function (acc, curr, i) {
+    return curr === '1' ? _toConsumableArray(acc).concat([{
+      x: i % 4,
+      y: Math.floor(i / 4)
+    }]) : acc;
+  }, []);
+};
+
+exports.getPieceCells = getPieceCells;
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(__webpack_require__(0));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Lobby =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Lobby, _Component);
+
+  function Lobby() {
+    _classCallCheck(this, Lobby);
+
+    return _possibleConstructorReturn(this, (Lobby.__proto__ || Object.getPrototypeOf(Lobby)).apply(this, arguments));
+  }
+
+  _createClass(Lobby, [{
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("h1", null, "Wellcome to lobby!");
+    }
+  }]);
+
+  return Lobby;
+}(_react.Component);
+
+var _default = Lobby;
 exports.default = _default;
 
 /***/ })
