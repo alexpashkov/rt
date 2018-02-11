@@ -5,7 +5,7 @@ import {
   Switch,
   Redirect
 } from "react-router-dom";
-import "./styles/index.css";
+import "./styles/index.scss";
 
 import Game from "./scenes/Game";
 

@@ -1,13 +1,12 @@
-/* eslint-disable prettier/prettier */
-import React from "react";
-import { connect } from "react-redux";
-import { createSelector } from "reselect";
+import React from 'react';
+import {connect} from 'react-redux';
+import {createSelector} from 'reselect';
 
-import { numToBinary16String } from "../../utils/index";
+import {numToBinary16String} from '../../utils/index';
 
-import Board from "../../components/Board";
-import * as pieceActions from "../../actions/piece";
-import { getRandomPieceCode } from "../../services/piece";
+import Board from '../../components/Board';
+import * as pieceActions from '../../actions/piece';
+import {getRandomPieceCode} from '../../services/piece';
 
 class Game extends React.Component {
   handleKeyPress = evt => {
@@ -15,16 +14,16 @@ class Game extends React.Component {
       pieceMoveLeft,
       pieceMoveRight,
       pieceMoveDown,
-      pieceRotate
+      pieceRotate,
     } = this.props;
     switch (evt.code) {
-      case "ArrowLeft":
+      case 'ArrowLeft':
         return pieceMoveLeft();
-      case "ArrowRight":
+      case 'ArrowRight':
         return pieceMoveRight();
-      case "ArrowDown":
+      case 'ArrowDown':
         return pieceMoveDown();
-      case "ArrowUp":
+      case 'ArrowUp':
         return pieceRotate();
     }
   };
@@ -32,13 +31,12 @@ class Game extends React.Component {
   componentWillMount() {
     // FIXME remove random piece creation later
     this.props.pieceCreate(getRandomPieceCode());
-    document.addEventListener("keyup", this.handleKeyPress);
+    document.addEventListener('keyup', this.handleKeyPress);
   }
   render() {
     return (
       <div>
-        <button onClick={this.putRandomPiece}>R</button>
-        <Board board={this.props.board} />{" "}
+        <Board board={this.props.board} />{' '}
       </div>
     );
   }
@@ -46,9 +44,9 @@ class Game extends React.Component {
 
 export default connect(
   state => ({
-    board: boardSelector(state)
+    board: boardSelector(state),
   }),
-  pieceActions
+  pieceActions,
 )(Game);
 
 const boardSelector = createSelector(
@@ -65,27 +63,27 @@ const boardSelector = createSelector(
           ? row.map(
               (cell, x) =>
                 !!pieceCells.find(
-                  cell => cell.x + piece.x === x && cell.y + piece.y === y
-                )
+                  cell => cell.x + piece.x === x && cell.y + piece.y === y,
+                ),
             )
-          : row
+          : row,
     );
-  }
+  },
 );
 
 export const getPieceCells = pieceCode =>
   numToBinary16String(pieceCode)
-    .split("")
+    .split('')
     .reduce(
       (acc, curr, i) =>
-        curr === "1"
+        curr === '1'
           ? [
               ...acc,
               {
                 x: i % 4,
-                y: Math.floor(i / 4)
-              }
+                y: Math.floor(i / 4),
+              },
             ]
           : acc,
-      []
+      [],
     );

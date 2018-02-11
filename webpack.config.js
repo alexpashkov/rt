@@ -11,20 +11,33 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: [{loader: 'style-loader'}, {loader: 'css-loader'}],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'style-loader', // creates style nodes from JS strings
+          },
+          {
+            loader: 'css-loader', // translates CSS into CommonJS
+            options: {
+              sourceMap: true,
+            },
+          },
+          {
+            loader: 'sass-loader', // compiles Sass to CSS
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          //          options: {
-          //            presets: ['@babel/preset-env', '@babel/react'],
-          //            plugins: [
-          //              '@babel/plugin-proposal-object-rest-spread',
-          //              '@babel/plugin-proposal-class-properties',
-          //            ],
-          //          },
         },
       },
     ],
