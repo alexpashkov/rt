@@ -7,8 +7,6 @@ module.exports = server => {
 
   io.on('connection', socket => {
     logger.info('New connection');
-    //socket.on("getGames", socket.)
-
     socket.on('disconnect', () => logger.info('Connection closed'));
   });
 };

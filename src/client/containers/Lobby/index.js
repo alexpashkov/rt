@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 
 class Lobby extends Component {
   componentDidMount() {
-    this.socket = io('http://localhost:3000');
+    this.socket = io();
     this.socket.on('connect', () => console.log('Connected'));
   }
 
