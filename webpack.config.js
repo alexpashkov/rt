@@ -7,6 +7,28 @@ module.exports = {
     filename: 'app.bundle.js',
     path: __dirname + '/src/server/public',
   },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          //          options: {
+          //            presets: ['@babel/preset-env', '@babel/react'],
+          //            plugins: [
+          //              '@babel/plugin-proposal-object-rest-spread',
+          //              '@babel/plugin-proposal-class-properties',
+          //            ],
+          //          },
+        },
+      },
+    ],
+  },
   plugins: [
     new HtmlWebpackPlugin({
       filename: __dirname + '/src/server/public/index.html',
