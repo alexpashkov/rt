@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css?family=Arimo:400,700&subset=cyrillic');
+@import "../../node_modules/normalize.css/normalize.css";
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  font-family: 'Arimo', sans-serif;
+  color: darkslategray;
+  font-size: 1.6rem;
+  line-height: 1.7;
+  background-color: #fafafa;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+}

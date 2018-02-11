@@ -1,0 +1,21 @@
+.board {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.board__row {
+  display: flex;
+}
+
+.board__cell {
+  width: 5vh;
+  height: 5vh;
+  background-color: #eee;
+  border: 1px solid #e5e5e5;
+}
+
+.board__cell--filled {
+  background-color: rebeccapurple;
+  border: 1px solid darkblue;
+}
