@@ -1,15 +1,24 @@
-import React, {Component} from 'react';
-import io from 'socket.io-client';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import "./lobby.scss";
+
+import GameItem from "./GameItem";
 
 class Lobby extends Component {
-  componentDidMount() {
-    this.socket = io();
-    this.socket.on('connect', () => console.log('Connected'));
-  }
-
   render() {
-    return <h1>Wellcome to the lobby!</h1>;
+    const { games } = this.props;
+    return (
+      <div className="lobby">
+        <h1 className="lobby__logo">Nettetris</h1>
+        <div className="lobby__games-header">
+          <button>Create Game</button>
+        </div>
+        <div className="lobby__games">
+          {games.map(game => <GameItem {...game} />)}
+        </div>
+      </div>
+    );
   }
 }
 
-export default Lobby;
+export default connect(state => ({ games: state.games }))(Lobby);
