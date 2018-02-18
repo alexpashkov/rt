@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Arimo:400,700&subset=cyrillic');
-@import '../../../node_modules/normalize.css/normalize.css';
+@import url("https://fonts.googleapis.com/css?family=Arimo:400,700&subset=cyrillic");
+@import "../../../node_modules/normalize.css/normalize.css";
 
 *,
 *:before,
@@ -12,7 +12,7 @@ html {
 }
 
 body {
-  font-family: 'Arimo', sans-serif;
+  font-family: "Arimo", sans-serif;
   color: darkslategray;
   font-size: 1.6rem;
   line-height: 1.7;
@@ -21,4 +21,12 @@ body {
 
 #root {
   display: flex;
+}
+
+button {
+  color: inherit;
+  border: none;
+  background-color: #dddddd;
+  border-radius: 7px;
+  padding: 0.5em 1em;
 }

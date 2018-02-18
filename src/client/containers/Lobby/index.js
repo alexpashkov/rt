@@ -19,7 +19,7 @@ class Lobby extends Component {
 
   createGame = () => {
     GameService.createGame()
-      .then(({data}) => {
+      .then(({ data }) => {
         console.log(data);
       })
       .catch(res => {
@@ -35,7 +35,9 @@ class Lobby extends Component {
       <div className="lobby">
         <h1 className="lobby__logo">Nettetris</h1>
         <div className="lobby__games-header">
-          <button onClick={this.createGame}>Create Game</button>
+          <button onClick={this.createGame}>
+            <i className="fas fa-plus fa-fw" /> Start Game
+          </button>
         </div>
         <div className="lobby__games">
           {games.map(game => <GameItem key={game.id} {...game} />)}

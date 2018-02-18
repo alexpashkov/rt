@@ -10,10 +10,18 @@ const GameItem = ({ id, players, inProgress }) => (
       } players: ${players.join(", ")}`}</div>
     )}
     <span className="game-item__cell game-item__status">
-      {inProgress ? "Playing" : "Waiting"}
+      {inProgress ? (
+        "Playing"
+      ) : (
+        <span>
+          <i className="far fa-hourglass" /> Waiting
+        </span>
+      )}
     </span>
-    <div className="game-item__cell">
-      <button disabled={inProgress}>Join</button>
+    <div className="game-item__cell game-item__cell--no-shrink">
+      <button className="game-item__button" disabled={inProgress}>
+        <i className="fas fa-sign-in-alt fa-fw" /> Join
+      </button>
     </div>
   </article>
 );

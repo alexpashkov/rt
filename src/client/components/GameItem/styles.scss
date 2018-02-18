@@ -4,11 +4,13 @@
 }
 
 .game-item__cell {
-  flex-shrink: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 5px 10px;
+  &--no-shrink {
+    flex-shrink: 0;
+  }
 }
 
 .game-item__title {
@@ -18,4 +20,9 @@
 }
 
 .game-item__players {
+}
+
+.game-item__button {
+  background: orange;
+  color: white;
 }
