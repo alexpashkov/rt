@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import "./lobby.scss";
+import "./styles.scss";
 import * as gamesActions from "../../actions/games";
 import GameService from "../../services/game";
 import io from "socket.io-client";
 
-import GameItem from "./GameItem";
+import GameItem from "../../components/GameItem/index";
 
 class Lobby extends Component {
   constructor(props) {

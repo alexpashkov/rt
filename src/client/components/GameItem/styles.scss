@@ -1,0 +1,21 @@
+.game-item {
+  display: flex;
+  align-items: center;
+}
+
+.game-item__cell {
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 5px 10px;
+}
+
+.game-item__title {
+  margin: 0;
+  flex-grow: 1;
+  font-size: inherit;
+}
+
+.game-item__players {
+}
