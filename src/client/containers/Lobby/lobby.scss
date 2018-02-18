@@ -9,11 +9,13 @@
 .lobby__games-header {
   display: flex;
   justify-content: flex-end;
+  flex-shrink: 0;
 }
 
 .lobby__games {
   flex-grow: 1;
   background-color: #ccc;
+  overflow-y: auto;
   &:empty {
     display: flex;
     justify-content: center;

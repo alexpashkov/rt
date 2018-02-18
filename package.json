@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.0.0-beta.39",
+    "axios": "^0.17.1",
     "babel-loader": "^8.0.0-beta.0",
     "dotenv": "^5.0.0",
     "express": "^4.16.2",
@@ -42,6 +43,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
+    "redux-saga": "^0.16.0",
     "reselect": "^3.0.1",
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4",

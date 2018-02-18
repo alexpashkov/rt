@@ -1,6 +1,16 @@
-const router = require("express").Router();
+const apiRouter = require("express").Router();
+const gamesRouter = require("express").Router();
+const Game = require("../models/Game");
 const games = require("../models/Games");
 
-router.get("/games", (_, res) => res.json(games.getGames()));
+apiRouter.use("/games", gamesRouter);
 
-module.exports = router;
+gamesRouter
+  .route("/")
+  .get((req, res) => res.json(games.getAll()))
+  .post((req, res) => {
+    const game = games.createNew();
+    res.json(game);
+  });
+
+module.exports = apiRouter;

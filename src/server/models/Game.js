@@ -1,8 +1,10 @@
+'use strict';
+
 const uniqid = require("uniqid");
 
 class Game {
-  constructor() {
-    this.id = uniqid();
+  constructor(id) {
+    this.id = id;
     // this.started = false;
     // this.paused = false;
   }

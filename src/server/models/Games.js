@@ -1,20 +1,20 @@
-const Game = require('./Game');
+const Game = require("./Game");
 
 class Games {
   constructor() {
     this._games = [];
+    this._lastId = 0;
   }
 
-  getGames() {
-    return this._games;
-  }
-
-  addGame(game) {
-    if (!(game instanceof Game)) {
-      throw new TypeError('game must be an instance of Game');
-    }
+  createNew() {
+    const game = new Game(++this._lastId);
     this._games.push(game);
-    return this; // for chaining
+    global.io.emit("GAMES_UPDATE", this.getAll());
+    return game;
+  }
+
+  getAll() {
+    return this._games;
   }
 }
 
