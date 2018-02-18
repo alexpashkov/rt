@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Arimo:400,700&subset=cyrillic");
+@import url('https://fonts.googleapis.com/css?family=VT323');
 @import "../../../node_modules/normalize.css/normalize.css";
+@import "button";
 
 *,
 *:before,
@@ -23,10 +25,3 @@ body {
   display: flex;
 }
 
-button {
-  color: inherit;
-  border: none;
-  background-color: #dddddd;
-  border-radius: 7px;
-  padding: 0.5em 1em;
-}

@@ -1,0 +1,14 @@
+@import "variables";
+
+button {
+  color: inherit;
+  border: none;
+  background-color: #dddddd;
+  border-radius: 7px;
+  padding: 0.5em 1em;
+}
+
+button.primary {
+  background-color: $mainColor;
+  color: white;
+}
