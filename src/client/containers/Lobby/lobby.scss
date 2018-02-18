@@ -1,0 +1,26 @@
+.lobby {
+  border: 1px dotted limegreen;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.lobby__games-header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lobby__games {
+  flex-grow: 1;
+  background-color: #ccc;
+  &:empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:after {
+      display: block;
+      content: "No games available";
+    }
+  }
+}
