@@ -1,13 +1,5 @@
 import * as axios from "axios";
 
-class GameService {
-  static getGames() {
-    return axios.get("/api/games");
-  }
+export const getGames = () => axios.get("/api/games");
 
-  static createGame() {
-    return axios.post("/api/games");
-  }
-}
-
-export default GameService;
+export const createGame = () => axios.post("/api/games");
