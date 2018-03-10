@@ -5,6 +5,7 @@ import "./styles.scss";
 import * as gamesActions from "../../actions/games";
 import * as gameService from "../../services/game";
 import io from "socket.io-client";
+import serverGlobalEvents from "../../../server/global-events/event-types";
 
 import GameItem from "../../components/GameItem/index";
 
@@ -12,9 +13,7 @@ class Lobby extends Component {
   constructor(props) {
     super(props);
     const socket = io();
-    socket.on("connect", function () {
-    });
-    socket.on("GAMES_UPDATE", games => {
+    socket.on(serverGlobalEvents.GAMES_UPDATE, games => {
       props.gamesSet(games);
     });
   }

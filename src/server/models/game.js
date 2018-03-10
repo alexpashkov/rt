@@ -1,8 +1,13 @@
 class GameError extends Error {}
 
+const nsp = Symbol("nsp");
+
 class Game {
   constructor(id) {
     this.id = id;
+    this[nsp] = global.io.of(id); // nsp property must be not enumerable
+    // to be able to serialize object to JSON. Otherwise, its going to have
+    // circular structre
     this.players = [];
     this.isRunning = false;
   }

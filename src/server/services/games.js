@@ -1,6 +1,7 @@
 const Game = require("../models/game");
 const R = require("ramda");
 const Promise = require("bluebird");
+const globalEventTypes = require("../global-events/event-types");
 
 class Games {
   constructor() {
@@ -12,7 +13,7 @@ class Games {
     const game = new Game(++this._lastId);
     this._games[game.id] = game;
     this.getAllGames().then(games => {
-      global.io.emit("GAMES_UPDATE", games);
+      global.io.emit(globalEventTypes.GAMES_UPDATE, games);
     });
     return Promise.resolve(game);
   }

@@ -1,11 +1,12 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 
-import Board from '../../components/Board';
-import * as pieceActions from '../../actions/piece';
-import {boardSelector} from './selectors';
+import Board from "../../components/Board";
+import * as pieceActions from "../../actions/piece";
+import { boardSelector } from "./selectors";
+import io from "socket.io-client";
 
-import {getRandomPieceCode} from '../../services/piece'; // TODO Remove later
+import { getRandomPieceCode } from "../../services/piece"; // TODO Remove later
 
 class Game extends React.Component {
   handleKeyPress = evt => {
@@ -13,24 +14,32 @@ class Game extends React.Component {
       pieceMoveLeft,
       pieceMoveRight,
       pieceMoveDown,
-      pieceRotate,
+      pieceRotate
     } = this.props;
     switch (evt.code) {
-      case 'ArrowLeft':
+      case "ArrowLeft":
         return pieceMoveLeft();
-      case 'ArrowRight':
+      case "ArrowRight":
         return pieceMoveRight();
-      case 'ArrowDown':
+      case "ArrowDown":
         return pieceMoveDown();
-      case 'ArrowUp':
+      case "ArrowUp":
         return pieceRotate();
     }
   };
   putRandomPiece = () => this.props.pieceCreate(getRandomPieceCode());
-  componentWillMount() {
+
+  componentWillMount = () => {
+    this.socket = io.connect("/sssss");
     this.props.pieceCreate(getRandomPieceCode()); // TODO Remove later
-    document.addEventListener('keyup', this.handleKeyPress);
-  }
+    document.addEventListener("keyup", this.handleKeyPress);
+  };
+
+  componentWillUnmount = () => {
+    console.log("componentWillUnmount");
+    this.socket.disconnect();
+  };
+
   render() {
     return (
       <div>
@@ -42,7 +51,7 @@ class Game extends React.Component {
 
 export default connect(
   state => ({
-    board: boardSelector(state),
+    board: boardSelector(state)
   }),
-  pieceActions,
+  pieceActions
 )(Game);

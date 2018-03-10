@@ -1,0 +1,1 @@
+exports.GAMES_UPDATE = "GAMES_UPDATE";

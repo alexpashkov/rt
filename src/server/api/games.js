@@ -7,10 +7,9 @@ gamesRouter
   .get(getAllGames);
 
 function createNewGame(req, res) {
-  gamesService
-    .createNewGame()
-    .then(game => res.json(game))
-    .catch(() => res.sendStatus(500));
+  gamesService.createNewGame().then(game => {
+    res.json(game), () => res.sendStatus(500);
+  });
 }
 
 function getAllGames(req, res) {
