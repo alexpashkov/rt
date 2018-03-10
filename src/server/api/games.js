@@ -1,10 +1,17 @@
-const games = require("../models/games");
-
+const gamesService = require("../services/games");
 const gamesRouter = require("express").Router();
 
 gamesRouter
   .route("/")
-  .get((req, res) => res.json(games.getAll()))
-  .post((req, res) => res.json(games.createNew()));
+  .get(getAllGames)
+  .post(createNewGame);
+
+function getAllGames(req, res) {
+  return res.json(gamesService.getAll());
+}
+
+function createNewGame(req, res) {
+  return res.json(gamesService.createNew()) ;
+}
 
 module.exports = gamesRouter;

@@ -11,7 +11,9 @@ import GameItem from "../../components/GameItem/index";
 class Lobby extends Component {
   constructor(props) {
     super(props);
-    const socket = io("/game1");
+    const socket = io();
+    socket.on("connect", function () {
+    });
     socket.on("GAMES_UPDATE", games => {
       props.gamesSet(games);
     });
