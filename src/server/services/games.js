@@ -1,20 +1,34 @@
 const Game = require("../models/game");
+const R = require("ramda");
+const Promise = require("bluebird");
 
 class Games {
   constructor() {
-    this._games = [];
+    this._games = {};
     this._lastId = 0;
   }
 
-  createNew() {
+  createNewGame() {
     const game = new Game(++this._lastId);
-    this._games.push(game);
-    global.io.emit("GAMES_UPDATE", this.getAll());
-    return game;
+    this._games[game.id] = game;
+    this.getAllGames().then(games => {
+      global.io.emit("GAMES_UPDATE", games);
+    });
+    return Promise.resolve(game);
   }
 
-  getAll() {
-    return this._games;
+  deleteGame(id) {
+    const game = this._games[id];
+    return delete this._games[id]
+      ? Promise.resolve(game)
+      : Promise.reject({
+          err: "Game not found",
+          status: 404
+        });
+  }
+
+  getAllGames() {
+    return Promise.resolve(R.values(this._games).sort((a, b) => a.id - b.id));
   }
 }
 

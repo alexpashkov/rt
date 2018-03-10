@@ -3,15 +3,21 @@ const gamesRouter = require("express").Router();
 
 gamesRouter
   .route("/")
-  .get(getAllGames)
-  .post(createNewGame);
-
-function getAllGames(req, res) {
-  return res.json(gamesService.getAll());
-}
+  .post(createNewGame)
+  .get(getAllGames);
 
 function createNewGame(req, res) {
-  return res.json(gamesService.createNew()) ;
+  gamesService
+    .createNewGame()
+    .then(game => res.json(game))
+    .catch(() => res.sendStatus(500));
+}
+
+function getAllGames(req, res) {
+  gamesService
+    .getAllGames()
+    .then(games => res.json(games))
+    .catch(() => res.sendStatus(500));
 }
 
 module.exports = gamesRouter;
