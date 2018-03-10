@@ -1,6 +1,6 @@
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import {types as gamesActionTypes} from "../actions/games";
-import GameService from "../services/game";
+import GameService from "../services/games";
 
 // worker Saga: will be fired on USER_FETCH_REQUESTED actions
 function* gameCreate(action) {

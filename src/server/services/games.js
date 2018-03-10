@@ -1,6 +1,6 @@
-const Game = require("../models/game");
 const R = require("ramda");
 const Promise = require("bluebird");
+const Game = require("../models/game");
 const globalEventTypes = require("../global-events/event-types");
 
 class Games {
@@ -20,16 +20,16 @@ class Games {
 
   deleteGame(id) {
     const game = this._games[id];
-    return delete this._games[id]
-      ? Promise.resolve(game)
-      : Promise.reject({
-          err: "Game not found",
-          status: 404
-        });
+    delete this._games[id];
+    return Promise.resolve(game);
   }
 
   getAllGames() {
-    return Promise.resolve(R.values(this._games).sort((a, b) => a.id - b.id));
+    return Promise.resolve(R.values(this._games));
+  }
+
+  getGame(id) {
+    return Promise.resolve(this._games[id]);
   }
 }
 

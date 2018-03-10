@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect, withRouter } from "react-router";
 import "./styles.scss";
 import * as gamesActions from "../../actions/games";
-import * as gameService from "../../services/game";
+import * as gameService from "../../services/games";
 import io from "socket.io-client";
 import serverGlobalEvents from "../../../server/global-events/event-types";
 
