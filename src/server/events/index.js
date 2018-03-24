@@ -16,8 +16,10 @@ module.exports = server => {
 
     let id = socket.handshake.query.id;
     socket.player = (id && PlayersService.playerExists(id)) ?
-                    (PlayersService.getPlayer(id) && socket.player.socket = socket) :
-                    PlayersService.createPlayer(socket);
+                    PlayersService.getPlayer(id) :
+                    PlayersService.createPlayer(null);
+
+    socket.player.socket = socket;
 
     socket.on("dummy service", (data) => {
         player.acquire()
