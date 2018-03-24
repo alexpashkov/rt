@@ -9,6 +9,17 @@ class Game {
   }
 
   initSocketListeners() {
+<<<<<<< Updated upstream
+=======
+    this[nsp].on("connection", socket => {
+      logger.debug("Socket has connected to a game");
+      socket.on("disconnect", () => {
+        logger.debug(
+          `Socket ${socket.id} has disconnected from a game ${this.id}`
+        );
+      });
+    });
+>>>>>>> Stashed changes
   }
 
   start() {

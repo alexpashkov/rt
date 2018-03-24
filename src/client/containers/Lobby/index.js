@@ -1,36 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Redirect, withRouter } from "react-router";
+import { withRouter } from "react-router";
 import "./styles.scss";
 import * as gamesActions from "../../actions/games";
-import * as gameService from "../../services/games";
-import io from "socket.io-client";
-import serverGlobalEvents from "../../../server/events/types";
 
 import GameItem from "../../components/GameItem/index";
 
 class Lobby extends Component {
   constructor(props) {
     super(props);
-    const socket = io();
-    socket.on(serverGlobalEvents.GAMES_UPDATE, games => {
-      props.gamesSet(games);
-    });
   }
 
   createGame = () => {
-    gameService
-      .createGame()
-      .then(({ data }) => {
-        this.joinGame(data.id);
-      })
-      .catch(res => {
-        console.error(res);
-      });
+    console.log("createGame")
   };
 
   joinGame = id => {
-    this.props.history.push("/" + id);
+    console.log("joinGame");
   };
 
   render() {

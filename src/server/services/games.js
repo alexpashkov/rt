@@ -1,3 +1,5 @@
+"use strict";
+
 const Game = require("../models/Game");
 const R = require("ramda");
 

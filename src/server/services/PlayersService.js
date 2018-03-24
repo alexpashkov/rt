@@ -1,3 +1,5 @@
+"use strict";
+
 const uniqid = require("uniqid");
 const Player = require("../models/Player");
 
@@ -9,6 +11,7 @@ class PlayersService {
   createPlayer(socket) {
     const newPlayer = new Player(uniqid(), socket);
     this.players[newPlayer.id] = newPlayer;
+    return newPlayer;
   }
 
   getPlayer(id) {

@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const winston = require('winston');
+const winston = require("winston");
 
 const tsFormat = () => new Date().toLocaleTimeString();
 const logger = new winston.Logger({
@@ -8,10 +8,10 @@ const logger = new winston.Logger({
     // colorize the output to the console
     new winston.transports.Console({
       timestamp: tsFormat,
-      colorize: true,
-    }),
-  ],
+      colorize: true
+    })
+  ]
 });
-logger.level = 'debug';
+logger.level = "debug";
 
 module.exports = logger;
