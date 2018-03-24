@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import Board from "../../components/Board";
@@ -13,11 +13,11 @@ import * as Promise from "bluebird";
 
 import { getRandomPieceCode } from "../../services/piece"; // TODO Remove later
 
-class Game extends React.Component {
+class Game extends Component {
   componentWillMount = () => {
     this.props.gameMetaSetLoading();
     Promise.resolve(gamesService.getGames(this.props.match.params.id))
-      .delay(3000)
+      .delay(1000)
       .then(({ data: { id } }) => {
         this.socket = io(`/${id}`);
       })

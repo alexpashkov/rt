@@ -5,7 +5,7 @@ import "./styles.scss";
 import * as gamesActions from "../../actions/games";
 import * as gameService from "../../services/games";
 import io from "socket.io-client";
-import serverGlobalEvents from "../../../server/global-events/event-types";
+import serverGlobalEvents from "../../../server/events/types";
 
 import GameItem from "../../components/GameItem/index";
 

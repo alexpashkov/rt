@@ -1,35 +1,31 @@
+const Game = require("../models/Game");
 const R = require("ramda");
-const Promise = require("bluebird");
-const Game = require("../models/game");
-const globalEventTypes = require("../global-events/event-types");
 
+let gameCounter = 0;
 class Games {
   constructor() {
-    this._games = {};
-    this._lastId = 0;
+    this.games = {};
   }
 
   createNewGame() {
-    const game = new Game(++this._lastId);
-    this._games[game.id] = game;
-    this.getAllGames().then(games => {
-      global.io.emit(globalEventTypes.GAMES_UPDATE, games);
-    });
-    return Promise.resolve(game);
+    const newGame = new Game(gameCounter++);
+    this.games[newGame.id] = newGame;
+    return newGame;
   }
 
   deleteGame(id) {
-    const game = this._games[id];
-    delete this._games[id];
-    return Promise.resolve(game);
+    const gameToDelete = this.games[id];
+    if (!gameToDelete) return;
+    delete this.games[id];
+    return gameToDelete;
   }
 
   getAllGames() {
-    return Promise.resolve(R.values(this._games));
+    return R.values(this.games);
   }
 
   getGame(id) {
-    return Promise.resolve(this._games[id]);
+    return this.games[id];
   }
 }
 
