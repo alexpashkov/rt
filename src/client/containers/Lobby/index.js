@@ -3,8 +3,10 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import "./styles.scss";
 import * as gamesActions from "../../actions/games";
+import withSocket from "../../hocs/with-socket";
 
 import GameItem from "../../components/GameItem/index";
+import {GAME_CREATE} from "../../events";
 
 class Lobby extends Component {
   constructor(props) {
@@ -12,7 +14,10 @@ class Lobby extends Component {
   }
 
   createGame = () => {
-    console.log("createGame");
+    const {socket} = this.props;
+    socket.emit(GAME_CREATE, res => {
+      debugger;
+    });
   };
 
   joinGame = id => {
@@ -39,6 +44,6 @@ class Lobby extends Component {
   }
 }
 
-export default withRouter(
+export default withSocket(withRouter(
   connect(state => ({ games: state.games }), gamesActions)(Lobby)
-);
+));
