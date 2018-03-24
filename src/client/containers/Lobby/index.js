@@ -12,7 +12,7 @@ class Lobby extends Component {
   }
 
   createGame = () => {
-    console.log("createGame")
+    console.log("createGame");
   };
 
   joinGame = id => {
