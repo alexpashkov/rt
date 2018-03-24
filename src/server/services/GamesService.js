@@ -4,15 +4,15 @@ const Game = require("../models/Game");
 const R = require("ramda");
 
 let gameCounter = 0;
-class Games {
+class GamesService {
   constructor() {
     this.games = {};
   }
 
-  createNewGame() {
+  createNewGame(leaderId) {
     const newGame = new Game(gameCounter++);
     this.games[newGame.id] = newGame;
-    return newGame;
+    return newGame.id;
   }
 
   deleteGame(id) {
@@ -31,4 +31,4 @@ class Games {
   }
 }
 
-module.exports = new Games();
+module.exports = new GamesService();

@@ -2,24 +2,15 @@ const logger = require("../logger");
 class GameError extends Error {}
 
 class Game {
-  constructor(id) {
+  constructor(id, leaderId) {
     this.id = id;
     this.initSocketListeners();
+    this.playersId = [leaderId];
+    this.leaderId = leaderId;
     this.isRunning = false;
   }
 
   initSocketListeners() {
-<<<<<<< Updated upstream
-=======
-    this[nsp].on("connection", socket => {
-      logger.debug("Socket has connected to a game");
-      socket.on("disconnect", () => {
-        logger.debug(
-          `Socket ${socket.id} has disconnected from a game ${this.id}`
-        );
-      });
-    });
->>>>>>> Stashed changes
   }
 
   start() {

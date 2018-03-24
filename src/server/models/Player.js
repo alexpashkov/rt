@@ -1,6 +1,7 @@
 class Player {
   constructor(id, socket) {
     this.id = id;
+    this.login = null;
     this.socket = socket;
     this.gameId = null;
     this.refCount = 0;
@@ -13,6 +14,12 @@ class Player {
 
   free() {
     this.refCount--;
+  }
+
+  setLogin(login) {
+    if (typeof login === 'string') {
+      this.login = login;
+    }
   }
 }
 

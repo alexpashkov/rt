@@ -1,25 +1,44 @@
 "use strict";
 
 const logger = require("../logger");
+const events = require("./types.js");
 const PlayersService = require("../services/PlayersService.js");
+const GamesService = require("../services/GamesService.js");
 
 module.exports = server => {
   global.io = require("socket.io")(server);
 
   global.io.on("connection", socket => {
     logger.debug("Socket connected");
-    let id = socket.handshake.query.id;
-    socket.player = (id && PlayersService.playerExists(id)) ?
-                    PlayersService.getPlayer(id) :
-                    PlayersService.createPlayer(null);
+    const id = socket.handshake.query.id;
+    const player = (() => {
 
-    socket.player.socket = socket;
+      if (id && PlayersService.playerExists(id)) {
+        let _player = PlayersService.getPlayer(id);
+        _player.socket = socket;
+        return _player;
+      }
 
-    socket.on("dummy service", (data) => {
-        socket.player.acquire()
+      return PlayersService.createPlayer(socket);
+    })();
+
+    socket.emit("id", { id: player.id });
+
+    socket.on(events.GAME_CREATE, (data, callback) => {
+      if (player.gameId) {
+        callback({
+          'status': 'error',
+          'description': 'You are already in game.'
+        });
+        return ;
+      }
+
+      player.gameId = GamesService.createGame(player.id);
+      socket.join(`game_${gameId}`);
+      callback({
+        'status': 'success'
+      });
     });
-
-    socket.emit("id", { id: socket.player.id });
 
     socket.on("disconnect", () => logger.debug("Socket disconnected"));
   });
