@@ -1,25 +1,14 @@
 const logger = require("../logger");
 class GameError extends Error {}
 
-const nsp = Symbol("nsp");
-
 class Game {
   constructor(id) {
     this.id = id;
-    this[nsp] = global.io.of(id); // nsp property must be not enumerable
-    // to be able to serialize object to JSON. Otherwise, its going to have
-    // circular structure
     this.initSocketListeners();
     this.isRunning = false;
   }
 
   initSocketListeners() {
-    this[nsp].on("connection", socket => {
-      logger.debug("Socket has connected to a game");
-      socket.on("disconnect", () => {
-        logger.debug(`Socket ${socket.id} has disconnected from a game ${this.id}`);
-      });
-    });
   }
 
   start() {
