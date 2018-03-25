@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
 import withSocket from "../../hocs/with-socket";
 import Board from "../../components/Board";
+import Loader from "../../components/Loader";
+
 import {
   pieceCreate,
   pieceMoveLeft,
@@ -42,7 +43,7 @@ class Game extends Component {
           );
           history.push("/");
         }
-        setTimeout(() => gameMetaUnsetLoading(), 500);
+        setTimeout(() => gameMetaUnsetLoading(), 100000);
       }
     );
   };
@@ -79,8 +80,8 @@ class Game extends Component {
   render() {
     const { board, isLoading } = this.props;
     return (
-      <div className="game">
-        {isLoading ? <p>Loading...</p> : <Board board={board} />}
+      <div className={"game " + (isLoading ? "game--loading" : "")}>
+        {isLoading ? <Loader /> : <Board board={board} />}
       </div>
     );
   }

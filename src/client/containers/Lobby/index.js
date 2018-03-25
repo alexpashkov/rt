@@ -2,33 +2,29 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import "./styles.scss";
-import * as gamesActions from "../../actions/games";
+import { gamesSet } from "../../actions/games";
 import withSocket from "../../hocs/with-socket";
 
 import GameItem from "../../components/GameItem/index";
-import {GAME_CREATE} from "../../events";
+import { GAME_CREATE, GAMES_UPDATED } from "../../events";
 
 class Lobby extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
+  componentDidMount() {
+    const { socket, gamesSet } = this.props;
+    socket.on(GAMES_UPDATED, gamesSet);
+  }
+
   createGame = () => {
-    const {socket, history} = this.props;
+    const { socket, history } = this.props;
     socket.emit(GAME_CREATE, res => {
       if (res.status !== "success") {
         return console.warn("Error while creating a game");
       }
-      history.push(`/${res.gameId}`)
+      history.push(`/${res.gameId}`);
     });
   };
 
-  joinGame = id => {
-    console.log("joinGame " + id);
-    // const {socket, history} = this.props;
-    // socket.emit(GAME_JOIN, id, res => {
-    //   debugger;
-    // });
-  };
+  navigateToGame = id => this.props.history.push(`/${id}`);
 
   render() {
     const { games } = this.props;
@@ -42,14 +38,25 @@ class Lobby extends Component {
         </div>
         <div className="lobby__games">
           {games.map(game => (
-            <GameItem handleJoin={this.joinGame} key={game.id} {...game} />
+            <GameItem
+              handleJoin={this.navigateToGame}
+              key={game.id}
+              {...game}
+            />
           ))}
         </div>
       </div>
     );
   }
+
+  componentWillUnmount() {
+    const { socket, gamesSet } = this.props;
+    socket.removeListener(GAMES_UPDATED, gamesSet);
+  }
 }
 
 export default withRouter(
-  connect(state => ({ games: state.games }), gamesActions)(withSocket(Lobby))
+  connect(state => ({ games: state.games }), {
+    gamesSet
+  })(withSocket(Lobby))
 );

@@ -11,10 +11,15 @@ import "./styles/index.scss";
 
 import Lobby from "./containers/Lobby";
 import Game from "./containers/Game";
+import { PLAYER_CONNECTED } from "./events";
 
 class App extends Component {
   componentDidMount() {
-    registerSocketEventHandlers(this.props.socket);
+    const { socket, history } = this.props;
+    socket.on(PLAYER_CONNECTED, ({ id, gameId }) => {
+      localStorage.setItem("playerId", id);
+      gameId && history.push(`/${gameId}`);
+    });
   }
 
   render() {
@@ -32,10 +37,6 @@ class App extends Component {
   }
 }
 
-function registerSocketEventHandlers(socket) {
-  socket.on("id", ({ id }) => {
-    localStorage.setItem("playerId", id);
-  });
-}
+function registerSocketEventHandlers(socket) {}
 
 export default withSocket(App);

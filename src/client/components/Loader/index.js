@@ -1,9 +1,4 @@
 import React from "react";
-import "./styles.css";
+import "./styles.scss";
 
-export default () => (
-  <div className="spinner">
-    <div className="cube1" />
-    <div className="cube2" />
-  </div>
-);
+export default () => <div className="spinner" />;
