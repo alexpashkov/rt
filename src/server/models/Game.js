@@ -1,4 +1,5 @@
 const logger = require("../logger");
+const PlayersService = require("../services/PlayersService.js");
 class GameError extends Error {}
 
 class Game {
@@ -8,6 +9,11 @@ class Game {
     this.players = [leaderId];
     this.leaderId = leaderId;
     this.isRunning = false;
+    this.config = {
+      maxPlayers: 4,
+      width: 10,
+      height: 20
+    }
   }
 
   initSocketListeners() {
@@ -22,11 +28,7 @@ class Game {
   }
 
   addPlayer(playerId) {
-/*
-    if (this.findPlayer(playerId)) {
-      throw new GameError("Player is already in this game");
-    }
-*/
+    PlayersService.getPlayer(playerId).acquire();
     this.players.push(playerId);
   }
 
@@ -39,20 +41,19 @@ class Game {
   }
 
   notifyPlayerDisconnected(playerId) {
-    const playerToRemove = PlayersService.getPlayer(playerId);
     if (!this.gameRunning()) {
-      playerToRemove.gameId = null;
+      this.deletePlayer(playerId);
     }
-    PlayersService.notifyDisconnected(playerId);
   }
 
-  removePlayer(id) {
+  deletePlayer(id) {
     const playerToRemove = this.findPlayer(id);
     if (!playerToRemove) {
       throw new GameError("There is no such player");
     }
     this.players = this.players.filter(player => player !== playerToRemove);
-    return playerToRemove;
+    player.gameId = null;
+    player.free();
   }
 }
 
