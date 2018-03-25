@@ -43,7 +43,7 @@ class Game extends Component {
           );
           history.push("/");
         }
-        setTimeout(() => gameMetaUnsetLoading(), 100000);
+        setTimeout(() => gameMetaUnsetLoading(), 1000);
       }
     );
   };
