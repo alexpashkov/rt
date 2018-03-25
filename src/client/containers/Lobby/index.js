@@ -9,19 +9,25 @@ import GameItem from "../../components/GameItem/index";
 import {GAME_CREATE} from "../../events";
 
 class Lobby extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+  // constructor(props) {
+  //   super(props);
+  // }
   createGame = () => {
     const {socket} = this.props;
     socket.emit(GAME_CREATE, res => {
-      debugger;
+      if (res.status !== "success") {
+        return console.warn("Error while creating a game");
+      }
+      history.push(`/${res.gameId}`)
     });
   };
 
   joinGame = id => {
-    console.log("joinGame");
+    console.log("joinGame " + id);
+    // const {socket, history} = this.props;
+    // socket.emit(GAME_JOIN, id, res => {
+    //   debugger;
+    // });
   };
 
   render() {

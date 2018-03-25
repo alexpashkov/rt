@@ -1,40 +1,45 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
+import withSocket from "../../hocs/with-socket";
 import Board from "../../components/Board";
-import * as pieceActions from "../../actions/piece";
-import * as gameMetaActions from "../../actions/game-meta";
+import {
+  pieceCreate,
+  pieceMoveLeft,
+  pieceMoveRight,
+  pieceMoveDown,
+  pieceRotate
+} from "../../actions/piece";
 import { boardSelector } from "./selectors";
-import io from "socket.io-client";
-import * as gamesService from "../../services/games";
-import Loader from "../../components/Loader";
 import "./styles.scss";
-import * as Promise from "bluebird";
+import { GAME_JOIN } from "../../events";
 
 import { getRandomPieceCode } from "../../services/piece"; // TODO Remove later
 
 class Game extends Component {
   componentWillMount = () => {
-    this.props.gameMetaSetLoading();
-    Promise.resolve(gamesService.getGames(this.props.match.params.id))
-      .delay(1000)
-      .then(({ data: { id } }) => {
-        this.socket = io(`/${id}`);
-      })
-      .catch(err => this.props.history.push("/"))
-      .finally(() => this.props.gameMetaUnsetLoading());
-    this.props.pieceCreate(getRandomPieceCode()); // TODO Remove later
-    document.addEventListener("keyup", this.handleKeyPress);
+    const { socket, match } = this.props;
+    socket.emit(
+      GAME_JOIN,
+      {
+        id: match.params.id
+      },
+      res => {
+
+      }
+    );
+  };
+  componentDidMount = () => {
+    document.addEventListener("keyup", this.handleKeyPresses);
+    this.putRandomPiece();
   };
 
   componentWillUnmount = () => {
-    document.removeEventListener("keyup", this.handleKeyPress);
-    this.socket && this.socket.disconnect();
+    document.removeEventListener("keyup", this.handleKeyPresses);
   };
 
   putRandomPiece = () => this.props.pieceCreate(getRandomPieceCode());
 
-  handleKeyPress = evt => {
+  handleKeyPresses = evt => {
     const {
       pieceMoveLeft,
       pieceMoveRight,
@@ -54,10 +59,10 @@ class Game extends Component {
   };
 
   render() {
-    const { board, isLoading } = this.props;
+    const { board } = this.props;
     return (
       <div className="game">
-        {isLoading ? <Loader /> : <Board board={board} />}
+        <Board board={board} />
       </div>
     );
   }
@@ -65,8 +70,13 @@ class Game extends Component {
 
 export default connect(
   state => ({
-    board: boardSelector(state),
-    isLoading: state.game.meta.isLoading
+    board: boardSelector(state)
   }),
-  Object.assign({}, pieceActions, gameMetaActions)
+  {
+    pieceCreate,
+    pieceMoveLeft,
+    pieceMoveRight,
+    pieceMoveDown,
+    pieceRotate
+  }
 )(Game);

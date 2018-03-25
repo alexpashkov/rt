@@ -9,7 +9,7 @@ class GamesService {
     this.games = {};
   }
 
-  createNewGame(leaderId) {
+  createGame(leaderId) {
     const newGame = new Game(gameCounter++);
     this.games[newGame.id] = newGame;
     return newGame.id;

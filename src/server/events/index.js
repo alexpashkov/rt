@@ -34,7 +34,7 @@ module.exports = server => {
       }
 
       player.gameId = GamesService.createGame(player.id);
-      socket.join(`game_${gameId}`);
+      socket.join(`game_${player.gameId}`);
       callback({
         'status': 'success'
       });

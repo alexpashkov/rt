@@ -1,13 +1,12 @@
 import { createSelector } from "reselect";
 import { numToBinary16String } from "../../utils/index";
+import { identity, memoizeWith } from "ramda";
 
 export const boardSelector = createSelector(
   state => state.game.board,
   state => state.game.piece,
   (board, piece) => {
-    if (!piece) {
-      return board;
-    }
+    if (!piece) return board;
     const pieceCells = getPieceCells(piece.code);
     return board.map(
       (row, y) =>
@@ -23,7 +22,7 @@ export const boardSelector = createSelector(
   }
 );
 
-export const getPieceCells = pieceCode =>
+export const getPieceCells = memoizeWith(identity, pieceCode =>
   numToBinary16String(pieceCode)
     .split("")
     .reduce(
@@ -38,4 +37,5 @@ export const getPieceCells = pieceCode =>
             ]
           : acc,
       []
-    );
+    )
+);
