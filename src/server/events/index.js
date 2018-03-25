@@ -24,11 +24,11 @@ module.exports = server => {
 
     socket.emit("id", { id: player.id });
 
-    socket.on(events.GAME_CREATE, (data, callback) => {
-      if (player.gameId) {
+    socket.on(events.GAME_CREATE, (callback) => {
+      if (player.inGame()) {
         callback({
-          'status': 'error',
-          'description': 'You are already in game.'
+          "status": "error",
+          "description": "You are already in game."
         });
         return ;
       }
@@ -36,10 +36,41 @@ module.exports = server => {
       player.gameId = GamesService.createGame(player.id);
       socket.join(`game_${player.gameId}`);
       callback({
-        'status': 'success'
+        "status": "success",
+        "gameId": player.gameId
       });
     });
 
-    socket.on("disconnect", () => logger.debug("Socket disconnected"));
+    socket.on(events.GAME_JOIN, (data, callback) => {
+      if (player.inGame()) {
+        callback({
+          "status": "error",
+          "description": "You are already in game."
+        });
+        return;
+      }
+
+      const gameToJoin = GamesService.findGame(data.id);
+
+      if (gameToJoin) {
+        gameToJoin.addPlayer(player.id);
+        callback({
+          "status": "success"
+        });
+      } else {
+        callback({
+          "status": "error",
+          "description": "Game with such ID does not exist"
+        });
+      }
+    });
+
+    socket.on("disconnect", () => {
+      logger.debug("Socket disconnected");
+      player.socket = null;
+      if (player.gameId) {
+        GamesService.getGame(player.gameId).notifyDisconnected(player.id);
+      }
+    });
   });
 };

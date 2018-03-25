@@ -21,6 +21,10 @@ class Player {
       this.login = login;
     }
   }
+
+  inGame() {
+    return !!this.gameId;
+  }
 }
 
 module.exports = Player;

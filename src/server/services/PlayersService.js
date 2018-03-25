@@ -18,6 +18,14 @@ class PlayersService {
     return this.players[id];
   }
 
+  notifyDisconnected(playerId) {
+    const playerToDelete = this.players[playerId];
+
+    if (playerToDelete && !playerToDelete.gameId) {
+      delete this.players[playerId];
+    }
+  }
+
   deletePlayer(id) {
     const playerToDelete = this.players[id];
     if (!playerToDelete) return;

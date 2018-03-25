@@ -5,7 +5,7 @@ class Game {
   constructor(id, leaderId) {
     this.id = id;
     this.initSocketListeners();
-    this.playersId = [leaderId];
+    this.players = [leaderId];
     this.leaderId = leaderId;
     this.isRunning = false;
   }
@@ -21,15 +21,29 @@ class Game {
     this.isRunning = false;
   }
 
-  addPlayer(player) {
-    if (this.findPlayer(player.id)) {
+  addPlayer(playerId) {
+/*
+    if (this.findPlayer(playerId)) {
       throw new GameError("Player is already in this game");
     }
-    this.players.push(player);
+*/
+    this.players.push(playerId);
   }
 
   findPlayer(id) {
-    return this.players.find(player => player.id === id);
+    return //this.players.find(player => player.id === id);
+  }
+
+  gameRunning() {
+    return this.isRunning;
+  }
+
+  notifyPlayerDisconnected(playerId) {
+    const playerToRemove = PlayersService.getPlayer(playerId);
+    if (!this.gameRunning()) {
+      playerToRemove.gameId = null;
+    }
+    PlayersService.notifyDisconnected(playerId);
   }
 
   removePlayer(id) {
