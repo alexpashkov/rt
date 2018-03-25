@@ -24,7 +24,7 @@ class Game extends Component {
         id: match.params.id
       },
       res => {
-
+        console.log(res);
       }
     );
   };
@@ -79,4 +79,4 @@ export default connect(
     pieceMoveDown,
     pieceRotate
   }
-)(Game);
+)(withSocket(Game));

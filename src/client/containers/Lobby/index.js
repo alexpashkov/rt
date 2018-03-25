@@ -13,7 +13,7 @@ class Lobby extends Component {
   //   super(props);
   // }
   createGame = () => {
-    const {socket} = this.props;
+    const {socket, history} = this.props;
     socket.emit(GAME_CREATE, res => {
       if (res.status !== "success") {
         return console.warn("Error while creating a game");
@@ -50,6 +50,6 @@ class Lobby extends Component {
   }
 }
 
-export default withSocket(withRouter(
-  connect(state => ({ games: state.games }), gamesActions)(Lobby)
-));
+export default withRouter(
+  connect(state => ({ games: state.games }), gamesActions)(withSocket(Lobby))
+);
