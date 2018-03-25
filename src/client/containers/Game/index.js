@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import withSocket from "../../hocs/with-socket";
 import Board from "../../components/Board";
 import {
@@ -9,6 +10,10 @@ import {
   pieceMoveDown,
   pieceRotate
 } from "../../actions/piece";
+import {
+  gameMetaSetLoading,
+  gameMetaUnsetLoading
+} from "../../actions/game-meta";
 import { boardSelector } from "./selectors";
 import "./styles.scss";
 import { GAME_JOIN } from "../../events";
@@ -17,14 +22,27 @@ import { getRandomPieceCode } from "../../services/piece"; // TODO Remove later
 
 class Game extends Component {
   componentWillMount = () => {
-    const { socket, match } = this.props;
+    const {
+      socket,
+      match,
+      history,
+      gameMetaSetLoading,
+      gameMetaUnsetLoading
+    } = this.props;
+    gameMetaSetLoading();
     socket.emit(
       GAME_JOIN,
       {
         id: match.params.id
       },
       res => {
-        console.log(res);
+        if (res.status !== "success") {
+          console.warn(
+            `Failed to join a game: ${JSON.stringify(res, null, 2)}`
+          );
+          history.push("/");
+        }
+        setTimeout(() => gameMetaUnsetLoading(), 500);
       }
     );
   };
@@ -59,10 +77,10 @@ class Game extends Component {
   };
 
   render() {
-    const { board } = this.props;
+    const { board, isLoading } = this.props;
     return (
       <div className="game">
-        <Board board={board} />
+        {isLoading ? <p>Loading...</p> : <Board board={board} />}
       </div>
     );
   }
@@ -70,13 +88,16 @@ class Game extends Component {
 
 export default connect(
   state => ({
-    board: boardSelector(state)
+    board: boardSelector(state),
+    isLoading: state.game.meta.isLoading
   }),
   {
     pieceCreate,
     pieceMoveLeft,
     pieceMoveRight,
     pieceMoveDown,
-    pieceRotate
+    pieceRotate,
+    gameMetaSetLoading,
+    gameMetaUnsetLoading
   }
 )(withSocket(Game));
