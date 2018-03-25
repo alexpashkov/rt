@@ -50,7 +50,7 @@ module.exports = server => {
         return;
       }
 
-      const gameToJoin = GamesService.findGame(data.id);
+      const gameToJoin = GamesService.getGame(data.id);
 
       if (gameToJoin) {
         gameToJoin.addPlayer(player.id);
