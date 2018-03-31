@@ -11,12 +11,12 @@ import "./styles/index.scss";
 
 import Lobby from "./containers/Lobby";
 import Game from "./containers/Game";
-import { PLAYER_CONNECTED } from "./events";
+import {server as serverEvents} from "../shared/types";
 
 class App extends Component {
   componentDidMount() {
     const { socket, history } = this.props;
-    socket.on(PLAYER_CONNECTED, ({ id, gameId }) => {
+    socket.on(serverEvents.PLAYER_CONNECTED, ({ id, gameId }) => {
       localStorage.setItem("playerId", id);
       gameId && history.push(`/${gameId}`);
     });

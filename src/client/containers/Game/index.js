@@ -17,7 +17,7 @@ import {
 } from "../../actions/game-meta";
 import { boardSelector } from "./selectors";
 import "./styles.scss";
-import { GAME_JOIN } from "../../events";
+import {client as clientEvents, server as serverEvents } from "../../../shared/types";
 
 import { getRandomPieceCode } from "../../services/piece"; // TODO Remove later
 
@@ -32,7 +32,7 @@ class Game extends Component {
     } = this.props;
     gameMetaSetLoading();
     socket.emit(
-      GAME_JOIN,
+      clientEvents.GAME_JOIN,
       {
         id: match.params.id
       },
