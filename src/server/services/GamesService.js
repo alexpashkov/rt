@@ -16,6 +16,8 @@ class GamesService {
   createGame(leaderId) {
     const newGame = new Game(gameCounter++);
     this.games[newGame.id] = newGame;
+
+    this.notifyUpdatedGameList();
     return newGame.id;
   }
 
@@ -24,9 +26,7 @@ class GamesService {
     if (!gameToDelete) return;
     delete this.games[id];
 
-    this.notifyGameUpdate(events.GAMES_UPDATED, this.getAllGames().map((game) => ({
-      id: game.id,
-    })));
+    this.notifyUpdatedGameList();
   }
 
   getAllGames() {
@@ -43,6 +43,12 @@ class GamesService {
 
   unsubscribeSocketOnUpdates(socket) {
     socket.leave(this.roomName);
+  }
+
+  notifyUpdatedGameList() {
+    this.notifyGameUpdate(events.GAMES_UPDATED, this.getAllGames().map((game) => ({
+      id: game.id,
+    })));
   }
 
   notifyGameUpdate(event, data) {
