@@ -45,7 +45,7 @@ class GamesService {
   }
 
   notifyUpdatedGameList() {
-    this.notifyGameUpdate(events.GAMES_UPDATED, this.getAllGames().map((game) => ({
+    this.notifyGameUpdate(events.GAMES_UPDATE, this.getAllGames().map((game) => ({
       id: game.id,
     })));
   }
