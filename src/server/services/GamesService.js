@@ -2,7 +2,6 @@
 
 const Game = require("../models/Game");
 const R = require("ramda");
-const io = require("socket.io");
 const events = require("../events/types.js");
 
 let gameCounter = 0;
@@ -52,7 +51,7 @@ class GamesService {
   }
 
   notifyGameUpdate(event, data) {
-    io.to(this.roomName).emit(event, data);
+    global.io.to(this.roomName).emit(event, data);
   }
 
   backgroundWorker() {
