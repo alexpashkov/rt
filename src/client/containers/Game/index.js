@@ -17,46 +17,42 @@ import {
 } from "../../actions/game-meta";
 import { boardSelector } from "./selectors";
 import "./styles.scss";
-import {client as clientEvents, server as serverEvents } from "../../../shared/types";
+import {
+  client as clientEvents
+  // server as serverEvents
+} from "../../../shared/types";
 
-import { getRandomPieceCode } from "../../services/piece"; // TODO Remove later
+import { getRandomPieceCode } from "../../services/piece"; /* TODO Remove later */
 
 class Game extends Component {
-  componentWillMount = () => {
+  render() {
+    const { board, isLoading } = this.props;
+    return (
+      <div className={getGameClassName(isLoading)}>
+        {isLoading ? <Loader /> : <Board board={board} />}
+      </div>
+    );
+  }
+
+  componentDidMount() {
     const {
       socket,
-      match,
+      match: { params: { id } },
       history,
       gameMetaSetLoading,
       gameMetaUnsetLoading
     } = this.props;
+    /* Show spinner: */
     gameMetaSetLoading();
-    socket.emit(
-      clientEvents.GAME_JOIN,
-      {
-        id: match.params.id
-      },
-      res => {
-        if (res.status !== "success") {
-          console.warn(
-            `Failed to join a game: ${JSON.stringify(res, null, 2)}`
-          );
-          history.push("/");
-        }
-        setTimeout(() => gameMetaUnsetLoading(), 1000);
-      }
-    );
-  };
-  componentDidMount = () => {
+    /* Try to join game: */
+    socket.emit(clientEvents.GAME_JOIN, { id }, res => {
+      if (res.status !== "success")
+        return history.push("/"); /* Redirect to lobby on fail */
+      setTimeout(() => gameMetaUnsetLoading(), 1000);
+    });
     document.addEventListener("keyup", this.handleKeyPresses);
-    this.putRandomPiece();
-  };
-
-  componentWillUnmount = () => {
-    document.removeEventListener("keyup", this.handleKeyPresses);
-  };
-
-  putRandomPiece = () => this.props.pieceCreate(getRandomPieceCode());
+    this.props.pieceCreate(getRandomPieceCode());
+  }
 
   handleKeyPresses = evt => {
     const {
@@ -77,14 +73,13 @@ class Game extends Component {
     }
   };
 
-  render() {
-    const { board, isLoading } = this.props;
-    return (
-      <div className={"game " + (isLoading ? "game--loading" : "")}>
-        {isLoading ? <Loader /> : <Board board={board} />}
-      </div>
-    );
+  componentWillUnmount() {
+    document.removeEventListener("keyup", this.handleKeyPresses);
   }
+}
+
+function getGameClassName(isLoading) {
+  return "game " + (isLoading ? "game--loading" : "");
 }
 
 export default connect(
