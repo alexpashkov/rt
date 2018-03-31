@@ -50,7 +50,7 @@ class Lobby extends Component {
 
   componentWillUnmount() {
     const { socket, gamesSet } = this.props;
-    socket.removeListener(GAMES_UPDATED, gamesSet);
+    socket.removeListener(GAMES_UPDATE, gamesSet);
   }
 }
 
