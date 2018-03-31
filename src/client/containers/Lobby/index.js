@@ -6,12 +6,12 @@ import { gamesSet } from "../../actions/games";
 import withSocket from "../../hocs/with-socket";
 
 import GameItem from "../../components/GameItem/index";
-import { GAME_CREATE, GAMES_UPDATED } from "../../events";
+import { GAME_CREATE, GAMES_UPDATE } from "../../events";
 
 class Lobby extends Component {
   componentDidMount() {
     const { socket, gamesSet } = this.props;
-    socket.on(GAMES_UPDATED, gamesSet);
+    socket.on(GAMES_UPDATE, gamesSet);
   }
 
   createGame = () => {
@@ -20,7 +20,6 @@ class Lobby extends Component {
       if (res.status !== "success") {
         return console.warn("Error while creating a game");
       }
-      history.push(`/${res.gameId}`);
     });
   };
 

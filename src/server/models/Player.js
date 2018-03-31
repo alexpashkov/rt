@@ -17,7 +17,7 @@ class Player {
   free() {
     this.refCount--;
     if (!this.refCount) {
-      PlayersService.deletePlayer(this.id);
+      // PlayersService.deletePlayer(this.id);
     }
     if (this.refCount < 0) {
       console.warn("Bug. Player ref count is lesser than 0 -> " + this.refCount);
