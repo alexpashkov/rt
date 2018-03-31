@@ -32,7 +32,7 @@ class Lobby extends Component {
       <div className="lobby">
         <h1 className="lobby__logo">Nettetris</h1>
         <div className="lobby__games-header">
-          <button onClick={this.createGame}>
+          <button className="primary" onClick={this.createGame}>
             <i className="fas fa-play fa-fw" /> Start Game
           </button>
         </div>

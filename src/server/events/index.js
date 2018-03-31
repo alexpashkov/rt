@@ -36,7 +36,7 @@ function onGameJoin(params, callback) {
   if (player.inGame()) {
     callback({
       "status": "error",
-      "description", "You are already in game."
+      "description": "You are already in game."
     });
   }
 
