@@ -9,22 +9,6 @@ import GameItem from "../../components/GameItem/index";
 import { GAME_CREATE, GAMES_UPDATE } from "../../events";
 
 class Lobby extends Component {
-  componentDidMount() {
-    const { socket, gamesSet } = this.props;
-    socket.on(GAMES_UPDATE, gamesSet);
-  }
-
-  createGame = () => {
-    const { socket, history } = this.props;
-    socket.emit(GAME_CREATE, res => {
-      if (res.status !== "success") {
-        return console.warn("Error while creating a game");
-      }
-    });
-  };
-
-  navigateToGame = id => this.props.history.push(`/${id}`);
-
   render() {
     const { games } = this.props;
     return (
@@ -47,6 +31,22 @@ class Lobby extends Component {
       </div>
     );
   }
+
+  componentDidMount() {
+    const { socket, gamesSet } = this.props;
+    socket.on(GAMES_UPDATE, gamesSet);
+  }
+
+  createGame = () => {
+    const { socket, history } = this.props;
+    socket.emit(GAME_CREATE, res => {
+      if (res.status !== "success") {
+        return console.warn("Error while creating a game");
+      }
+    });
+  };
+
+  navigateToGame = id => this.props.history.push(`/${id}`);
 
   componentWillUnmount() {
     const { socket, gamesSet } = this.props;
