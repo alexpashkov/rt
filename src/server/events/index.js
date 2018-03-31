@@ -30,7 +30,7 @@ function onGameCreate(params, callback) {
   });
 }
 
-function onGameJoin(params, callback) {
+function onGameJoin(params, data, callback) {
   const player = params.player;
 
   if (player.inGame()) {
