@@ -61,7 +61,7 @@ function onDisconnect(params) {
   player.socket = null;
 
   if (player.gameId) {
-    GamesService.getGame(player.gameId).notifyDisconnected(player.id);
+    GamesService.getGame(player.gameId).notifyPlayerDisconnected(player.id);
   }
 
   player.free();
