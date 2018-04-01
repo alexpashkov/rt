@@ -11,10 +11,15 @@ class PlayerController {
     this.socket = socket;
     this.id = playerId;
     this.inGame = false;
+    this.gameId = null;
     socket.on(events.client.GAME_CREATE, this.onGameCreate.bind(this));
     socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
     socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
     socket.on("disconnect", this.onDisconnect.bind(this));
+
+    /* This is created to perform unsubscription by function address */
+    this.onGamesUpdateCallback = this.onGamesUpdate.bind(this);
+    gamesController.subscribePlayerOnGamesUpdate(this.onGamesUpdateCallback);
   }
 
   onGameCreate(callback) {
@@ -38,7 +43,10 @@ class PlayerController {
 
     logger.info(`Joined game? -> ${joined}`);
 
-    if (joined) this.inGame = true;
+    if (joined) {
+      this.inGame = true;
+      this.gameId = id;
+    }
 
     callback(joined ?
       this._respondSuccess() :
@@ -60,8 +68,14 @@ class PlayerController {
       callback(this._respondError({"description": "Invalid game ID."}));
   }
 
+  onGamesUpdate(games) {
+    logger.debug(`Emitting GAMES_UPDATE: ${games}`);
+    this.socket.emit(events.server.GAMES_UPDATE, games);
+  }
+
   onDisconnect() {
-    
+    gamesController.unsubscribePlayerOnGamesUpdate(this.onGamesUpdateCallback);
+    if (this.inGame) gamesController.leaveGame(this.gameId, this.id);
   }
 
   _respondSuccess(data) {
