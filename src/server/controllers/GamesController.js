@@ -36,7 +36,7 @@ class GamesController extends EventEmitter {
 
   leaveGame(gameId, playerId) {
     return this.games[gameId] ?
-      this.games[gameId].playerLeave(playerId)) :
+      this.games[gameId].playerLeave(playerId) :
       false;
   }
 
