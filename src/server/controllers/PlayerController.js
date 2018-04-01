@@ -12,11 +12,12 @@ class PlayerController {
     this.id = playerId;
     this.inGame = false;
     this.gameId = null;
+
+    socket.on("disconnect", this.onDisconnect.bind(this));
     socket.on(events.client.GAME_CREATE, this.onGameCreate.bind(this));
     socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
     socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
     socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
-    socket.on("disconnect", this.onDisconnect.bind(this));
 
     /* This is created to perform unsubscription by function address */
     this.onGamesUpdateCallback = this.onGamesUpdate.bind(this);
@@ -41,16 +42,18 @@ class PlayerController {
 
     const { id } = data;
     const joined = gamesController.joinGame(id, this);
+    let gameInfo = null;
 
     logger.info(`Joined game? -> ${joined}`);
 
     if (joined) {
       this.inGame = true;
       this.gameId = id;
+      gameInfo = gamesController.getGameById(id).getGameInfo();
     }
 
     callback(joined ?
-      this._respondSuccess() :
+      this._respondSuccess({'gameInfo': gameInfo}) :
       this._respondError({"description": "Failed to join game."})
     );
   }
@@ -64,9 +67,12 @@ class PlayerController {
 
     if (!this.inGame) callback(this._respondError({"description": "Not in game."}));
 
-    gamesController.leaveGame(id, this.id) ?
-      callback(this._respondSuccess()) :
+    if (gamesController.leaveGame(id, this.id)) {
+      this.inGame = false;
+      callback(this._respondSuccess());
+    } else {
       callback(this._respondError({"description": "Invalid game ID."}));
+    }
   }
 
   onGamesUpdateRequest() {
@@ -80,8 +86,14 @@ class PlayerController {
   }
 
   onDisconnect() {
+    logger.info('DISCONNECT EVENT FIRED');
     gamesController.unsubscribePlayerOnGamesUpdate(this.onGamesUpdateCallback);
-    if (this.inGame) gamesController.leaveGame(this.gameId, this.id);
+    if (this.inGame) {
+      logger.info(`Player ${this.id} leaves game ${this.gameId}`);
+      gamesController.leaveGame(this.gameId, this.id);
+    } else {
+      logger.info(`No game to leave for player ${this.id}`);
+    }
   }
 
   _respondSuccess(data) {

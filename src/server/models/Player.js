@@ -9,6 +9,10 @@ class Player {
       this.login = login;
     }
   }
+
+  getLogin() {
+    return this.login ? this.login : this.id;
+  }
 }
 
 module.exports = Player;

@@ -17,6 +17,7 @@ class ServerController {
     let { playerId } = socket.handshake.query;
 
     if (!playerId || !playerService.getPlayerById(playerId)) {
+      logger.info(`Either playerId[${playerId}] does not exist, or such player could not be found. Receiving new one.`);
       playerId = playerService.createPlayer();
     }
 

@@ -1,6 +1,6 @@
 const logger = require("../logger");
 const { EventEmitter } = require("events");
-const PlayerService = require("../services/PlayerService.js");
+const playerService = require("../services/playerService.js");
 
 class Game extends EventEmitter {
   constructor(id) {
@@ -12,6 +12,8 @@ class Game extends EventEmitter {
   }
 
   playerJoin(player) {
+    if (this.players.indexOf(player.id) !== -1) return false;
+
     if (this.destroyTimeout) this.cancelDestroyTimeout();
 
     this.players.push(player.id);
@@ -31,6 +33,18 @@ class Game extends EventEmitter {
   }
 
   setEventHandlersForPlayer(player) {
+  }
+
+  getGameInfo() {
+    return {
+      id: this.id,
+      isRunning: this.isRunning,
+      leaderId: this.players[0] || null,
+      players: this.players.map((playerId) => {
+        const player = playerService.getPlayerById(playerId);
+        return player ? { login: player.getLogin() } : null;
+      }).filter((player) => (player !== null)),
+    };
   }
 
   setDestroyTimeout() {
