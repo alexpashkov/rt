@@ -1,7 +1,7 @@
 import React from "react";
 import "./styles.scss";
 
-const GameItem = ({ id, players, inProgress, handleJoin }) => (
+const GameItem = ({ id, players, isRunning, handleJoin }) => (
   <article className="game-item">
     <h1 className="game-item__cell game-item__title">Game {id}</h1>
     {players && (
@@ -10,7 +10,7 @@ const GameItem = ({ id, players, inProgress, handleJoin }) => (
       } players: ${players.join(", ")}`}</div>
     )}
     <span className="game-item__cell game-item__status">
-      {inProgress ? (
+      {isRunning ? (
         "Playing"
       ) : (
         <span>
@@ -21,7 +21,7 @@ const GameItem = ({ id, players, inProgress, handleJoin }) => (
     <div className="game-item__cell game-item__cell--no-shrink">
       <button
         className="primary"
-        disabled={inProgress}
+        disabled={isRunning}
         onClick={() => handleJoin(id)}
       >
         <i className="fas fa-sign-in-alt fa-fw" /> Join
