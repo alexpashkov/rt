@@ -3,11 +3,13 @@
 const logger = require("../logger");
 const uniqid = require("uniqid");
 const Game = require("../models/Game");
+const { EventEmitter } = require("events");
 const R = require("ramda");
 
-class GamesController {
+class GamesController extends EventEmitter {
 
   constructor() {
+    super();
     this.games = [];
     this.interval = setInterval(() => {
       const games = this.getGames();
@@ -19,7 +21,7 @@ class GamesController {
     const gameCreated = new Game(uniqid());
     this.games[gameCreated.id] = gameCreated;
 
-    gameCreated.on('destroy', this.deleteGame.bind(this));
+    gameCreated.on("destroy", this.deleteGame.bind(this));
 
     return gameCreated.id;
   }
@@ -47,6 +49,18 @@ class GamesController {
   deleteGame(gameId) {
     logger.info(`Destroying game ${gameId}`);
     if (this.games[gameId]) delete this.games[gameId];
+  }
+
+  subscribePlayerOnGamesUpdate(callback) {
+    this.on('games updated', callback);
+
+    callback(this.getGames());
+    logger.info(`Subscription on games update received. Listeners -> ${this.listenerCount('games updated')}`);
+  }
+
+  unsubscribePlayerOnGamesUpdate(callback) {
+    this.removeListener('games updated', callback);
+    logger.info(`Unsubscription on games update received. Listeners -> ${this.listenerCount('games updated')}`);
   }
 }
 
