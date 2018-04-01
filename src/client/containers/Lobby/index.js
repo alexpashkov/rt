@@ -6,7 +6,10 @@ import { gamesSet } from "../../actions/games";
 import withSocket from "../../hocs/with-socket";
 
 import GameItem from "../../components/GameItem/index";
-import {client as clientEvents, server as serverEvents } from "../../../shared/types";
+import {
+  client as clientEvents,
+  server as serverEvents
+} from "../../../shared/types";
 
 class Lobby extends Component {
   render() {
@@ -34,14 +37,15 @@ class Lobby extends Component {
 
   componentDidMount() {
     const { socket, gamesSet } = this.props;
-    socket.emit(clientEvents.GAMES_UPDATE_REQUEST);
     socket.on(serverEvents.GAMES_UPDATE, gamesSet);
+    socket.emit(clientEvents.GAMES_UPDATE_REQUEST);
   }
 
   createGame = () => {
     const { socket } = this.props;
-    socket.emit(clientEvents.GAME_CREATE, ({status, gameId}) => {
-      if (status !== "success") return console.warn("Error while creating a game");
+    socket.emit(clientEvents.GAME_CREATE, ({ status, gameId, description }) => {
+      if (status !== "success")
+        return console.warn(`Error while creating a game: ${description}`);
       this.navigateToGame(gameId);
     });
   };
