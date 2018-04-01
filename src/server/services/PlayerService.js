@@ -3,18 +3,18 @@
 const uniqid = require("uniqid");
 const Player = require("../models/Player");
 
-class PlayersService {
+class PlayerService {
   constructor() {
     this.players = {};
   }
 
-  createPlayer(socket) {
-    const newPlayer = new Player(uniqid(), socket);
+  createPlayer() {
+    const newPlayer = new Player(uniqid());
     this.players[newPlayer.id] = newPlayer;
-    return newPlayer;
+    return newPlayer.id;
   }
 
-  getPlayer(id) {
+  getPlayerById(id) {
     return this.players[id];
   }
 
@@ -25,12 +25,8 @@ class PlayersService {
     const playerToDelete = this.players[id];
     if (!playerToDelete) return;
     delete this.players[id];
-    return playerToDelete;
   }
 
-  playerExists(id) {
-    return !!this.players[id];
-  }
 }
 
-module.exports = new PlayersService();
+module.exports = new PlayerService();

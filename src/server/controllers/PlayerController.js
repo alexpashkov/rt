@@ -5,13 +5,10 @@ const uniqid = require("uniqid");
 const GamesController = require("./GamesController");
 
 class PlayerController {
-  static manageConnection(socket) {
-    socket.playerController = new PlayerController(socket);
-  }
 
-  constructor(socket) {
+  constructor(socket, playerId) {
     this.socket = socket;
-    this.id = uniqid();
+    this.id = playerId;
     socket.on(events.client.GAME_CREATE, this.onGameCreate);
     socket.on(events.client.GAME_JOIN, this.onGameJoin);
     socket.on("disconnect", this.onDisconnect);

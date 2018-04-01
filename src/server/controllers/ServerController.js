@@ -2,7 +2,8 @@
 
 const events = require("../../shared/types.js");
 const logger = require("../logger");
-const PlayerController = require("./PlayerController.js");
+const playerController = require("./PlayerController.js");
+const playerService = require("../services/PlayerService.js");
 
 class ServerController {
   constructor(server) {
@@ -13,7 +14,13 @@ class ServerController {
   }
 
   onConnection(socket) { 
-    PlayerController.manageConnection(socket);
+    let { playerId } = socket.handshake.query;
+
+    if (!playerId || !playerService.getPlayerById(playerId)) {
+      playerId = playerService.createPlayer();
+    }
+
+    new playerController(socket, playerId);
   }
 }
 
