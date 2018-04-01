@@ -1,5 +1,6 @@
 .board {
   height: 100vh;
+  max-height: 900px;
   display: flex;
   flex-direction: column;
 }
@@ -9,8 +10,10 @@
 }
 
 .board__cell {
-  width: 5vh;
-  height: 5vh;
+  max-width: 5vh;
+  max-height: 5vh;
+  width: 45px;
+  height: 45px;
   background-color: #eee;
   border: 1px solid #e5e5e5;
 }

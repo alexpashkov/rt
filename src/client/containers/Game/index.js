@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import withSocket from "../../hocs/with-socket";
 import Board from "../../components/Board";
 import Loader from "../../components/Loader";
-import { tap } from "ramda";
 
 import {
   pieceCreate,
