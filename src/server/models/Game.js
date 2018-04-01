@@ -21,10 +21,13 @@ class Game extends EventEmitter {
   }
 
   playerLeave(playerId) {
-    /* XXX: Handle event. */
+    if (this.players.indexOf(playerId) == -1) return false;
+
     this.players = this.players.filter(id => id !== playerId);
 
     if (!this.players.length) this.setDestroyTimeout();
+
+    return true;
   }
 
   setEventHandlersForPlayer(player) {
