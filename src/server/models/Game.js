@@ -40,7 +40,7 @@ class Game extends EventEmitter {
 
   destroySelf() {
     logger.info(`Game ${this.id} emits destroy.`);
-    this.emit('destroy');
+    this.emit('destroy', this.id);
   }
 }
 

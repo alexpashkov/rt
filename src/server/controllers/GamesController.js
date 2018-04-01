@@ -1,5 +1,6 @@
 "use strict";
 
+const logger = require("../logger");
 const uniqid = require("uniqid");
 const Game = require("../models/Game");
 
@@ -12,6 +13,8 @@ class GamesController {
   createGame() {
     const gameCreated = new Game(uniqid());
     this.games[gameCreated.id] = gameCreated;
+
+    gameCreated.on('destroy', this.deleteGame.bind(this));
 
     return gameCreated.id;
   }
@@ -27,6 +30,7 @@ class GamesController {
   }
 
   deleteGame(gameId) {
+    logger.info(`Destroying game ${gameId}`);
     if (this.games[gameId]) delete this.games[gameId];
   }
 }
