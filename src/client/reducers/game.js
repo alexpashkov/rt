@@ -2,12 +2,12 @@ import { combineReducers } from "redux";
 
 import boardReducer from "./board";
 import pieceReducer from "./piece";
-import gameMetaReducer from "./game-meta";
+import gameInfoReducer from "./game-info";
 
 const gameReducer = combineReducers({
   board: boardReducer,
   piece: pieceReducer,
-  meta: gameMetaReducer
+  info: gameInfoReducer
 });
 
 export default gameReducer;

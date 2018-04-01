@@ -26,7 +26,7 @@ class Lobby extends Component {
           {games.map(game => (
             <GameItem
               handleJoin={this.navigateToGame}
-              key={game.id}
+              key={game.gameId}
               {...game}
             />
           ))}

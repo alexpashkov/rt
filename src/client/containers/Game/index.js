@@ -12,9 +12,10 @@ import {
   pieceRotate
 } from "../../actions/piece";
 import {
-  gameMetaSetLoading,
-  gameMetaUnsetLoading
-} from "../../actions/game-meta";
+  gameInfoSet,
+  gameInfoSetLoading,
+  gameInfoUnsetLoading
+} from "../../actions/game-info";
 import { boardSelector } from "./selectors";
 import "./styles.scss";
 import {
@@ -39,17 +40,18 @@ class Game extends Component {
       socket,
       match: { params: { id } },
       history,
-      gameMetaSetLoading,
-      gameMetaUnsetLoading
+      gameInfoSet,
+      gameInfoSetLoading,
+      gameInfoUnsetLoading
     } = this.props;
     /* Show spinner: */
-    gameMetaSetLoading();
+    gameInfoSetLoading();
     /* Try to join game: */
-    socket.emit(clientEvents.GAME_JOIN, { id }, res => {
-      console.log(res);
-      if (res.status !== "success")
+    socket.emit(clientEvents.GAME_JOIN, { id }, ({status, gameInfo}) => {
+      if (status !== "success")
         return history.push("/"); /* Redirect to lobby on fail */
-      setTimeout(() => gameMetaUnsetLoading(), 1000);
+      gameInfoUnsetLoading();
+      gameInfoSet(gameInfo);
     });
     document.addEventListener("keyup", this.handleKeyPresses);
     this.props.pieceCreate(getRandomPieceCode());
@@ -88,7 +90,8 @@ function getGameClassName(isLoading) {
 export default connect(
   state => ({
     board: boardSelector(state),
-    isLoading: state.game.meta.isLoading
+    isLoading: state.game.info.isLoading,
+    leaderId: state.game.info.leaderId
   }),
   {
     pieceCreate,
@@ -96,7 +99,8 @@ export default connect(
     pieceMoveRight,
     pieceMoveDown,
     pieceRotate,
-    gameMetaSetLoading,
-    gameMetaUnsetLoading
+    gameInfoSet,
+    gameInfoSetLoading,
+    gameInfoUnsetLoading,
   }
 )(withSocket(Game));
