@@ -13,10 +13,13 @@ class GameService {
     const newGame = new Game(gameCounter++);
     this.games[newGame.id] = newGame;
 
+    newGame.on('destroy', this.deleteGame.bind(this));
+
     return newGame.id;
   }
 
   deleteGame(id) {
+    logger.info(`Deleting game ${id}`);
     const gameToDelete = this.games[id];
     if (!gameToDelete) return;
     delete this.games[id];

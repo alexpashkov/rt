@@ -1,59 +1,46 @@
 const logger = require("../logger");
-const PlayersService = require("../services/PlayersService.js");
-class GameError extends Error {}
+const { EventEmitter } = require("events");
+const PlayerService = require("../services/PlayerService.js");
 
-class Game {
-  constructor(id, leaderId) {
+class Game extends EventEmitter {
+  constructor(id) {
+    super();
     this.id = id;
-    this.initSocketListeners();
-    this.players = [leaderId];
-    this.leaderId = leaderId;
+    this.players = [];
     this.isRunning = false;
-    this.config = {
-      maxPlayers: 4,
-      width: 10,
-      height: 20
-    }
+    this.setDestroyTimeout();
   }
 
-  initSocketListeners() {
+  playerJoin(player) {
+    if (this.destroyTimeout) this.clearDestroyTimeout();
+
+    this.players.push(player.id);
+
+    this.setEventHandlersForPlayer(player);
   }
 
-  start() {
-    this.isRunning = true;
+  playerLeave(playerId) {
+    /* XXX: Handle event. */
+    this.players = this.players.filter(id => id != playerId);
+
+    if (!this.players.length) this.setDestroyTimeout();
   }
 
-  stop() {
-    this.isRunning = false;
+  setEventHandlersForPlayer(player) {
   }
 
-  addPlayer(playerId) {
-    PlayersService.getPlayer(playerId).acquire();
-    this.players.push(playerId);
+  setDestroyTimeout() {
+    this.destroyTimeout = setTimeout(this.destroySelf.bind(this), 5000);
   }
 
-  findPlayer(id) {
-    return //this.players.find(player => player.id === id);
+  cancelDestroyTimeout() {
+    clearTimeout(this.destroyTimeout);
+    this.destroyTimeout = null;
   }
 
-  gameRunning() {
-    return this.isRunning;
-  }
-
-  notifyPlayerDisconnected(playerId) {
-    if (!this.gameRunning()) {
-      this.deletePlayer(playerId);
-    }
-  }
-
-  deletePlayer(id) {
-    const playerToRemove = this.findPlayer(id);
-    if (!playerToRemove) {
-      throw new GameError("There is no such player");
-    }
-    this.players = this.players.filter(player => player !== playerToRemove);
-    player.gameId = null;
-    player.free();
+  destroySelf() {
+    logger.info(`Game ${this.id} emits destroy.`);
+    this.emit('destroy');
   }
 }
 

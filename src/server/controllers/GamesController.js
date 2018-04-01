@@ -1,6 +1,34 @@
+"use strict";
 
+const uniqid = require("uniqid");
+const Game = require("../models/Game");
 
 class GamesController {
+
+  constructor() {
+    this.games = [];
+  }
+
+  createGame() {
+    const gameCreated = new Game(uniqid());
+    this.games[gameCreated.id] = gameCreated;
+
+    return gameCreated.id;
+  }
+
+  joinGame(gameId, player) {
+    return this.games[gameId] ?
+      this.games[gameId].playerJoin(player) :
+      false;
+  }
+
+  getGameById(gameId) {
+    return this.games[gameId];
+  }
+
+  deleteGame(gameId) {
+    if (this.games[gameId]) delete this.games[gameId];
+  }
 }
 
 module.exports = new GamesController();
