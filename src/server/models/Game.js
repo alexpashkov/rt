@@ -17,6 +17,7 @@ class Game extends EventEmitter {
     this.players.push(player.id);
 
     this.setEventHandlersForPlayer(player);
+    return true;
   }
 
   playerLeave(playerId) {
