@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import withSocket from "../../hocs/with-socket";
 import Board from "../../components/Board";
 import Loader from "../../components/Loader";
+import {tap} from "ramda";
 
 import {
   pieceCreate,
@@ -45,7 +46,8 @@ class Game extends Component {
     /* Show spinner: */
     gameMetaSetLoading();
     /* Try to join game: */
-    socket.emit(clientEvents.GAME_JOIN, { id }, res => {
+    socket.emit(clientEvents.GAME_JOIN, { id }, (res) => {
+      console.log(res);
       if (res.status !== "success")
         return history.push("/"); /* Redirect to lobby on fail */
       setTimeout(() => gameMetaUnsetLoading(), 1000);

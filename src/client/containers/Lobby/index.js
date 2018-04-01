@@ -38,11 +38,10 @@ class Lobby extends Component {
   }
 
   createGame = () => {
-    const { socket, history } = this.props;
-    socket.emit(clientEvents.GAME_CREATE, res => {
-      if (res.status !== "success") {
-        return console.warn("Error while creating a game");
-      }
+    const { socket } = this.props;
+    socket.emit(clientEvents.GAME_CREATE, ({status, gameId}) => {
+      if (status !== "success") return console.warn("Error while creating a game");
+      this.navigateToGame(gameId);
     });
   };
 
