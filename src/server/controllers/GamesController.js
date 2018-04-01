@@ -23,6 +23,8 @@ class GamesController extends EventEmitter {
 
     gameCreated.on("destroy", this.deleteGame.bind(this));
 
+    this.notifyGamesUpdated();
+
     return gameCreated.id;
   }
 
@@ -34,7 +36,7 @@ class GamesController extends EventEmitter {
 
   leaveGame(gameId, playerId) {
     return this.games[gameId] ?
-      this.games[gameId].playerLeave(playerId) :
+      this.games[gameId].playerLeave(playerId)) :
       false;
   }
 
@@ -48,7 +50,14 @@ class GamesController extends EventEmitter {
 
   deleteGame(gameId) {
     logger.info(`Destroying game ${gameId}`);
-    if (this.games[gameId]) delete this.games[gameId];
+    if (this.games[gameId]) {
+      delete this.games[gameId];
+      this.notifyGamesUpdated();
+    }
+  }
+
+  notifyGamesUpdated() {
+    this.emit('games updated', this.getGames());
   }
 
   subscribePlayerOnGamesUpdate(callback) {
