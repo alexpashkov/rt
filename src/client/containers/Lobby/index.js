@@ -34,6 +34,7 @@ class Lobby extends Component {
 
   componentDidMount() {
     const { socket, gamesSet } = this.props;
+    socket.emit(clientEvents.GAMES_UPDATE_REQUEST);
     socket.on(serverEvents.GAMES_UPDATE, gamesSet);
   }
 
