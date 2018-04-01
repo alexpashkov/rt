@@ -12,7 +12,7 @@ class Game extends EventEmitter {
   }
 
   playerJoin(player) {
-    if (this.destroyTimeout) this.clearDestroyTimeout();
+    if (this.destroyTimeout) this.cancelDestroyTimeout();
 
     this.players.push(player.id);
 
@@ -22,7 +22,7 @@ class Game extends EventEmitter {
 
   playerLeave(playerId) {
     /* XXX: Handle event. */
-    this.players = this.players.filter(id => id != playerId);
+    this.players = this.players.filter(id => id !== playerId);
 
     if (!this.players.length) this.setDestroyTimeout();
   }
