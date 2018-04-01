@@ -15,6 +15,7 @@ class PlayerController {
     socket.on(events.client.GAME_CREATE, this.onGameCreate.bind(this));
     socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
     socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
+    socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
     socket.on("disconnect", this.onDisconnect.bind(this));
 
     /* This is created to perform unsubscription by function address */
@@ -66,6 +67,11 @@ class PlayerController {
     gamesController.leaveGame(id, this.id) ?
       callback(this._respondSuccess()) :
       callback(this._respondError({"description": "Invalid game ID."}));
+  }
+
+  onGamesUpdateRequest() {
+    logger.debug('GAMES_UPDATE event requested.');
+    this.onGamesUpdate(gamesController.getGames());
   }
 
   onGamesUpdate(games) {
