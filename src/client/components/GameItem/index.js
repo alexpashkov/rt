@@ -1,14 +1,15 @@
 import React from "react";
 import "./styles.scss";
 
-const GameItem = ({ id, players, isRunning, handleJoin }) => (
-  <article className="game-item">
+const GameItem = ({ id, players, isRunning, handleJoin }) => {
+  debugger;
+  return <article className="game-item">
     <h1 className="game-item__cell game-item__title">Game {id}</h1>
-    {players && (
-      <div className="game-item__cell game-item__players">{`${
-        players.length
-      } players: ${players.join(", ")}`}</div>
-    )}
+    {/*{players && (*/}
+      {/*<div className="game-item__cell game-item__players">{`${*/}
+        {/*players.length*/}
+      {/*} players: ${players.join(", ")}`}</div>*/}
+    {/*)}*/}
     <span className="game-item__cell game-item__status">
       {isRunning ? (
         "Playing"
@@ -28,6 +29,6 @@ const GameItem = ({ id, players, isRunning, handleJoin }) => (
       </button>
     </div>
   </article>
-);
+ };
 
 export default GameItem;
