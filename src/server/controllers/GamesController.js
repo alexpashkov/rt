@@ -6,6 +6,11 @@ const Game = require("../models/Game");
 const { EventEmitter } = require("events");
 const R = require("ramda");
 
+/* GamesController Events */
+const GCEvents = {
+  GC_GAMES_UPDATED: "GC_GAMES_UPDATED"
+};
+
 class GamesController extends EventEmitter {
 
   constructor() {
@@ -61,19 +66,19 @@ class GamesController extends EventEmitter {
   }
 
   notifyGamesUpdated() {
-    this.emit('games updated', this.getGames());
+    this.emit(GCEvents.GC_GAMES_UPDATED, this.getGames());
   }
 
   subscribePlayerOnGamesUpdate(callback) {
-    this.on('games updated', callback);
+    this.on(GCEvents.GC_GAMES_UPDATED, callback);
 
     callback(this.getGames());
-    logger.info(`Subscription on games update received. Listeners -> ${this.listenerCount('games updated')}`);
+    logger.info(`Subscription on games update received. Listeners -> ${this.listenerCount(GCEvents.GC_GAMES_UPDATED)}`);
   }
 
   unsubscribePlayerOnGamesUpdate(callback) {
-    this.removeListener('games updated', callback);
-    logger.info(`Unsubscription on games update received. Listeners -> ${this.listenerCount('games updated')}`);
+    this.removeListener(GCEvents.GC_GAMES_UPDATED, callback);
+    logger.info(`Unsubscription on games update received. Listeners -> ${this.listenerCount(GCEvents.GC_GAMES_UPDATED)}`);
   }
 }
 
