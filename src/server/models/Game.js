@@ -1,6 +1,6 @@
 const logger = require("../logger");
 const { EventEmitter } = require("events");
-const playerService = require("../services/playerService.js");
+const playerService = require("../services/PlayerService.js");
 
 class Game extends EventEmitter {
   constructor(id) {
@@ -42,6 +42,7 @@ class Game extends EventEmitter {
       leaderId: this.players[0] || null,
       players: this.players.map((playerId) => {
         const player = playerService.getPlayerById(playerId);
+        logger.info(`Player found? -> ${player}`);
         return player ? { login: player.getLogin() } : null;
       }).filter((player) => (player !== null)),
     };
