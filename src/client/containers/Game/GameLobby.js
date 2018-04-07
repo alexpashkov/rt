@@ -3,7 +3,12 @@ import GameChat from "./GameChat";
 
 class GameLobby extends Component {
   render() {
-    return <GameChat />;
+    return (
+      <div>
+        <div />
+        <GameChat />
+      </div>
+    );
   }
 }
 

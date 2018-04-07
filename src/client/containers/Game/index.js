@@ -20,8 +20,8 @@ import {
 import { boardSelector } from "./selectors";
 import "./styles.scss";
 import {
-  client as clientEvents
-  // server as serverEvents
+  client as clientSocketEvents,
+  server as serverSocketEvents
 } from "../../../shared/types";
 
 import { getRandomPieceCode } from "../../services/piece"; /* TODO Remove later */
@@ -42,20 +42,23 @@ class Game extends Component {
       history,
       gameInfoSet,
       gameInfoSetLoading,
-      gameInfoUnsetLoading
+      gameInfoUnsetLoading,
+      pieceCreate
     } = this.props;
     /* Show spinner: */
     gameInfoSetLoading();
     /* Try to join game: */
-    socket.emit(clientEvents.GAME_JOIN, { id }, ({status, gameInfo}) => {
+    socket.on(serverSocketEvents.GAME_INFO_UPDATE, gameInfoSet);
+    socket.emit(clientSocketEvents.GAME_JOIN, { id }, ({status, gameInfo}) => {
       if (status !== "success")
-        return history.push("/"); /* Redirect to lobby on fail */
+        return history.push("/"); /* Redirect to lobby on failure */
       gameInfoUnsetLoading();
       gameInfoSet(gameInfo);
     });
     document.addEventListener("keyup", this.handleKeyPresses);
-    this.props.pieceCreate(getRandomPieceCode());
+    pieceCreate(getRandomPieceCode());
   }
+
 
   handleKeyPresses = evt => {
     const {
@@ -77,9 +80,10 @@ class Game extends Component {
   };
 
   componentWillUnmount() {
-    const { socket, match: { params: { id } } } = this.props;
+    const { socket, gameInfoSet, match: { params: { id } } } = this.props;
     document.removeEventListener("keyup", this.handleKeyPresses);
-    socket.emit(clientEvents.GAME_LEAVE, { id });
+    socket.removeListener(serverSocketEvents.GAME_INFO_UPDATE, gameInfoSet);
+    socket.emit(clientSocketEvents.GAME_LEAVE, { id });
   }
 }
 
