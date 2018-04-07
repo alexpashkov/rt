@@ -29,15 +29,19 @@ class GamesController extends EventEmitter {
   }
 
   joinGame(gameId, player) {
-    return this.games[gameId] ?
-      this.games[gameId].playerJoin(player) :
-      false;
+    if (this.games[gameId] && this.games[gameId].playerJoin(player)) {
+      this.notifyGamesUpdated();
+      return true;
+    }
+    return false;
   }
 
   leaveGame(gameId, playerId) {
-    return this.games[gameId] ?
-      this.games[gameId].playerLeave(playerId) :
-      false;
+    if (this.games[gameId] && this.games[gameId].playerLeave(playerId)) {
+      this.notifyGamesUpdated();
+      return true;
+    }
+    return false;
   }
 
   getGameById(gameId) {
