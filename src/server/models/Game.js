@@ -4,7 +4,8 @@ const playerService = require("../services/PlayerService.js");
 
 /* Game Events */
 const GEvents = {
-  GE_CHAT_MESSAGE: "GE_CHAT_MESSAGE"
+  GE_CHAT_MESSAGE: "GE_CHAT_MESSAGE",
+  GE_INFO_UPDATE: "GE_INFO_UPDATE",
 };
 
 class Game extends EventEmitter {
@@ -24,6 +25,7 @@ class Game extends EventEmitter {
     this.players.push(player.id);
 
     this.setEventHandlersForPlayer(player);
+    this.gameInfoUpdated();
     return true;
   }
 
@@ -34,6 +36,7 @@ class Game extends EventEmitter {
 
     if (!this.players.length) this.setDestroyTimeout();
 
+    this.gameInfoUpdated();
     return true;
   }
 
@@ -45,6 +48,7 @@ class Game extends EventEmitter {
 
   setEventHandlersForPlayer(player) {
     this.on(GEvents.GE_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
+    this.on(GEvents.GE_INFO_UPDATE, player.onGameInfoUpdate.bind(player));
   }
 
   getGameInfo() {
@@ -68,6 +72,10 @@ class Game extends EventEmitter {
           return player ? player.getLogin() === login : false;
         })
         .length !== 0);
+  }
+
+  gameInfoUpdated() {
+    this.emit(GEvents.GE_INFO_UPDATE, this.getGameInfo());
   }
 
   setDestroyTimeout() {

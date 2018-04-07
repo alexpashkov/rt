@@ -4,6 +4,7 @@ const logger = require("../logger");
 const events = require("../../shared/types.js");
 const uniqid = require("uniqid");
 const gamesController = require("./gamesController");
+const playerService = require("../services/PlayerService");
 
 class PlayerController {
 
@@ -86,12 +87,23 @@ class PlayerController {
     this.socket.emit(events.server.GAMES_UPDATE, games);
   }
 
-  onChatMessageSend(message) {
+  onGameInfoUpdate(gameInfo) {
+    this.socket.emit(events.server.GAME_INFO_UPDATE, gameInfo);
+  }
+
+  onChatMessageSend(messageText) {
     if (!this.inGame) return;
 
-    message.id = `{playerService.getPlayerById(this.id).getLogin()}_${process.hrtime()}`;
-    logger.debug(`Sending message with id ${message.id}`);
-    gamesController.chatMessageSend(this.gameId, message);
+    const login = playerService.getPlayerById(this.id).getLogin();
+    const id = `${login}_${process.hrtime()}`;
+
+    logger.debug(`Sending message with id ${id}`);
+
+    gamesController.chatMessageSend(this.gameId, {
+      id: id,
+      login: login,
+      message: messageText
+    });
   }
 
   onChatMessageRecv(message) {
