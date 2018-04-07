@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import withSocket from "../../hocs/with-socket";
 import Board from "../../components/Board";
 import Loader from "../../components/Loader";
+import GameLobby from "./GameLobby";
 
 import {
   pieceCreate,
@@ -27,13 +28,12 @@ import { getRandomPieceCode } from "../../services/piece"; /* TODO Remove later 
 
 class Game extends Component {
   render() {
-    const { board, isLoading } = this.props;
-    return (
-      <div className={getGameClassName(isLoading)}>
-        {isLoading ? <Loader /> : <Board board={board} />}
-      </div>
-    );
+    // const { board, isLoading } = this.props;
+    return (<GameLobby />);
   }
+// {/*<div className={getGameClassName(isLoading)}>*/}
+// {/*{isLoading ? <Loader /> : <Board board={board} />}*/}
+// {/*</div>*/}
 
   componentDidMount() {
     const {

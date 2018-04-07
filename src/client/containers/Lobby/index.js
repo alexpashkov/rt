@@ -26,7 +26,7 @@ class Lobby extends Component {
           {games.map(game => (
             <GameItem
               handleJoin={this.navigateToGame}
-              key={game.gameId}
+              key={game.id}
               {...game}
             />
           ))}
@@ -37,7 +37,7 @@ class Lobby extends Component {
 
   componentDidMount() {
     const { socket, gamesSet } = this.props;
-    socket.on(serverEvents.GAMES_UPDATE, gamesSet);
+    socket.on(serverEvents.GAMES_UPDATE, games => gamesSet(games));
     socket.emit(clientEvents.GAMES_UPDATE_REQUEST);
   }
 
