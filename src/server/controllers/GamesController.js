@@ -45,7 +45,7 @@ class GamesController extends EventEmitter {
   }
 
   getGames() {
-    return R.values(this.games).map( game => ({ gameId: game.id, isRunning: game.isRunning, players: game.players.length}) );
+    return R.values(this.games).map(game => game.getGameInfo());
   }
 
   deleteGame(gameId) {
