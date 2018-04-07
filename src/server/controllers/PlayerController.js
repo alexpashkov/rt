@@ -18,6 +18,7 @@ class PlayerController {
     socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
     socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
     socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
+    socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
 
     /* This is created to perform unsubscription by function address */
     this.onGamesUpdateCallback = this.onGamesUpdate.bind(this);
@@ -83,6 +84,18 @@ class PlayerController {
   onGamesUpdate(games) {
     logger.debug(`Emitting GAMES_UPDATE: ${games}`);
     this.socket.emit(events.server.GAMES_UPDATE, games);
+  }
+
+  onChatMessageSend(message) {
+    if (!this.inGame) return;
+
+    message.id = `{playerService.getPlayerById(this.id).getLogin()}_${process.hrtime()}`;
+    logger.debug(`Sending message with id ${message.id}`);
+    gamesController.chatMessageSend(this.gameId, message);
+  }
+
+  onChatMessageRecv(message) {
+    this.socket.emit(events.server.GAME_CHAT_MESSAGE, message)
   }
 
   onDisconnect() {

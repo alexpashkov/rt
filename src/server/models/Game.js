@@ -2,6 +2,11 @@ const logger = require("../logger");
 const { EventEmitter } = require("events");
 const playerService = require("../services/PlayerService.js");
 
+/* Game Events */
+const GEvents = {
+  GE_CHAT_MESSAGE: "GE_CHAT_MESSAGE"
+};
+
 class Game extends EventEmitter {
   constructor(id) {
     super();
@@ -32,7 +37,14 @@ class Game extends EventEmitter {
     return true;
   }
 
+  chatMessageSend(message) {
+    if (message.message && message.login && this.isPlayerInGameByLogin(message.login)) {
+      this.emit(GEvents.GE_CHAT_MESSAGE, message);
+    }
+  }
+
   setEventHandlersForPlayer(player) {
+    this.on(GEvents.GE_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
   }
 
   getGameInfo() {
@@ -42,10 +54,20 @@ class Game extends EventEmitter {
       leaderId: this.players[0] || null,
       players: this.players.map((playerId) => {
         const player = playerService.getPlayerById(playerId);
-        logger.info(`Player found? -> ${player}`);
+        logger.info(`Player[${playerId}] found? -> ${player}`);
         return player ? { login: player.getLogin() } : null;
       }).filter((player) => (player !== null)),
     };
+  }
+
+  isPlayerInGameByLogin(login) {
+    return (
+      this.players
+        .filter( playerId => {
+          const player = playerService.getPlayerById(playerId);
+          return player ? player.getLogin() === login : false;
+        })
+        .length !== 0);
   }
 
   setDestroyTimeout() {

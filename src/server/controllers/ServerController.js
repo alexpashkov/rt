@@ -9,7 +9,7 @@ class ServerController {
   constructor(server) {
     this.io = require("socket.io")(server);
 
-    this.io.on("connection", this.onConnection);
+    this.io.on("connection", this.onConnection.bind(this));
     logger.debug("Initialized socket.io");
   }
 

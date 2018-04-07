@@ -18,7 +18,7 @@ class GamesController extends EventEmitter {
     this.games = [];
     this.interval = setInterval(() => {
       const games = this.getGames();
-      if (games.length) logger.debug(this.getGames());
+      if (games.length) logger.debug(games);
     }, 3000);
   }
 
@@ -47,6 +47,12 @@ class GamesController extends EventEmitter {
       return true;
     }
     return false;
+  }
+
+  chatMessageSend(gameId, message) {
+    if (this.games[gameId]) {
+      this.games[gameId].chatMessageSend(message);
+    }
   }
 
   getGameById(gameId) {
