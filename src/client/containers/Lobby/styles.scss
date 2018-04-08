@@ -24,7 +24,7 @@
 
 .lobby__games {
   flex-grow: 1;
-  background-color: #eee;
+  background-color: lighten($mainBGColor, 5%);
   overflow-y: auto;
   &:empty {
     display: flex;

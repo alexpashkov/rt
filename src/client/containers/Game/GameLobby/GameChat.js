@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { compose } from "ramda";
-import withSocket from "../../hocs/with-socket";
+import withSocket from "../../../hocs/with-socket";
 import { connect } from "react-redux";
-import { appendChatMessage } from "../../actions/game-chat-messages";
+import { appendChatMessage } from "../../../actions/game-chat-messages";
 import {
   client as clientSocketEvents,
   server as serverSocketEvents
-} from "../../../shared/types";
+} from "../../../../shared/types";
 
 class GameChat extends Component {
   state = {

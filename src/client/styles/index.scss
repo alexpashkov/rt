@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=VT323');
 @import "../../../node_modules/normalize.css/normalize.css";
 @import "button";
+@import "variables";
 
 *,
 *:before,
@@ -15,13 +16,16 @@ html {
 
 body {
   font-family: "Arimo", sans-serif;
-  color: darkslategray;
+  color: lightgray;
   font-size: 1.6rem;
   line-height: 1.7;
-  background-color: #fafafa;
+  background-color: $mainBGColor;
 }
 
 #root {
   display: flex;
 }
 
+h1, h2, h3, h4, h5 {
+  color: $accentTextColor
+}

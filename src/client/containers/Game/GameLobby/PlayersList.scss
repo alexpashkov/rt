@@ -1,0 +1,12 @@
+@import "../../../styles/variables";
+
+.PlayersList {
+  border: 1px solid darken($mainBGColor, 10%);
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.PlayersList__list {
+  margin: 0;
+  padding: 0 20px;
+}
