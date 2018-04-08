@@ -7,6 +7,7 @@ import {
   client as clientSocketEvents,
   server as serverSocketEvents
 } from "../../../../shared/types";
+import "./GameChat.scss";
 
 class GameChat extends Component {
   state = {
@@ -15,24 +16,26 @@ class GameChat extends Component {
   render() {
     const { messages } = this.props;
     return (
-      <div className="chat">
-        <div className="chat__messages">
+      <section className="GameChat">
+        <h2>Game Chat</h2>
+        <div className="GameChat__messages">
           {messages.map(({ id, login, message }) => (
-            <article key={id} className="chat__message">
-              <span className="chat__message-login">{login}</span>
-              <span className="chat__message-message">{message}</span>
+            <article key={id} className="GameChat__message">
+              <div className="GameChat__message-sender">{login}</div>
+              <div className="GameChat__message-content">{message}</div>
             </article>
           ))}
         </div>
-        <form onSubmit={this.handleMessageSend}>
+        <form className="GameChat__message-input-form" onSubmit={this.handleMessageSend}>
           <input
             type="text"
-            className="chat__input"
+            className="GameChat__message-input"
             onChange={this.handleMessageChange}
             value={this.state.message}
           />
+          <button className="GameChat__message-send-button primary">Send</button>
         </form>
-      </div>
+      </section>
     );
   }
   handleMessageChange = ({ target: { value } }) => {
@@ -41,10 +44,10 @@ class GameChat extends Component {
     });
   };
   handleMessageSend = e => {
-    console.log(this.state.message);
     e.preventDefault();
     const { socket } = this.props;
     socket.emit(clientSocketEvents.GAME_CHAT_MESSAGE, this.state.message);
+    this.setState({message: ""})
   };
   componentDidMount() {
     const { socket, appendChatMessage } = this.props;

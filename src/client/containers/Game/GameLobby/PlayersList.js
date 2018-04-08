@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import "./PlayersList.scss";
 
 const PlayersList = ({ players = [] }) => (
-  <article className="PlayersList">
+  <section className="PlayersList">
     <h2>Players</h2>
     <ol className="PlayersList__list">
       {players.map(player => (
@@ -12,7 +12,7 @@ const PlayersList = ({ players = [] }) => (
         </li>
       ))}
     </ol>
-  </article>
+  </section>
 );
 
 PlayersList.propTypes = {

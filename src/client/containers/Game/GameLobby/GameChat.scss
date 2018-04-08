@@ -1,0 +1,43 @@
+@import "../../../styles/variables";
+
+.GameChat {
+  border: 1px solid darken($mainBGColor, 10%);
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.GameChat__message {
+  margin: 10px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.GameChat__message-sender {
+  width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.GameChat__message-content {
+  margin-left: 10px;
+  width: 100%;
+  background-color: darken($mainBGColor, 10%);
+  padding: 15px;
+}
+
+
+.GameChat__message-input-form {
+  display: flex;
+}
+
+.GameChat__message-input {
+  flex-grow: 1;
+  background: none;
+  border: none;
+  border-bottom: 1px solid darken($mainBGColor, 10%);
+  line-height: 1.15;
+}
+
+.GameChat__message-send-button {
+  margin-left: 10px;
+}
