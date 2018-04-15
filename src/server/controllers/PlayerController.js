@@ -98,12 +98,17 @@ class PlayerController {
     if (!this.inGame) {
       callback(this._respondError({ description: "You are not in game." }));
       return ;
+    } else if (!gamesController.getGameById(this.gameId)) {
+      this.inGame = false;
+      callback(this._respondError({ description: "You game has been destroyed." }));
+      return ;
     }
 
     try {
       gamesController.getGameById(this.gameId).gameStart(this.id);
       callback(this._respondSuccess());
     } catch (_error) {
+      logger.info(`Error: ${_error}`);
       callback(this._respondError({ description: _error }));
     }
   }

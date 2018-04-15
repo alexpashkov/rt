@@ -42,7 +42,7 @@ class Game extends EventEmitter {
   }
 
   playerIsLeader(playerId) {
-    return this.players.first() === playerId;
+    return this.players[0] === playerId;
   }
 
   chatMessageSend(message) {
@@ -52,9 +52,9 @@ class Game extends EventEmitter {
   }
 
   gameStart(startInitiator) {
+    logger.info(`${startInitiator} (leader? [${this.playerIsLeader(startInitiator)}]) has requested to start the game.`);
     if (!this.playerIsLeader(startInitiator))
       throw "You are not a leader.";
-
     this.isRunning = true;
     this.emit(GEvents.GE_GAME_STARTED);
   }
