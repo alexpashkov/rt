@@ -92,7 +92,7 @@ class PlayerController {
     }
   }
 
-  onGameStartRequest(data, callback) {
+  onGameStartRequest(callback) {
     logger.debug(`Request to start game. In game? [${this.inGame}]`);
 
     if (!this.inGame) {
