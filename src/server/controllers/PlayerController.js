@@ -7,7 +7,6 @@ const gamesController = require("./gamesController");
 const playerService = require("../services/PlayerService");
 
 class PlayerController {
-
   constructor(socket, playerId) {
     this.socket = socket;
     this.id = playerId;
@@ -18,8 +17,14 @@ class PlayerController {
     socket.on(events.client.GAME_CREATE, this.onGameCreate.bind(this));
     socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
     socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
-    socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
-    socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
+    socket.on(
+      events.client.GAMES_UPDATE_REQUEST,
+      this.onGamesUpdateRequest.bind(this)
+    );
+    socket.on(
+      events.client.GAME_CHAT_MESSAGE,
+      this.onChatMessageSend.bind(this)
+    );
 
     /* This is created to perform unsubscription by function address */
     this.onGamesUpdateCallback = this.onGamesUpdate.bind(this);
@@ -27,20 +32,23 @@ class PlayerController {
   }
 
   onGameCreate(callback) {
-    if (this.inGame) callback(this._respondError({"description": "You are already in game."}));
+    if (this.inGame)
+      callback(this._respondError({ description: "You are already in game." }));
 
     const gameId = gamesController.createGame();
     logger.info(`Created game ${gameId}`);
-    callback(gameId ? 
-      this._respondSuccess({"gameId": gameId}) :
-      this._respondError({"description": "Failed to create game."})
+    callback(
+      gameId
+        ? this._respondSuccess({ gameId: gameId })
+        : this._respondError({ description: "Failed to create game." })
     );
   }
 
   onGameJoin(data, callback) {
     logger.info(`Trying to join game ${data.id}`);
 
-    if (this.inGame) callback(this._respondError({"description": "Already in game."}));
+    if (this.inGame)
+      callback(this._respondError({ description: "Already in game." }));
 
     const { id } = data;
     const joined = gamesController.joinGame(id, this);
@@ -54,9 +62,10 @@ class PlayerController {
       gameInfo = gamesController.getGameById(id).getGameInfo();
     }
 
-    callback(joined ?
-      this._respondSuccess({'gameInfo': gameInfo}) :
-      this._respondError({"description": "Failed to join game."})
+    callback(
+      joined
+        ? this._respondSuccess({ gameInfo: gameInfo })
+        : this._respondError({ description: "Failed to join game." })
     );
   }
 
@@ -67,18 +76,19 @@ class PlayerController {
 
     logger.info(`Player ${this.id} requested to leave game ${id}`);
 
-    if (!this.inGame) callback(this._respondError({"description": "Not in game."}));
+    if (!this.inGame)
+      callback(this._respondError({ description: "Not in game." }));
 
     if (gamesController.leaveGame(id, this.id)) {
       this.inGame = false;
       callback(this._respondSuccess());
     } else {
-      callback(this._respondError({"description": "Invalid game ID."}));
+      callback(this._respondError({ description: "Invalid game ID." }));
     }
   }
 
   onGamesUpdateRequest() {
-    logger.debug('GAMES_UPDATE event requested.');
+    logger.debug("GAMES_UPDATE event requested.");
     this.onGamesUpdate(gamesController.getGames());
   }
 
@@ -107,11 +117,11 @@ class PlayerController {
   }
 
   onChatMessageRecv(message) {
-    this.socket.emit(events.server.GAME_CHAT_MESSAGE, message)
+    this.socket.emit(events.server.GAME_CHAT_MESSAGE, message);
   }
 
   onDisconnect() {
-    logger.info('DISCONNECT EVENT FIRED');
+    logger.info("DISCONNECT EVENT FIRED");
     gamesController.unsubscribePlayerOnGamesUpdate(this.onGamesUpdateCallback);
     if (this.inGame) {
       logger.info(`Player ${this.id} leaves game ${this.gameId}`);
@@ -122,13 +132,12 @@ class PlayerController {
   }
 
   _respondSuccess(data) {
-    return Object.assign({"status": "success"}, data);
+    return Object.assign({ status: "success" }, data);
   }
 
   _respondError(data) {
-    return Object.assign({"status": "error"}, data);
+    return Object.assign({ status: "error" }, data);
   }
-
 }
 
 module.exports = PlayerController;
