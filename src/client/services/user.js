@@ -1,5 +1,9 @@
-export const signIn = (username, password) =>
-  new Promise(resolve => setTimeout(resolve, 2000));
+export const getIdFromStorage = localStorage.getItem.bind(
+  localStorage,
+  "playerId"
+);
 
-export const addUser = values =>
-  new Promise(resolve => setTimeout(resolve, 2000));
+export const saveIdToStorage = localStorage.setItem.bind(
+  localStorage,
+  "playerId"
+);

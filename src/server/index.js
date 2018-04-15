@@ -10,4 +10,4 @@ const logger = require("./logger");
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => logger.debug(`Server is listening on port ${PORT}`));
 
-require("./controllers/ServerController")(server);
+require("./controllers/serverController")(server);

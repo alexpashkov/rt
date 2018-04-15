@@ -3,8 +3,8 @@
 const logger = require("../logger");
 const events = require("../../shared/types.js");
 // const uniqid = require("uniqid");
-const gamesController = require("./GamesController");
-const playerService = require("../services/PlayerService");
+const gamesController = require("./gamesController");
+const playerService = require("../services/playerService");
 
 class PlayerController {
   constructor(socket, playerId) {

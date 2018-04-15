@@ -2,8 +2,8 @@
 
 const events = require("../../shared/types.js");
 const logger = require("../logger");
-const PlayerController = require("./PlayerController.js");
-const PlayerService = require("../services/PlayerService.js");
+const PlayerController = require("./playerController.js");
+const PlayerService = require("../services/playerService.js");
 
 class ServerController {
   constructor(server) {

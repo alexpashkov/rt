@@ -4,6 +4,7 @@
   border: 1px solid darken($mainBGColor, 10%);
   padding: 15px;
   border-radius: 5px;
+  flex-grow: 1;
 }
 
 .PlayersList__list {

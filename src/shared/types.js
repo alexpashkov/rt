@@ -6,6 +6,7 @@ module.exports = {
     GAME_JOIN: "GAME_JOIN",
     GAME_LEAVE: "GAME_LEAVE",
     GAME_CHAT_MESSAGE: "GAME_CHAT_MESSAGE",
+    GAME_START: "GAME_START"
   },
   server: {
     PLAYER_CONNECTED: "PLAYER_CONNECTED",

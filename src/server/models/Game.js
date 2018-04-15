@@ -1,6 +1,6 @@
 const logger = require("../logger");
 const { EventEmitter } = require("events");
-const playerService = require("../services/PlayerService.js");
+const playerService = require("../services/playerService.js");
 
 /* Game Events */
 const GEvents = {
