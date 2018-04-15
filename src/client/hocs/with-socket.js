@@ -9,7 +9,7 @@ const socket = io.connect("", {
 window.socket = socket; // for debugging
 
 export default WrappedComponent =>
-  class extends React.Component {
+  class extends Component {
     render() {
       return <WrappedComponent socket={socket} {...this.props}/>;
     }

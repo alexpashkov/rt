@@ -2,8 +2,8 @@
 
 const logger = require("../logger");
 const events = require("../../shared/types.js");
-const uniqid = require("uniqid");
-const gamesController = require("./gamesController");
+// const uniqid = require("uniqid");
+const gamesController = require("./GamesController");
 const playerService = require("../services/PlayerService");
 
 class PlayerController {

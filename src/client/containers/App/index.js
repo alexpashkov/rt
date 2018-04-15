@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import withSocket from "./hocs/with-socket";
+import withSocket from "../../hocs/with-socket";
 
 import {
   HashRouter as Router,
@@ -7,11 +7,11 @@ import {
   Switch,
   Redirect
 } from "react-router-dom";
-import "./styles/index.scss";
+import "../../styles/index.scss";
 
-import Lobby from "./containers/Lobby";
-import Game from "./containers/Game";
-import {server as serverEvents} from "../shared/types";
+import Lobby from "../../containers/Lobby";
+import Game from "../../containers/Game";
+import {server as serverEvents} from "../../../shared/types";
 
 class App extends Component {
   componentDidMount() {
