@@ -26,6 +26,11 @@ class PlayerController {
       this.onChatMessageSend.bind(this)
     );
 
+    socket.emit(events.server.PLAYER_CONNECTED, {
+      id: playerId
+      // here gameId is supposed to be send to if a player is currently in a game
+    });
+
     /* This is created to perform unsubscription by function address */
     this.onGamesUpdateCallback = this.onGamesUpdate.bind(this);
     gamesController.subscribePlayerOnGamesUpdate(this.onGamesUpdateCallback);

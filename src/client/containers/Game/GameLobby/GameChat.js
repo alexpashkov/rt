@@ -13,12 +13,20 @@ class GameChat extends Component {
   state = {
     message: ""
   };
+
+  componentDidUpdate({messages: prevMessages = []}) {
+    const { messages = [] } = this.props;
+    if (prevMessages.length !== messages.length) {
+      this.messagesElem.scrollTop = this.messagesElem.scrollHeight;
+    }
+  }
+
   render() {
     const { messages } = this.props;
     return (
       <section className="GameChat">
         <h2>Game Chat</h2>
-        <div className="GameChat__messages">
+        <div ref={el => (this.messagesElem = el)} className="GameChat__messages">
           {messages.map(({ id, login, message }) => (
             <article key={id} className="GameChat__message">
               <div className="GameChat__message-sender">{login}</div>

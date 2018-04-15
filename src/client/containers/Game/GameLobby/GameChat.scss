@@ -6,6 +6,11 @@
   border-radius: 5px;
 }
 
+.GameChat__messages {
+  height: 300px;
+  overflow-y: auto;
+}
+
 .GameChat__message {
   margin: 10px;
   display: flex;

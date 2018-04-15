@@ -11,7 +11,7 @@ import "../../styles/index.scss";
 
 import Lobby from "../../containers/Lobby";
 import Game from "../../containers/Game";
-import {server as serverEvents} from "../../../shared/types";
+import { server as serverEvents } from "../../../shared/types";
 
 class App extends Component {
   componentDidMount() {
