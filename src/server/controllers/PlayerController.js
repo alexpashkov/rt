@@ -17,28 +17,24 @@ class PlayerController {
     socket.on(events.client.GAME_CREATE, this.onGameCreate.bind(this));
     socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
     socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
-    socket.on(
-      events.client.GAMES_UPDATE_REQUEST,
-      this.onGamesUpdateRequest.bind(this)
-    );
-    socket.on(
-      events.client.GAME_CHAT_MESSAGE,
-      this.onChatMessageSend.bind(this)
-    );
-
-    socket.emit(events.server.PLAYER_CONNECTED, {
-      id: playerId
-      // here gameId is supposed to be send to if a player is currently in a game
-    });
+    socket.on(events.client.GAME_START, this.onGameStartRequest.bind(this));
+    socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
+    socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
 
     /* This is created to perform unsubscription by function address */
     this.onGamesUpdateCallback = this.onGamesUpdate.bind(this);
     gamesController.subscribePlayerOnGamesUpdate(this.onGamesUpdateCallback);
+
+    socket.emit(events.server.PLAYER_CONNECTED, {
+      id: playerId
+    });
   }
 
   onGameCreate(callback) {
-    if (this.inGame)
+    if (this.inGame) {
       callback(this._respondError({ description: "You are already in game." }));
+      return ;
+    }
 
     const gameId = gamesController.createGame();
     logger.info(`Created game ${gameId}`);
@@ -52,8 +48,10 @@ class PlayerController {
   onGameJoin(data, callback) {
     logger.info(`Trying to join game ${data.id}`);
 
-    if (this.inGame)
+    if (this.inGame) {
       callback(this._respondError({ description: "Already in game." }));
+      return ;
+    }
 
     const { id } = data;
     const joined = gamesController.joinGame(id, this);
@@ -81,8 +79,10 @@ class PlayerController {
 
     logger.info(`Player ${this.id} requested to leave game ${id}`);
 
-    if (!this.inGame)
+    if (!this.inGame) {
       callback(this._respondError({ description: "Not in game." }));
+      return ;
+    }
 
     if (gamesController.leaveGame(id, this.id)) {
       this.inGame = false;
@@ -90,6 +90,26 @@ class PlayerController {
     } else {
       callback(this._respondError({ description: "Invalid game ID." }));
     }
+  }
+
+  onGameStartRequest(data, callback) {
+    logger.debug(`Request to start game. In game? [${this.inGame}]`);
+
+    if (!this.inGame) {
+      callback(this._respondError({ description: "You are not in game." }));
+      return ;
+    }
+
+    try {
+      gamesController.getGameById(this.gameId).gameStart(this.id);
+      callback(this._respondSuccess());
+    } catch (_error) {
+      callback(this._respondError({ description: _error }));
+    }
+  }
+
+  onGameStarted() {
+    this.socket.emit(events.server.GAME_STARTED);
   }
 
   onGamesUpdateRequest() {

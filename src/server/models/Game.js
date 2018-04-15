@@ -6,6 +6,7 @@ const playerService = require("../services/playerService.js");
 const GEvents = {
   GE_CHAT_MESSAGE: "GE_CHAT_MESSAGE",
   GE_INFO_UPDATE: "GE_INFO_UPDATE",
+  GE_GAME_STARTED: "GE_GAME_STARTED",
 };
 
 class Game extends EventEmitter {
@@ -40,15 +41,28 @@ class Game extends EventEmitter {
     return true;
   }
 
+  playerIsLeader(playerId) {
+    return this.players.first() === playerId;
+  }
+
   chatMessageSend(message) {
     if (message.message && message.login && this.isPlayerInGameByLogin(message.login)) {
       this.emit(GEvents.GE_CHAT_MESSAGE, message);
     }
   }
 
+  gameStart(startInitiator) {
+    if (!this.playerIsLeader(startInitiator))
+      throw "You are not a leader.";
+
+    this.isRunning = true;
+    this.emit(GEvents.GE_GAME_STARTED);
+  }
+
   setEventHandlersForPlayer(player) {
     this.on(GEvents.GE_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
     this.on(GEvents.GE_INFO_UPDATE, player.onGameInfoUpdate.bind(player));
+    this.on(GEvents.GE_GAME_STARTED, player.onGameStarted.bind(player));
   }
 
   getGameInfo() {
