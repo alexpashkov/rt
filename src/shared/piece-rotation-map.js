@@ -1,4 +1,4 @@
-export const rotationMap = new Map([
+module.exports = new Map([
   [0x0f00, 0x2222],
   [0x2222, 0x00f0],
   [0x00f0, 0x4444],
