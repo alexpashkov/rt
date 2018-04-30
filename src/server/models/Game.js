@@ -18,6 +18,10 @@ class Game extends EventEmitter {
     this.setDestroyTimeout();
   }
 
+  hasStarted() {
+    return this.isRunning;
+  }
+
   playerJoin(player) {
     if (this.players.indexOf(player.id) !== -1) return false;
 

@@ -55,6 +55,10 @@ class GamesController extends EventEmitter {
     }
   }
 
+  gameExists(gameId) {
+    return !!this.games[gameId];
+  }
+
   getGameById(gameId) {
     return this.games[gameId];
   }

@@ -20,6 +20,7 @@ class PlayerController {
     socket.on(events.client.GAME_START, this.onGameStartRequest.bind(this));
     socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
     socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
+    socket.on(events.client.GAME_PIECE_MOVE,  this.onGamePieceMove.bind(this));
 
     /* This is created to perform unsubscription by function address */
     this.onGamesUpdateCallback = this.onGamesUpdate.bind(this);
@@ -98,10 +99,12 @@ class PlayerController {
     if (!this.inGame) {
       callback(this._respondError({ description: "You are not in game." }));
       return ;
-    } else if (!gamesController.getGameById(this.gameId)) {
+    } else if (!gamesController.gameExists(this.gameId)) {
       this.inGame = false;
       callback(this._respondError({ description: "You game has been destroyed." }));
       return ;
+    } else if (gamesController.getGameById(this.gameId).hasStarted()) {
+      callback(this._respondError({ description: "Your game has already started." }));
     }
 
     try {
@@ -129,6 +132,10 @@ class PlayerController {
 
   onGameInfoUpdate(gameInfo) {
     this.socket.emit(events.server.GAME_INFO_UPDATE, gameInfo);
+  }
+
+  onGamePieceMove(data, callback) {
+
   }
 
   onChatMessageSend(messageText) {
