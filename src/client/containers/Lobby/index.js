@@ -1,7 +1,9 @@
+/* vendor imports */
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import "./styles.scss";
+import styled from "styled-components";
+
 import { gamesSet } from "../../actions/games";
 import withSocket from "../../hocs/with-socket";
 
@@ -10,6 +12,14 @@ import {
   client as clientEvents,
   server as serverEvents
 } from "../../../shared/types";
+
+
+const Container = styled.div`
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
 class Lobby extends Component {
   render() {
