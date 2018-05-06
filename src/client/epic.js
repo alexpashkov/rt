@@ -1,1 +1,3 @@
-export default $actions => $actions.do(console.log).ignoreElements();
+import gameEpics from "./containers/Game/epics";
+
+export default gameEpics;

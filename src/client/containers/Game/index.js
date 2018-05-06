@@ -28,12 +28,18 @@ import { getRandomPieceCode } from "../../services/piece"; /* TODO Remove later 
 
 class Game extends Component {
   render() {
-    // const { board, isLoading } = this.props;
-    return (<GameLobby />);
+    const { board, isLoading, isStarted, isPaused } = this.props;
+
+    if (isLoading) return <Loader />;
+
+    return !isStarted ? (
+      <GameLobby />
+    ) : (
+      <div className={getGameClassName(isLoading)}>
+        {<Board board={board} />}
+      </div>
+    );
   }
-// {/*<div className={getGameClassName(isLoading)}>*/}
-// {/*{isLoading ? <Loader /> : <Board board={board} />}*/}
-// {/*</div>*/}
 
   componentDidMount() {
     const {
@@ -49,16 +55,20 @@ class Game extends Component {
     gameInfoSetLoading();
     /* Try to join game: */
     socket.on(serverSocketEvents.GAME_INFO_UPDATE, gameInfoSet);
-    socket.emit(clientSocketEvents.GAME_JOIN, { id }, ({status, gameInfo}) => {
-      if (status !== "success")
-        return history.push("/"); /* Redirect to lobby on failure */
-      gameInfoUnsetLoading();
-      gameInfoSet(gameInfo);
-    });
+
+    socket.emit(
+      clientSocketEvents.GAME_JOIN,
+      { id },
+      ({ status, gameInfo }) => {
+        if (status !== "success")
+          return history.push("/"); /* Redirect to lobby on failure */
+        gameInfoUnsetLoading();
+        gameInfoSet(gameInfo);
+      }
+    );
     document.addEventListener("keyup", this.handleKeyPresses);
     pieceCreate(getRandomPieceCode());
   }
-
 
   handleKeyPresses = evt => {
     const {
@@ -95,6 +105,8 @@ export default connect(
   state => ({
     board: boardSelector(state),
     isLoading: state.game.info.isLoading,
+    isStarted: state.game.info.isStarted,
+    isPaused: state.game.info.isPaused,
     leaderId: state.game.info.leaderId
   }),
   {
@@ -105,6 +117,6 @@ export default connect(
     pieceRotate,
     gameInfoSet,
     gameInfoSetLoading,
-    gameInfoUnsetLoading,
+    gameInfoUnsetLoading
   }
 )(withSocket(Game));
