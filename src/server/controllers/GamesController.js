@@ -33,16 +33,16 @@ class GamesController extends EventEmitter {
     return gameCreated.id;
   }
 
-  joinGame(gameId, player) {
-    if (this.games[gameId] && this.games[gameId].playerJoin(player)) {
+  joinGame(gameId, user) {
+    if (this.games[gameId] && this.games[gameId].playerJoin(user)) {
       this.notifyGamesUpdated();
       return true;
     }
     return false;
   }
 
-  leaveGame(gameId, playerId) {
-    if (this.games[gameId] && this.games[gameId].playerLeave(playerId)) {
+  leaveGame(gameId, userId) {
+    if (this.games[gameId] && this.games[gameId].playerLeave(userId)) {
       this.notifyGamesUpdated();
       return true;
     }
@@ -79,14 +79,14 @@ class GamesController extends EventEmitter {
     this.emit(GCEvents.GC_GAMES_UPDATED, this.getGames());
   }
 
-  subscribePlayerOnGamesUpdate(callback) {
+  subscribeUserOnGamesUpdate(callback) {
     this.on(GCEvents.GC_GAMES_UPDATED, callback);
 
     callback(this.getGames());
     logger.info(`Subscription on games update received. Listeners -> ${this.listenerCount(GCEvents.GC_GAMES_UPDATED)}`);
   }
 
-  unsubscribePlayerOnGamesUpdate(callback) {
+  unsubscribeUserOnGamesUpdate(callback) {
     this.removeListener(GCEvents.GC_GAMES_UPDATED, callback);
     logger.info(`Unsubscription on games update received. Listeners -> ${this.listenerCount(GCEvents.GC_GAMES_UPDATED)}`);
   }
