@@ -27,7 +27,7 @@ const AppContainer = styled.div`
 class App extends Component {
   componentDidMount() {
     const { socket, history } = this.props;
-    socket.on(serverEvents.PLAYER_CONNECTED, ({ id, gameId }) => {
+    socket.on(serverEvents.USER_CONNECTED, ({ id, gameId }) => {
       localStorage.setItem("playerId", id);
       gameId && history.push(`/${gameId}`);
     });

@@ -1,6 +1,5 @@
 import { types as pieceActionTypes } from "../actions/piece";
-// import { pieceRotate } from "../actions/piece";
-import { rotationMap } from "../../shared/piece-rotation-map";
+import rotationMap from "../../shared/piece-rotation-map";
 
 const pieceReducer = (state = null, action) => {
   switch (action.type) {

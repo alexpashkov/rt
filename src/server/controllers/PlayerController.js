@@ -26,7 +26,7 @@ class PlayerController {
     this.onGamesUpdateCallback = this.onGamesUpdate.bind(this);
     gamesController.subscribePlayerOnGamesUpdate(this.onGamesUpdateCallback);
 
-    socket.emit(events.server.PLAYER_CONNECTED, {
+    socket.emit(events.server.USER_CONNECTED, {
       id: playerId
     });
   }
