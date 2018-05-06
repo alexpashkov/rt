@@ -2,33 +2,37 @@
 
 const logger = require("../logger");
 const events = require("../../shared/types.js");
-// const uniqid = require("uniqid");
-const gamesController = require("./gamesController");
-const playerService = require("../services/playerService");
+const assert = require("assert");
+const GamesController = require("./GamesController");
+const UserService = require("../services/UserService");
 
-class PlayerController {
-  constructor(socket, playerId) {
+class MainController {
+  constructor(socket, userId) {
     this.socket = socket;
-    this.id = playerId;
+    this.id = userId;
     this.inGame = false;
     this.gameId = null;
 
-    socket.on("disconnect", this.onDisconnect.bind(this));
-    socket.on(events.client.GAME_CREATE, this.onGameCreate.bind(this));
-    socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
-    socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
-    socket.on(events.client.GAME_START, this.onGameStartRequest.bind(this));
-    socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
-    socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
-    socket.on(events.client.GAME_PIECE_MOVE,  this.onGamePieceMove.bind(this));
+    this.setupEventHandlers();
 
     /* This is created to perform unsubscription by function address */
     this.onGamesUpdateCallback = this.onGamesUpdate.bind(this);
-    gamesController.subscribePlayerOnGamesUpdate(this.onGamesUpdateCallback);
+    GamesController.subscribeUserOnGamesUpdate(this.onGamesUpdateCallback);
 
     socket.emit(events.server.USER_CONNECTED, {
-      id: playerId
+      id: userId
     });
+  }
+
+  setupEventHandlers() {
+    this.socket.on("disconnect", this.onDisconnect.bind(this));
+    this.socket.on(events.client.GAME_CREATE, this.onGameCreate.bind(this));
+    this.socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
+    this.socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
+    this.socket.on(events.client.GAME_START, this.onGameStartRequest.bind(this));
+    this.socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
+    this.socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
+    this.socket.on(events.client.GAME_PIECE_MOVE,  this.onGamePieceMove.bind(this));
   }
 
   onGameCreate(callback) {
@@ -37,7 +41,7 @@ class PlayerController {
       return ;
     }
 
-    const gameId = gamesController.createGame();
+    const gameId = GamesController.createGame();
     logger.info(`Created game ${gameId}`);
     callback(
       gameId
@@ -50,12 +54,13 @@ class PlayerController {
     logger.info(`Trying to join game ${data.id}`);
 
     if (this.inGame) {
+      logger.info('Already in game.');
       callback(this._respondError({ description: "Already in game." }));
       return ;
     }
 
     const { id } = data;
-    const joined = gamesController.joinGame(id, this);
+    const joined = GamesController.joinGame(id, this);
     let gameInfo = null;
 
     logger.info(`Joined game? -> ${joined}`);
@@ -63,7 +68,7 @@ class PlayerController {
     if (joined) {
       this.inGame = true;
       this.gameId = id;
-      gameInfo = gamesController.getGameById(id).getGameInfo();
+      gameInfo = GamesController.getGameById(id).getGameInfo();
     }
 
     callback(
@@ -78,14 +83,14 @@ class PlayerController {
 
     callback = callback || (() => {});
 
-    logger.info(`Player ${this.id} requested to leave game ${id}`);
+    logger.info(`User ${this.id} requested to leave game ${id}`);
 
     if (!this.inGame) {
       callback(this._respondError({ description: "Not in game." }));
       return ;
     }
 
-    if (gamesController.leaveGame(id, this.id)) {
+    if (GamesController.leaveGame(id, this.id)) {
       this.inGame = false;
       callback(this._respondSuccess());
     } else {
@@ -99,16 +104,16 @@ class PlayerController {
     if (!this.inGame) {
       callback(this._respondError({ description: "You are not in game." }));
       return ;
-    } else if (!gamesController.gameExists(this.gameId)) {
+    } else if (!GamesController.gameExists(this.gameId)) {
       this.inGame = false;
       callback(this._respondError({ description: "You game has been destroyed." }));
       return ;
-    } else if (gamesController.getGameById(this.gameId).hasStarted()) {
+    } else if (GamesController.getGameById(this.gameId).hasStarted()) {
       callback(this._respondError({ description: "Your game has already started." }));
     }
 
     try {
-      gamesController.getGameById(this.gameId).gameStart(this.id);
+      GamesController.getGameById(this.gameId).gameStart(this.id);
       callback(this._respondSuccess());
     } catch (_error) {
       logger.info(`Error: ${_error}`);
@@ -120,11 +125,6 @@ class PlayerController {
     this.socket.emit(events.server.GAME_STARTED);
   }
 
-  onGamesUpdateRequest() {
-    logger.debug("GAMES_UPDATE event requested.");
-    this.onGamesUpdate(gamesController.getGames());
-  }
-
   onGamesUpdate(games) {
     logger.debug(`Emitting GAMES_UPDATE: ${games}`);
     this.socket.emit(events.server.GAMES_UPDATE, games);
@@ -134,6 +134,18 @@ class PlayerController {
     this.socket.emit(events.server.GAME_INFO_UPDATE, gameInfo);
   }
 
+  onGameCurrentPiece(_data) {
+    const data = _data[this.id];
+
+    assert.ok(data);
+    this.socket.emit(events.server.GAME_CURRENT_PIECE, data);
+  }
+
+  onGamesUpdateRequest() {
+    logger.debug("GAMES_UPDATE event requested.");
+    this.onGamesUpdate(GamesController.getGames());
+  }
+
   onGamePieceMove(data, callback) {
 
   }
@@ -141,12 +153,12 @@ class PlayerController {
   onChatMessageSend(messageText) {
     if (!this.inGame) return;
 
-    const login = playerService.getPlayerById(this.id).getLogin();
+    const login = UserService.getUserById(this.id).getLogin();
     const id = `${login}_${process.hrtime()}`;
 
     logger.debug(`Sending message with id ${id}`);
 
-    gamesController.chatMessageSend(this.gameId, {
+    GamesController.chatMessageSend(this.gameId, {
       id: id,
       login: login,
       message: messageText
@@ -159,12 +171,12 @@ class PlayerController {
 
   onDisconnect() {
     logger.info("DISCONNECT EVENT FIRED");
-    gamesController.unsubscribePlayerOnGamesUpdate(this.onGamesUpdateCallback);
+    GamesController.unsubscribeUserOnGamesUpdate(this.onGamesUpdateCallback);
     if (this.inGame) {
-      logger.info(`Player ${this.id} leaves game ${this.gameId}`);
-      gamesController.leaveGame(this.gameId, this.id);
+      logger.info(`User ${this.id} leaves game ${this.gameId}`);
+      GamesController.leaveGame(this.gameId, this.id);
     } else {
-      logger.info(`No game to leave for player ${this.id}`);
+      logger.info(`No game to leave for user ${this.id}`);
     }
   }
 
@@ -177,4 +189,4 @@ class PlayerController {
   }
 }
 
-module.exports = PlayerController;
+module.exports = MainController;

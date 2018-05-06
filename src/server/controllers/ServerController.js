@@ -2,8 +2,8 @@
 
 const events = require("../../shared/types.js");
 const logger = require("../logger");
-const PlayerController = require("./playerController.js");
-const PlayerService = require("../services/playerService.js");
+const MainController = require("./MainController.js");
+const UserService = require("../services/UserService.js");
 
 class ServerController {
   constructor(server) {
@@ -11,15 +11,16 @@ class ServerController {
     this.io.on("connection", this.onConnection.bind(this));
     logger.debug("Initialized socket.io");
   }
+
   onConnection(socket) {
-    let { playerId } = socket.handshake.query;
-    if (!playerId || !PlayerService.getPlayerById(playerId)) {
+    let { id } = socket.handshake.query;
+    if (!id || !UserService.getUserById(id)) {
       logger.info(
-        `Either playerId[${playerId}] does not exist, or such player could not be found. Receiving new one.`
+        `Either id[${id}] does not exist, or such user could not be found. Receiving new one.`
       );
-      playerId = PlayerService.createPlayer();
+      id = UserService.createUser();
     }
-    new PlayerController(socket, playerId);
+    new MainController(socket, id);
   }
 }
 
