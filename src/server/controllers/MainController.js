@@ -137,7 +137,7 @@ class MainController {
   onPieceCreated(data) {
     if (data.id !== this.id)
       return ;
-    this.socket.emit(events.server.GAME_CURRENT_PIECE, data);
+    this.socket.emit(events.server.GAME_PIECE_UPDATE, data);
   }
 
   onGamesUpdateRequest() {
