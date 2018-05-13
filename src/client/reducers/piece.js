@@ -3,6 +3,8 @@ import rotationMap from "../../shared/piece-rotation-map";
 
 const pieceReducer = (state = null, action) => {
   switch (action.type) {
+    case pieceActionTypes.PIECE_SET:
+      return action.payload;
     case pieceActionTypes.PIECE_CREATE:
       return {
         code: action.payload,

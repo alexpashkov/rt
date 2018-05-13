@@ -6,7 +6,8 @@ export const boardSelector = createSelector(
   state => state.game.board,
   state => state.game.piece,
   (board, piece) => {
-    if (!piece) return board;
+    if (!piece)
+        return board;
     const pieceCells = getPieceCells(piece.code);
     return board.map(
       (row, y) =>
