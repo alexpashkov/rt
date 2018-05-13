@@ -134,10 +134,9 @@ class MainController {
     this.socket.emit(events.server.GAME_INFO_UPDATE, gameInfo);
   }
 
-  onGameCurrentPiece(_data) {
-    const data = _data[this.id];
-
-    assert.ok(data);
+  onPieceCreated(data) {
+    if (data.id !== this.id)
+      return ;
     this.socket.emit(events.server.GAME_CURRENT_PIECE, data);
   }
 

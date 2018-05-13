@@ -1,13 +1,17 @@
 const logger = require("../logger");
 const { EventEmitter } = require("events");
-const UserService = require("../services/UserService.js");
+const UserService = require("../services/UserService");
+const PieceService = require("../services/PieceService");
 const Player = require("./Player");
+const DefaultGameMode = require("./DefaultGameMode");
 
 /* Game Events */
 const GEvents = {
   GE_CHAT_MESSAGE: "GE_CHAT_MESSAGE",
   GE_INFO_UPDATE: "GE_INFO_UPDATE",
   GE_GAME_STARTED: "GE_GAME_STARTED",
+  GE_GAME_START_FAILED: "GE_GAME_START_FAILED",
+  GE_PLAYER_PIECE_CREATED: "GE_PLAYER_PIECE_CREATED",
 };
 
 class Game extends EventEmitter {
@@ -15,9 +19,11 @@ class Game extends EventEmitter {
     super();
     this.id = id;
     this.players = [];
+    this.chatHistory = [];
     this.isRunning = false;
-    this.gameMode = this.gameModeStub(this);
+    this.gameMode = new DefaultGameMode(this);
     this.pieceQueue = [];
+    this.gameParams = {};
 
     this.setDestroyTimeout();
   }
@@ -63,6 +69,7 @@ class Game extends EventEmitter {
 
   chatMessageSend(message) {
     if (message.message && message.login && this.isPlayerInGameByLogin(message.login)) {
+      this.chatHistory.push(message);
       this.emit(GEvents.GE_CHAT_MESSAGE, message);
     }
   }
@@ -72,44 +79,35 @@ class Game extends EventEmitter {
     if (!this.playerIsLeaderById(startInitiator))
       throw "You are not a leader.";
 
-    this.isRunning = true;
-//    this.gameMode();
-    this.emit(GEvents.GE_GAME_STARTED);
+    try {
+      this.isRunning = true;
+      this.gameMode.start(this.params);
+      this.emit(GEvents.GE_GAME_STARTED);
+    } catch(e) {
+      this.isRunning = false;
+      throw e;
+    }
   }
 
-  gameModeStub(game) {
-    const frequency = 50; // ms
-
-    const updateFunction = () => {
-      
-    };
-
-    const gameLoop = () => {
-      const start = Date.now();
-      let delay;
-
-      logger.info('GameLoop tick.');
-      updateFunction();
-
-      if (!game.hasEnded()) {
-        const end = Date.now();
-        delay = end - start > frequency ? frequency : frequency - (end - start); 
-
-        setTimeout(gameLoop, delay);
-      }
-    };
-
-    const startLoop = () => {
-      setTimeout(gameLoop, frequency);
-    }
-
-    return startLoop;
+  setPlayerPiece(player) {
+    if (this.pieceQueue.length <= player.getPieceIndex())
+      this.pieceQueue.push(PieceService.generateRandomPiece());
+    player.setCurrentPiece(this.pieceQueue[player.getPieceIndex()]);
+    this.emit(GEvents.GE_PLAYER_PIECE_CREATED, {
+      id: player.id,
+      piece: player.getCurrentPiece()
+    });
   }
 
   setEventHandlersForPlayer(player) {
     this.on(GEvents.GE_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
     this.on(GEvents.GE_INFO_UPDATE, player.onGameInfoUpdate.bind(player));
     this.on(GEvents.GE_GAME_STARTED, player.onGameStarted.bind(player));
+    this.on(GEvents.GE_PLAYER_PIECE_CREATED, player.onPieceCreated.bind(player));
+  }
+
+  getPlayers() {
+    return this.players;
   }
 
   getGameInfo() {
@@ -122,6 +120,7 @@ class Game extends EventEmitter {
         logger.info(`User[${player.id}] found? -> ${!!user}`);
         return user ? { login: user.getLogin() } : null;
       }).filter((userLogin) => (userLogin !== null)),
+      chatHistory: this.chatHistory,
     };
   }
 
