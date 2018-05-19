@@ -134,10 +134,20 @@ class MainController {
     this.socket.emit(events.server.GAME_INFO_UPDATE, gameInfo);
   }
 
-  onPieceCreated(data) {
+  onPieceUpdate(data) {
+    assert.ok(data);
     if (data.id !== this.id)
       return ;
+
     this.socket.emit(events.server.GAME_PIECE_UPDATE, data);
+  }
+
+  onBoardUpdate(data) {
+    assert.ok(data);
+    if (data.id !== this.id)
+      return ;
+
+    this.socket.emit(events.server.GAME_BOARD_UPDATE, data);
   }
 
   onGamesUpdateRequest() {

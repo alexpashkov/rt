@@ -9,9 +9,10 @@ const DefaultGameMode = require("./DefaultGameMode");
 const GEvents = {
   GE_CHAT_MESSAGE: "GE_CHAT_MESSAGE",
   GE_INFO_UPDATE: "GE_INFO_UPDATE",
-  GE_GAME_STARTED: "GE_GAME_STARTED",
-  GE_GAME_START_FAILED: "GE_GAME_START_FAILED",
-  GE_PLAYER_PIECE_CREATED: "GE_PLAYER_PIECE_CREATED",
+  GE_STARTED: "GE_STARTED",
+  GE_START_FAILED: "GE_START_FAILED",
+  GE_PLAYER_PIECE_UPDATE: "GE_PLAYER_PIECE_UPDATE",
+  GE_PLAYER_BOARD_UPDATE: "GE_PLAYER_BOARD_UPDATE",
 };
 
 class Game extends EventEmitter {
@@ -43,9 +44,15 @@ class Game extends EventEmitter {
     if (this.destroyTimeout)
       this.cancelDestroyTimeout();
 
-    const player = new Player(controllerInstance.id);
+    const player = new Player(controllerInstance.id, {
+      'onCurrentPieceUpdate': this.onPlayerPieceUpdate.bind(this),
+      'onBoardUpdate': this.onPlayerBoardUpdate.bind(this),
+      'getNewPiece': this.getNewPiece.bind(this),
+    });
 
     this.players.push(player);
+
+    logger.debug(`Player ${JSON.stringify(player, null, '    ')} has joined.`);
 
     this.setEventHandlersForPlayer(controllerInstance);
     this.gameInfoUpdated();
@@ -53,9 +60,10 @@ class Game extends EventEmitter {
   }
 
   playerLeave(playerId) {
-    if (this.players.indexOf(playerId) == -1) return false;
+    if (this.players.filter((player) => playerId === player.id).length === 0)
+      return false;
 
-    this.players = this.players.filter(id => id !== playerId);
+    this.players = this.players.filter(player => player.id !== playerId);
 
     if (!this.players.length) this.setDestroyTimeout();
 
@@ -82,28 +90,38 @@ class Game extends EventEmitter {
     try {
       this.isRunning = true;
       this.gameMode.start(this.params);
-      this.emit(GEvents.GE_GAME_STARTED);
+      this.emit(GEvents.GE_STARTED);
     } catch(e) {
       this.isRunning = false;
       throw e;
     }
   }
 
-  setPlayerPiece(player) {
-    if (this.pieceQueue.length <= player.getPieceIndex())
+  getNewPiece(index) {
+    if (this.pieceQueue.length <= index)
       this.pieceQueue.push(PieceService.generateRandomPiece());
-    player.setCurrentPiece(this.pieceQueue[player.getPieceIndex()]);
-    this.emit(GEvents.GE_PLAYER_PIECE_CREATED, {
-      id: player.id,
-      piece: player.getCurrentPiece()
+    return this.pieceQueue[index];
+  }
+
+  onPlayerPieceUpdate(pieceInfo) {
+    this.emit(GEvents.GE_PLAYER_PIECE_UPDATE, {
+      ...pieceInfo
+    });
+  }
+
+  onPlayerBoardUpdate(boardInfo) {
+    logger.info(`BOARD UPDATED -> ${JSON.stringify(player)}`);
+    this.emit(GEvents.GE_PLAYER_BOARD_UPDATE, {
+      ...boardInfo
     });
   }
 
   setEventHandlersForPlayer(player) {
     this.on(GEvents.GE_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
     this.on(GEvents.GE_INFO_UPDATE, player.onGameInfoUpdate.bind(player));
-    this.on(GEvents.GE_GAME_STARTED, player.onGameStarted.bind(player));
-    this.on(GEvents.GE_PLAYER_PIECE_CREATED, player.onPieceCreated.bind(player));
+    this.on(GEvents.GE_STARTED, player.onGameStarted.bind(player));
+    this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player.onPieceUpdate.bind(player));
+    this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player.onBoardUpdate.bind(player));
   }
 
   getPlayers() {
