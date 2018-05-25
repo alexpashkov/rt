@@ -1,4 +1,4 @@
 {
-  "extends": "standard",
+  "extends": ["standard", "prettier", "prettier/react", "prettier/standard"],
   "plugins": ["prettier", "prettier/react"]
 }
