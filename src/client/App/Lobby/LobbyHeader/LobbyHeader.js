@@ -11,14 +11,14 @@ const StyledContainer = styled.header`
   padding: 10px 0;
 `;
 
-const LobbyHeader = ({ handleGameStartRequest }) => (
+const LobbyHeader = ({ onGameStartRequest }) => (
   <StyledContainer>
     <Logo />
     <Button
       css={`
         margin-left: auto;
       `}
-      onClick={handleGameStartRequest}
+      onClick={onGameStartRequest}
     >
       Start Game
     </Button>
@@ -26,7 +26,7 @@ const LobbyHeader = ({ handleGameStartRequest }) => (
 );
 
 LobbyHeader.propTypes = {
-  handleGameStartRequest: PropTypes.func.isRequired
+  onGameStartRequest: PropTypes.func.isRequired
 };
 
 export default LobbyHeader;

@@ -1,20 +1,22 @@
 import React from "react";
-
-import socket from "../../socket";
-
+import PropTypes from "prop-types";
 import LobbyHeader from "./LobbyHeader";
 import LobbyGamesList from "./LobbyGamesList";
-import { CLIENT_EVENTS } from "../../../shared/types";
 
-const Lobby = () => (
-  <React.Fragment>
-    <LobbyHeader
-      handleGameStartRequest={() =>
-        socket.emit(CLIENT_EVENTS.GAME_START_REQUEST)
-      }
-    />
-    <LobbyGamesList />
-  </React.Fragment>
+const Lobby = ({
+    requestGameStart
+               }) => (
+    <React.Fragment>
+        <LobbyHeader
+            onGameStartRequest={requestGameStart}
+        />
+        <LobbyGamesList/>
+    </React.Fragment>
 );
 
+Lobby.propTypes = {
+    requestGameStart: PropTypes.func.isRequired
+}
+
 export default Lobby;
+

@@ -1,4 +1,4 @@
 import { createStore } from "redux";
-import * as R from "ramda";
+import mainReducer from "./reducers";
 
-export default createStore(R.identity);
+export default createStore(mainReducer);
