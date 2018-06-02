@@ -7,14 +7,9 @@ import { setList } from '../../actions/gamesList';
 import Lobby from './Lobby';
 
 export default compose(
-  connect(
-    state => ({
-      gamesList: state.gamesList
-    }),
-    {
-      setList
-    }
-  ),
+  connect(null, {
+    setList
+  }),
   lifecycle({
     componentDidMount() {
       const { setList } = this.props;
