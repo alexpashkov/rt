@@ -21,6 +21,8 @@ export default compose(
   }),
   withHandlers({
     gameCreateRequest: () => () =>
-      socket.emit(socketEvents.client.GAME_CREATE, console.log)
+      socket.emit(socketEvents.client.GAME_CREATE, res => {
+        // console.log(res);
+      })
   })
 )(Lobby);
