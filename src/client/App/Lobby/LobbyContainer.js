@@ -1,13 +1,24 @@
 import { compose, lifecycle, withHandlers } from 'recompose';
+import { connect } from 'react-redux';
 
 import socketEvents from '../../../shared/socket-events';
 import socket from '../../socket';
+import { setList } from '../../actions/gamesList';
 import Lobby from './Lobby';
 
 export default compose(
+  connect(
+    state => ({
+      gamesList: state.gamesList
+    }),
+    {
+      setList
+    }
+  ),
   lifecycle({
     componentDidMount() {
-      socket.on(socketEvents.server.GAMES_UPDATE, console.log);
+      const { setList } = this.props;
+      socket.on(socketEvents.server.GAMES_UPDATE, setList);
     },
     componentWillUnmount() {
       socket.off(socketEvents.server.GAMES_UPDATE);
