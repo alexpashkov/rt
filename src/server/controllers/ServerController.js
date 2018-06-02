@@ -1,6 +1,6 @@
 "use strict";
 
-const events = require("../../shared/types.js");
+const events = require("../../shared/socket-events.js");
 const logger = require("../logger");
 const MainController = require("./MainController.js");
 const UserService = require("../services/UserService.js");
