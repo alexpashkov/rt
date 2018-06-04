@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
+import { prop } from 'ramda';
+
 import Button from '../../../components/Button';
 
 const Wrapper = styled.div`
@@ -19,7 +21,11 @@ const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
   <Wrapper>
     <Cell>Game {id}</Cell>
     <Cell>{isRunning ? 'Running' : 'Waiting for players'}</Cell>
-    <Cell>{players && players.length ? players : 'No players'}</Cell>
+    <Cell>
+      {players && players.length
+        ? players.map(prop('login')).join(', ')
+        : 'No players'}
+    </Cell>
     <Cell>
       <Button size="sm" onClick={() => handleGameJoin(id)}>
         Join

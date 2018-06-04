@@ -9,6 +9,10 @@ import socket from '../../socket';
 import { setList } from '../../actions/gamesList';
 import Lobby from './Lobby';
 
+const handleGameJoinResponse = ({ status, gameInfo, description }) => {
+  console.log(status, gameInfo, description);
+};
+
 export default compose(
   connect(
     state => ({
@@ -29,11 +33,26 @@ export default compose(
   }),
   withHandlers({
     handleGameCreate: () => () =>
-      socket.emit(clientSocketEvents.GAME_CREATE, ({ status, gameId }) => {
-        console.log(status, gameId);
-      }),
+      socket.emit(
+        clientSocketEvents.GAME_CREATE,
+        ({ status, gameId, ...rest }) => {
+          console.log('game create', status, gameId, rest);
+          if (status !== 'success') {
+            return alert('Failed to join the game');
+          }
+          socket.emit(
+            clientSocketEvents.GAME_JOIN,
+            { id: gameId },
+            handleGameJoinResponse
+          );
+        }
+      ),
     handleGameJoin: () => gameId => {
-      socket.emit(clientSocketEvents.GAME_JOIN, gameId, console.log);
+      socket.emit(
+        clientSocketEvents.GAME_JOIN,
+        { id: gameId },
+        handleGameJoinResponse
+      );
     }
   })
 )(Lobby);
