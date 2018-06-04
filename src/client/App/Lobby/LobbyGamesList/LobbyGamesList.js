@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GamesListItem from './GamesListItem';
 
-const LobbyGamesList = ({ gamesList, onGameJoin }) => (
+const LobbyGamesList = ({ gamesList, handleGameJoin }) => (
   <div>
     {gamesList.map(game => (
-      <GamesListItem key={game.id} {...game} onGameJoin={onGameJoin} />
+      <GamesListItem key={game.id} {...game} handleGameJoin={handleGameJoin} />
     ))}
   </div>
 );
 
 LobbyGamesList.propTypes = {
   gamesList: PropTypes.array.isRequired,
-  onGameJoin: PropTypes.func.isRequired
+  handleGameJoin: PropTypes.func.isRequired
 };
 
 export default LobbyGamesList;

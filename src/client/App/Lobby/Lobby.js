@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 import LobbyHeader from './LobbyHeader';
 import LobbyGamesList from './LobbyGamesList';
 
-const Lobby = ({ gameCreateRequest }) => (
+const Lobby = ({ handleGameCreate, handleGameJoin }) => (
   <React.Fragment>
-    <LobbyHeader onGameStartRequest={gameCreateRequest} />
-    <LobbyGamesList />
+    <LobbyHeader handleGameCreate={handleGameCreate} />
+    <LobbyGamesList handleGameJoin={handleGameJoin} />
   </React.Fragment>
 );
 
 Lobby.propTypes = {
-  gameCreateRequest: PropTypes.func.isRequired
+  handleGameCreate: PropTypes.func.isRequired,
+  handleGameJoin: PropTypes.func.isRequired
 };
 
 export default Lobby;

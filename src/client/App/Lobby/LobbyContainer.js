@@ -20,9 +20,10 @@ export default compose(
     }
   }),
   withHandlers({
-    gameCreateRequest: () => () =>
-      socket.emit(socketEvents.client.GAME_CREATE, res => {
-        // console.log(res);
-      })
+    handleGameCreate: () => () =>
+      socket.emit(socketEvents.client.GAME_CREATE, ({ status, gameId }) => {
+        console.log(status, gameId);
+      }),
+    handleGameJoin: () => console.log
   })
 )(Lobby);

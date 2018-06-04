@@ -15,13 +15,13 @@ const Cell = styled.div`
   }
 `;
 
-const GamesListItem = ({ id, players, isRunning, onGameJoin }) => (
+const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
   <Wrapper>
     <Cell>Game {id}</Cell>
     <Cell>{isRunning ? 'Running' : 'Waiting for players'}</Cell>
     <Cell>{players && players.length ? players : 'No players'}</Cell>
     <Cell>
-      <Button size="sm" onClick={() => onGameJoin(id)}>
+      <Button size="sm" onClick={() => handleGameJoin(id)}>
         Join
       </Button>
     </Cell>
@@ -32,7 +32,7 @@ GamesListItem.propTypes = {
   id: PropTypes.string.isRequired,
   players: PropTypes.array.isRequired,
   isRunning: PropTypes.bool,
-  onGameJoin: PropTypes.func.isRequired
+  handleGameJoin: PropTypes.func.isRequired
 };
 
 export default GamesListItem;
