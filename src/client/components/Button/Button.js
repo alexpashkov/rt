@@ -12,7 +12,7 @@ const resolveSize = ({ size }) => {
       throw new Error(`Unknown size ${size}`);
   }
 };
-const StyldButton = styled.button`
+const Wrapper = styled.button`
   padding: ${resolveSize};
   border-radius: 300px;
   color: ${({ color }) => (color === 'default' ? '#000' : '#fff')};
@@ -21,9 +21,9 @@ const StyldButton = styled.button`
 `;
 
 const Button = ({ color, size, children, ...rest }) => (
-  <StyldButton color={color} size={size} {...rest}>
+  <Wrapper color={color} size={size} {...rest}>
     {children}
-  </StyldButton>
+  </Wrapper>
 );
 
 Button.propTypes = {

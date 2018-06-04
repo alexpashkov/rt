@@ -1,6 +1,13 @@
-import LobbyGamesList from './LobbyGamesList';
 import { connect } from 'react-redux';
+import { compose, withHandlers } from 'recompose';
 
-export default connect(state => ({
-  gamesList: state.gamesList
-}))(LobbyGamesList);
+import LobbyGamesList from './LobbyGamesList';
+
+export default compose(
+  connect(state => ({
+    gamesList: state.gamesList
+  })),
+  withHandlers({
+    onGameJoin: () => console.log
+  })
+)(LobbyGamesList);
