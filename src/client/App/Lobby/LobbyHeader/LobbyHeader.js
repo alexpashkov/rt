@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "react-emotion";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'react-emotion';
 
-import Logo from "../../../components/Logo";
-import Button from "../../../components/Button";
+import Logo from '../../../components/Logo';
+import Button from '../../../components/Button';
 
 const StyledContainer = styled.header`
   display: flex;
@@ -15,6 +15,7 @@ const LobbyHeader = ({ onGameStartRequest }) => (
   <StyledContainer>
     <Logo />
     <Button
+      color="primary"
       css={`
         margin-left: auto;
       `}

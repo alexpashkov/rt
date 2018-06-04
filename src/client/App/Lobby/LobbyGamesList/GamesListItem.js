@@ -1,18 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
+import Button from '../../../components/Button';
 
-const StyledWrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
+  justify-content: space-between;
   background-color: red;
 `;
 
+const Cell = styled.div`
+  &:not(:empty) {
+    padding: 5px;
+  }
+`;
+
 const GamesListItem = ({ id, players, isRunning }) => (
-  <StyledWrapper>
-    {id}
-    {players && players.length ? players : 'No players'}
-    {isRunning}
-  </StyledWrapper>
+  <Wrapper>
+    <Cell>Game {id}</Cell>
+    <Cell>{isRunning ? 'Running' : 'Waiting for players'}</Cell>
+    <Cell>{players && players.length ? players : 'No players'}</Cell>
+    <Cell>
+      <Button size="sm">Join</Button>
+    </Cell>
+  </Wrapper>
 );
 
 GamesListItem.propTypes = {

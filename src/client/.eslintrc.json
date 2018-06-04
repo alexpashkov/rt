@@ -1,7 +1,10 @@
 {
   "extends": ["eslint:recommended", "plugin:react/recommended"],
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
   },
   "env": {
     "browser": true
