@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import LobbyHeader from './LobbyHeader';
 import LobbyGamesList from './LobbyGamesList';
 
-const Lobby = ({ handleGameCreate, handleGameJoin }) => (
+const Lobby = ({ gamesList, handleGameCreate, handleGameJoin }) => (
   <React.Fragment>
     <LobbyHeader handleGameCreate={handleGameCreate} />
-    <LobbyGamesList handleGameJoin={handleGameJoin} />
+    <LobbyGamesList gamesList={gamesList} handleGameJoin={handleGameJoin} />
   </React.Fragment>
 );
 

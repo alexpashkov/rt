@@ -7,9 +7,14 @@ import { setList } from '../../actions/gamesList';
 import Lobby from './Lobby';
 
 export default compose(
-  connect(null, {
-    setList
-  }),
+  connect(
+    state => ({
+      gamesList: state.gamesList
+    }),
+    {
+      setList
+    }
+  ),
   lifecycle({
     componentDidMount() {
       const { setList } = this.props;
@@ -24,6 +29,6 @@ export default compose(
       socket.emit(socketEvents.client.GAME_CREATE, ({ status, gameId }) => {
         console.log(status, gameId);
       }),
-    handleGameJoin: () => console.log
+    handleGameJoin: () => gameId => console.log(id)
   })
 )(Lobby);
