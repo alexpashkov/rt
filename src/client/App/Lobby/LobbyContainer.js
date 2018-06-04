@@ -9,10 +9,6 @@ import socket from '../../socket';
 import { setList } from '../../actions/gamesList';
 import Lobby from './Lobby';
 
-const handleGameJoinResponse = ({ status, gameInfo, description }) => {
-  console.log(status, gameInfo, description);
-};
-
 export default compose(
   connect(
     state => ({
@@ -32,27 +28,27 @@ export default compose(
     }
   }),
   withHandlers({
-    handleGameCreate: () => () =>
-      socket.emit(
-        clientSocketEvents.GAME_CREATE,
-        ({ status, gameId, ...rest }) => {
-          console.log('game create', status, gameId, rest);
-          if (status !== 'success') {
-            return alert('Failed to join the game');
-          }
-          socket.emit(
-            clientSocketEvents.GAME_JOIN,
-            { id: gameId },
-            handleGameJoinResponse
-          );
-        }
-      ),
-    handleGameJoin: () => gameId => {
-      socket.emit(
-        clientSocketEvents.GAME_JOIN,
-        { id: gameId },
-        handleGameJoinResponse
-      );
-    }
+    handleGameCreate: () => emitGameCreate,
+    handleGameJoin: () => emitGameJoin
   })
 )(Lobby);
+
+const emitGameCreate = () =>
+  socket.emit(clientSocketEvents.GAME_CREATE, handleGameCreateResponse);
+const emitGameJoin = gameId =>
+  socket.emit(
+    clientSocketEvents.GAME_JOIN,
+    { id: gameId },
+    handleGameJoinResponse
+  );
+const handleGameCreateResponse = ({ status, gameId, ...rest }) => {
+  console.log('game create', status, gameId, rest);
+  if (status !== 'success') {
+    return alert('Failed to join the game');
+  }
+  emitGameJoin(gameId);
+};
+
+const handleGameJoinResponse = ({ status, gameInfo, description }) => {
+  console.log(status, gameInfo, description);
+};
