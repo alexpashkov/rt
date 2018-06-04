@@ -35,12 +35,14 @@ export default compose(
 
 const emitGameCreate = () =>
   socket.emit(clientSocketEvents.GAME_CREATE, handleGameCreateResponse);
+
 const emitGameJoin = gameId =>
   socket.emit(
     clientSocketEvents.GAME_JOIN,
     { id: gameId },
     handleGameJoinResponse
   );
+
 const handleGameCreateResponse = ({ status, gameId, ...rest }) => {
   console.log('game create', status, gameId, rest);
   if (status !== 'success') {
