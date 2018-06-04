@@ -18,6 +18,10 @@ const Wrapper = styled.button`
   color: ${({ color }) => (color === 'default' ? '#000' : '#fff')};
   background-color: ${({ color }) => (color === 'default' ? '#fff' : '#f00')};
   border: none;
+  cursor: pointer;
+  &:focus {
+    outline: none;
+  }
 `;
 
 const Button = ({ color, size, children, ...rest }) => (
