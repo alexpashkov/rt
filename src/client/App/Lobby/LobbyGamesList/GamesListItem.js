@@ -6,15 +6,13 @@ import { prop } from 'ramda';
 import Button from '../../../components/Button';
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: table-row;
   background-color: red;
 `;
 
 const Cell = styled.div`
-  &:not(:empty) {
-    padding: 5px;
-  }
+  display: table-cell;
+  padding: 5px 10px;
 `;
 
 const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
@@ -26,7 +24,7 @@ const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
         ? players.map(prop('login')).join(', ')
         : 'No players'}
     </Cell>
-    <Cell>
+    <Cell css={`width: 1px`}>
       <Button size="sm" onClick={() => handleGameJoin(id)}>
         Join
       </Button>
