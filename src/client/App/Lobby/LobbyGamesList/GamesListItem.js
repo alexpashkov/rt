@@ -1,19 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'react-emotion';
 import { prop } from 'ramda';
 
+import { Row, Cell } from '../../../components/Table';
 import Button from '../../../components/Button';
-
-const Row = styled.div`
-  display: table-row;
-  background-color: red;
-`;
-
-const Cell = styled.div`
-  display: table-cell;
-  padding: 5px 10px;
-`;
 
 const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
   <Row>

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 
 export default {
+  userId: PropTypes.string,
   currentGameInfo: PropTypes.shape({
     id: PropTypes.string.isRequired,
     isRunning: PropTypes.bool.isRequired,

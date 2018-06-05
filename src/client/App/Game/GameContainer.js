@@ -26,6 +26,7 @@ const emitGameLeave = gameId =>
 export default compose(
   connect(
     state => ({
+      userId: state.user && state.user.id,
       currentGameInfo: state.currentGameInfo
     }),
     {
@@ -44,7 +45,7 @@ export default compose(
           alert(description || 'Failed to join the game');
           return history.push('/');
         }
-        setTimeout(() => setCurrentGameInfo(gameInfo), 1500); // artificial delay to test spinner
+        setTimeout(() => setCurrentGameInfo(gameInfo), 1500); /* FIXME remove artificial delay */
       };
       emitGameJoin(gameId, handleGameJoinResponse);
     },

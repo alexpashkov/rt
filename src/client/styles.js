@@ -13,4 +13,7 @@ injectGlobal`
       background-color: rgba(25,20,26,0.96);
       margin: 0; 
     }
+    h1, h2, h3, h4, h5, h6 {
+      color: red;
+    }
 `;
