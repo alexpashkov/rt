@@ -5,7 +5,7 @@ import { prop } from 'ramda';
 
 import Button from '../../../components/Button';
 
-const Wrapper = styled.div`
+const Row = styled.div`
   display: table-row;
   background-color: red;
 `;
@@ -16,7 +16,7 @@ const Cell = styled.div`
 `;
 
 const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
-  <Wrapper>
+  <Row>
     <Cell>Game {id}</Cell>
     <Cell>{isRunning ? 'Running' : 'Waiting for players'}</Cell>
     <Cell>
@@ -29,7 +29,7 @@ const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
         Join
       </Button>
     </Cell>
-  </Wrapper>
+  </Row>
 );
 
 GamesListItem.propTypes = {

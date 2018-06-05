@@ -1,5 +1,6 @@
 import { compose, lifecycle, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
+import history from "../../history";
 
 import {
   client as clientSocketEvents,
@@ -29,28 +30,19 @@ export default compose(
   }),
   withHandlers({
     handleGameCreate: () => emitGameCreate,
-    handleGameJoin: () => emitGameJoin
+    handleGameJoin: () => navigateToGamePage
   })
 )(Lobby);
+
+const navigateToGamePage = gameId => history.push(`/game/${gameId}`);
 
 const emitGameCreate = () =>
   socket.emit(clientSocketEvents.GAME_CREATE, handleGameCreateResponse);
 
-const emitGameJoin = gameId =>
-  socket.emit(
-    clientSocketEvents.GAME_JOIN,
-    { id: gameId },
-    handleGameJoinResponse
-  );
-
-const handleGameCreateResponse = ({ status, gameId, ...rest }) => {
-  console.log('game create', status, gameId, rest);
+const handleGameCreateResponse = ({ status, gameId }) => {
   if (status !== 'success') {
     return alert('Failed to join the game');
   }
-  emitGameJoin(gameId);
+  navigateToGamePage(gameId);
 };
 
-const handleGameJoinResponse = ({ status, gameInfo, description }) => {
-  console.log(status, gameInfo, description);
-};
