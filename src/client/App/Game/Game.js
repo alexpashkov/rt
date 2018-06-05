@@ -1,25 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { PacmanLoader } from 'react-spinners';
 
-export const Spinner = () => (
-  <div
-    css={`
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-    `}
-  >
-    <PacmanLoader color="red" />
-  </div>
-);
-const Game = ({ currentGameInfo, gameId }) => (
-  <div>
-    {gameId}
-    <pre>{JSON.stringify(currentGameInfo, null, 2)}</pre>
-  </div>
-);
+const Game = ({ currentGameInfo }) => {
+  return <pre>{JSON.stringify(currentGameInfo)}</pre>;
+};
 
 Game.propTypes = {
   currentGameInfo: PropTypes.shape({
@@ -32,7 +16,7 @@ Game.propTypes = {
       })
     ).isRequired,
     chatHistory: PropTypes.array.isRequired
-  }).isRequired,
+  }),
   gameId: PropTypes.string.isRequired
 };
 

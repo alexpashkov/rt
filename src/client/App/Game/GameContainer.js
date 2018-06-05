@@ -10,7 +10,10 @@ import { connect } from 'react-redux';
 import { setInfo as setCurrentGameInfo } from '../../actions/currentGameInfoActions';
 import history from '../../history';
 import socket from '../../socket';
-import Game, { Spinner } from './Game';
+import CenteredSpinner from './CenteredSpinner';
+import GameLobby from './GameLobby';
+import Game  from './Game';
+
 import { client as clientSocketEvents } from '../../../shared/socket-events';
 
 const emitGameJoin = (gameId, cb) =>
@@ -53,6 +56,10 @@ export default compose(
   }),
   branch(
     ({ currentGameInfo }) => !currentGameInfo,
-    renderComponent(Spinner)
+    renderComponent(CenteredSpinner)
+  ),
+  branch(
+    ({ currentGameInfo }) => !currentGameInfo.isRunning,
+    renderComponent(GameLobby)
   )
 )(Game);
