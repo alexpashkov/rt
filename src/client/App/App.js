@@ -24,9 +24,7 @@ const App = () => (
             <Route
               exact
               path="/game/:gameId"
-              render={({ match: { params: { gameId } } }) => (
-                <Game gameId={gameId} />
-              )}
+              component={Game}
             />
             <Redirect to="/" />
           </Switch>

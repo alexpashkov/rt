@@ -1,4 +1,4 @@
-import { compose, lifecycle } from 'recompose';
+import { compose, lifecycle, mapProps } from 'recompose';
 
 import socket from '../../socket';
 import Game from './Game';
@@ -17,6 +17,9 @@ const emitGameLeave = gameId =>
   socket.emit(clientSocketEvents.GAME_LEAVE, { id: gameId }, console.log);
 
 export default compose(
+  mapProps(({ match: { params: { gameId } } }) => ({
+    gameId
+  })),
   lifecycle({
     componentDidMount() {
       const { gameId } = this.props;
