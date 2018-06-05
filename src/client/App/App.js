@@ -9,13 +9,13 @@ import theme from '../theme';
 import '../socket';
 import '../styles.js';
 
-import { AppContainer } from './styled';
+import { Wrapper } from './styled';
 
 import Lobby from './Lobby';
 import Game from './Game';
 
 const App = () => (
-  <AppContainer>
+  <Wrapper>
     <StoreProvider store={store}>
       <ThemeProvider theme={theme}>
         <Router history={history}>
@@ -23,7 +23,7 @@ const App = () => (
             <Route exact path="/" component={Lobby} />
             <Route
               exact
-              path="/game/:gameId"
+              path="/:gameId"
               component={Game}
             />
             <Redirect to="/" />
@@ -31,7 +31,7 @@ const App = () => (
         </Router>
       </ThemeProvider>
     </StoreProvider>
-  </AppContainer>
+  </Wrapper>
 );
 
 export default App;

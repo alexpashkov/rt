@@ -34,7 +34,7 @@ export default compose(
   })
 )(Lobby);
 
-const navigateToGamePage = gameId => history.push(`/game/${gameId}`);
+const navigateToGamePage = gameId => history.push(`/${gameId}`);
 
 const emitGameCreate = () =>
   socket.emit(clientSocketEvents.GAME_CREATE, handleGameCreateResponse);
