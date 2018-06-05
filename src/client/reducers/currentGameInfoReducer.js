@@ -1,4 +1,4 @@
-import { actionTypes } from '../actions/currentGameInfo';
+import { actionTypes } from '../actions/currentGameInfoActions';
 
 const currentGameInfoReducer = (state = null, action) => {
   switch (action.type) {

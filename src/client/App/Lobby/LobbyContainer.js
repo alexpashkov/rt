@@ -7,7 +7,7 @@ import {
   server as serverSocketEvents
 } from '../../../shared/socket-events';
 import socket from '../../socket';
-import { setList } from '../../actions/gamesList';
+import { setList } from '../../actions/gamesListActions';
 import Lobby from './Lobby';
 
 export default compose(
