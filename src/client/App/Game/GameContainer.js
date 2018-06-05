@@ -1,20 +1,27 @@
 import { compose, lifecycle, mapProps } from 'recompose';
 
+import history from "../../history";
 import socket from '../../socket';
 import Game from './Game';
 import { client as clientSocketEvents } from '../../../shared/socket-events';
 
-// const handleGameJoinResponse = ({ status, gameInfo, description }) => {};
+const handleGameJoinResponse = ({ status, gameInfo, description }) => {
+  if (status === "error") {
+    // failed to join the game, redirect to lobby
+    console.warn(`Failed to join the game: ${description}`);
+    return history.push("/")
+  }
 
-const emitGameJoin = gameId =>
+};
+
+const emitGameJoin = (gameId, cb) =>
   socket.emit(
     clientSocketEvents.GAME_JOIN,
     { id: gameId },
-    console.log
-    // handleGameJoinResponse
+    cb
   );
 const emitGameLeave = gameId =>
-  socket.emit(clientSocketEvents.GAME_LEAVE, { id: gameId }, console.log);
+  socket.emit(clientSocketEvents.GAME_LEAVE, { id: gameId });
 
 export default compose(
   mapProps(({ match: { params: { gameId } } }) => ({
@@ -23,7 +30,7 @@ export default compose(
   lifecycle({
     componentDidMount() {
       const { gameId } = this.props;
-      emitGameJoin(gameId);
+      emitGameJoin(gameId, handleGameJoinResponse);
     },
     componentWillUnmount() {
       const { gameId } = this.props;
