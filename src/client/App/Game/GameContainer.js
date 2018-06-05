@@ -3,10 +3,12 @@ import {
   branch,
   lifecycle,
   renderComponent,
-  withProps
+  withProps,
+  setPropTypes
 } from 'recompose';
 import { connect } from 'react-redux';
 
+import gamePropTypes from "./gamePropTypes";
 import { setInfo as setCurrentGameInfo } from '../../actions/currentGameInfoActions';
 import history from '../../history';
 import socket from '../../socket';
@@ -54,6 +56,7 @@ export default compose(
       setCurrentGameInfo(null);
     }
   }),
+  setPropTypes(gamePropTypes),
   branch(
     ({ currentGameInfo }) => !currentGameInfo,
     renderComponent(CenteredSpinner)
