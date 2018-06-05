@@ -1,40 +1,58 @@
-import { compose, lifecycle, mapProps } from 'recompose';
+import {
+  compose,
+  branch,
+  lifecycle,
+  renderComponent,
+  withProps
+} from 'recompose';
+import { connect } from 'react-redux';
 
-import history from "../../history";
+import { setInfo as setCurrentGameInfo } from '../../actions/currentGameInfoActions';
+import history from '../../history';
 import socket from '../../socket';
-import Game from './Game';
+import Game, { Spinner } from './Game';
 import { client as clientSocketEvents } from '../../../shared/socket-events';
 
-const handleGameJoinResponse = ({ status, gameInfo, description }) => {
-  if (status === "error") {
-    // failed to join the game, redirect to lobby
-    console.warn(`Failed to join the game: ${description}`);
-    return history.push("/")
-  }
-
-};
-
 const emitGameJoin = (gameId, cb) =>
-  socket.emit(
-    clientSocketEvents.GAME_JOIN,
-    { id: gameId },
-    cb
-  );
+  socket.emit(clientSocketEvents.GAME_JOIN, { id: gameId }, cb);
 const emitGameLeave = gameId =>
   socket.emit(clientSocketEvents.GAME_LEAVE, { id: gameId });
 
 export default compose(
-  mapProps(({ match: { params: { gameId } } }) => ({
+  connect(
+    state => ({
+      currentGameInfo: state.currentGameInfo
+    }),
+    {
+      setCurrentGameInfo
+    }
+  ),
+  withProps(({ match: { params: { gameId } } }) => ({
     gameId
   })),
   lifecycle({
     componentDidMount() {
-      const { gameId } = this.props;
+      const { gameId, setCurrentGameInfo } = this.props;
+      const handleGameJoinResponse = ({ status, gameInfo, description }) => {
+        if (status === 'error') {
+          /* failed to join the game, redirect to lobby */
+          alert(description || 'Failed to join the game');
+          return history.push('/');
+        }
+        setTimeout(() => setCurrentGameInfo(gameInfo), 1500); // artificial delay to test spinner
+      };
       emitGameJoin(gameId, handleGameJoinResponse);
     },
     componentWillUnmount() {
-      const { gameId } = this.props;
+      const { gameId, setCurrentGameInfo } = this.props;
+      /* emit leave event for the server */
       emitGameLeave(gameId);
+      /* set current game info to null, so we can use it as indicator for a spinner */
+      setCurrentGameInfo(null);
     }
-  })
+  }),
+  branch(
+    ({ currentGameInfo }) => !currentGameInfo,
+    renderComponent(Spinner)
+  )
 )(Game);

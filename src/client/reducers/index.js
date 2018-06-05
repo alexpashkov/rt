@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+
 import gamesListReducer from './gamesListReducer';
 import currentGameInfoReducer from './currentGameInfoReducer';
 
