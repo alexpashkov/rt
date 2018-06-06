@@ -1,1 +1,1 @@
-export { default } from "./GameLobby";
+export { default } from './GameLobbyContainer';

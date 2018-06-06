@@ -9,10 +9,6 @@ const INDEX_HTML_FILE_STRING = fs
   .toString();
 
 app.use(express.static(PATH_TO_PUBLIC));
-app.all('*', (_, res) =>
-  res
-    .type("html")
-    .end(INDEX_HTML_FILE_STRING)
-);
+app.all('*', (_, res) => res.type('html').end(INDEX_HTML_FILE_STRING));
 
 module.exports = app;

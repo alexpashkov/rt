@@ -1,5 +1,5 @@
 export const actionTypes = {
-  SET_INFO: "CURRENT_GAME_INFO_SET_INFO"
+  SET_INFO: 'CURRENT_GAME_INFO_SET_INFO'
 };
 
 export const setInfo = info => ({

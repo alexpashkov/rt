@@ -1,5 +1,5 @@
 export const actionTypes = {
-  SET_DATA: "USER_SET_DATA"
+  SET_DATA: 'USER_SET_DATA'
 };
 
 export const setData = data => ({

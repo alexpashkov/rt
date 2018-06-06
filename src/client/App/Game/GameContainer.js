@@ -8,13 +8,13 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 
-import gamePropTypes from "./gamePropTypes";
+import gamePropTypes from './gamePropTypes';
 import { setInfo as setCurrentGameInfo } from '../../actions/currentGameInfoActions';
 import history from '../../history';
 import socket from '../../socket';
 import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
-import Game  from './Game';
+import Game from './Game';
 
 import { client as clientSocketEvents } from '../../../shared/socket-events';
 
@@ -45,7 +45,10 @@ export default compose(
           alert(description || 'Failed to join the game');
           return history.push('/');
         }
-        setTimeout(() => setCurrentGameInfo(gameInfo), 1500); /* FIXME remove artificial delay */
+        setTimeout(
+          () => setCurrentGameInfo(gameInfo),
+          1500
+        ); /* FIXME remove artificial delay */
       };
       emitGameJoin(gameId, handleGameJoinResponse);
     },

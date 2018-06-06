@@ -14,7 +14,11 @@ const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
         ? players.map(prop('login')).join(', ')
         : 'No players'}
     </Cell>
-    <Cell css={`width: 1px`}>
+    <Cell
+      css={`
+        width: 1px;
+      `}
+    >
       <Button size="sm" onClick={() => handleGameJoin(id)}>
         Join
       </Button>

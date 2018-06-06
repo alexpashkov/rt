@@ -1,6 +1,6 @@
 import { compose, lifecycle, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
-import history from "../../history";
+import history from '../../history';
 
 import {
   client as clientSocketEvents,
@@ -45,4 +45,3 @@ const handleGameCreateResponse = ({ status, gameId }) => {
   }
   navigateToGamePage(gameId);
 };
-
