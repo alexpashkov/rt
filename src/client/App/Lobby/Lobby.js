@@ -5,9 +5,11 @@ import LobbyHeader from './LobbyHeader';
 import LobbyGamesList from './LobbyGamesList';
 
 const Lobby = ({ gamesList, handleGameCreate, handleGameJoin }) => (
-  <div css={`
-    width: 100%
-  `}>
+  <div
+    css={`
+      width: 100%;
+    `}
+  >
     <LobbyHeader handleGameCreate={handleGameCreate} />
     <LobbyGamesList gamesList={gamesList} handleGameJoin={handleGameJoin} />
   </div>

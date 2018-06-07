@@ -14,4 +14,4 @@ export default {
     chatHistory: PropTypes.array.isRequired
   }),
   gameId: PropTypes.string.isRequired
-}
+};

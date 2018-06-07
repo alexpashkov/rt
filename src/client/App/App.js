@@ -21,11 +21,7 @@ const App = () => (
         <Router history={history}>
           <Switch>
             <Route exact path="/" component={Lobby} />
-            <Route
-              exact
-              path="/:gameId"
-              component={Game}
-            />
+            <Route exact path="/:gameId" component={Game} />
             <Redirect to="/" />
           </Switch>
         </Router>

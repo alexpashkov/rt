@@ -1,4 +1,4 @@
-import styled from "react-emotion";
+import styled from 'react-emotion';
 
 export const Table = styled.div`
   display: table;
@@ -6,7 +6,7 @@ export const Table = styled.div`
 
 export const Row = styled.div`
   display: table-row;
-  background-color: ${({theme}) => theme.colors.accent};
+  background-color: ${({ theme }) => theme.colors.accent};
 `;
 
 export const Cell = styled.div`
