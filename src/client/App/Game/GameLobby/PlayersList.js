@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import { Table, Row, Cell } from '../../../components/Table';
 
 const PlayersList = ({ players = [], leaderId }) => (
-  <section>
+  <section
+    css={`
+      flex-grow: 1;
+    `}
+  >
     <h2>Players</h2>
     <Table
       css={`

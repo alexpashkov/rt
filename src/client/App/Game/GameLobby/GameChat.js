@@ -7,8 +7,10 @@ const GameChat = ({
   handleMessageChange,
   handleMessageSend
 }) => (
-  <div>
-    <main>
+  <div css={`
+    flex-basis: 30vh;
+  `}>
+   <main>
       {messages.length
         ? messages.map((message, i) => <pre key={i}>{JSON.stringify(message)}</pre>)
         : 'Be the first who will send a message!'}

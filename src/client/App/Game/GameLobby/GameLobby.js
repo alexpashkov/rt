@@ -11,16 +11,24 @@ const GameLobby = ({
 }) => (
   <div
     css={`
+      display: flex;
+      flex-direction: column;
       width: 100%;
     `}
   >
-    <header>
+    <header
+      css={`
+        flex-shrink: 0;
+      `}
+    >
       <h1>Welcome to the game {id}!</h1>
-      <div css={`
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      `}>
+      <div
+        css={`
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        `}
+      >
         <p>Waiting while everybody is ready...</p>
         {userId === leaderId && (
           <Button color="primary" onClick={handleGameStart}>
@@ -29,8 +37,16 @@ const GameLobby = ({
         )}
       </div>
     </header>
-    <PlayersList players={players} leaderId={leaderId} />
-    <GameChat />
+    <main
+      css={`
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      `}
+    >
+      <PlayersList players={players} leaderId={leaderId} />
+      <GameChat />
+    </main>
   </div>
 );
 
