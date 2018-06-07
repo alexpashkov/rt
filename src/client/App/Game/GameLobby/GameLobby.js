@@ -30,6 +30,7 @@ const GameLobby = ({
       <h1>Welcome to the game {id}!</h1>
       <div css={`
         display: flex;
+        align-items: center;
         justify-content: space-between;
       `}>
         <p>Waiting while everybody is ready...</p>
