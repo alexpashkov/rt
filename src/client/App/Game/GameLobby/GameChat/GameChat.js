@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import MessageList from './MessageList';
+import MessageInput from './MessageInput';
+
 const GameChat = ({
   messages = [],
   currentMessage,
@@ -9,21 +12,12 @@ const GameChat = ({
   className
 }) => (
   <div className={className}>
-    <main>
-      {messages.length
-        ? messages.map((message, i) => (
-            <pre key={i}>{JSON.stringify(message)}</pre>
-          ))
-        : 'Be the first who will send a message!'}
-    </main>
-    <form onSubmit={handleMessageSending}>
-      <input
-        type="text"
-        value={currentMessage}
-        onChange={event => setCurrentMessage(event.currentTarget.value)}
-      />
-      <button>Send</button>
-    </form>
+    <MessageList messages={messages} />
+    <MessageInput
+      currentMessage={currentMessage}
+      setCurrentMessage={setCurrentMessage}
+      handleMessageSending={handleMessageSending}
+    />
   </div>
 );
 
