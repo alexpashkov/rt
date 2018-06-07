@@ -5,14 +5,15 @@ const GameChat = ({
   messages = [],
   currentMessage,
   setCurrentMessage,
-  handleMessageSending
+  handleMessageSending,
+  className
 }) => (
-  <div css={`
-    flex-basis: 30vh;
-  `}>
-   <main>
+  <div className={className}>
+    <main>
       {messages.length
-        ? messages.map((message, i) => <pre key={i}>{JSON.stringify(message)}</pre>)
+        ? messages.map((message, i) => (
+            <pre key={i}>{JSON.stringify(message)}</pre>
+          ))
         : 'Be the first who will send a message!'}
     </main>
     <form onSubmit={handleMessageSending}>
@@ -30,7 +31,8 @@ GameChat.propTypes = {
   messages: PropTypes.array.isRequired,
   currentMessage: PropTypes.string.isRequired,
   setCurrentMessage: PropTypes.func.isRequired,
-  handleMessageSending: PropTypes.func.isRequired
+  handleMessageSending: PropTypes.func.isRequired,
+  className: PropTypes.string
 };
 
 export default GameChat;

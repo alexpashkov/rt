@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import {
   client as clientSocketEvents,
   server as serverSocketEvents
-} from '../../../../shared/socket-events';
+} from '../../../../../shared/socket-events';
 import GameChat from './GameChat';
-import socket from '../../../socket';
-import { addChatMessage } from '../../../actions/currentGameInfoActions';
+import socket from '../../../../socket';
+import { addChatMessage } from '../../../../actions/currentGameInfoActions';
 
 export default compose(
   connect(

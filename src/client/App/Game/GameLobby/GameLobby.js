@@ -2,7 +2,7 @@
 import React from 'react';
 import Button from '../../../components/Button';
 import PlayersList from './PlayersList';
-import GameChat from './GameChatContainer';
+import GameChat from './GameChat/GameChatContainer';
 
 const GameLobby = ({
   userId,
@@ -45,7 +45,11 @@ const GameLobby = ({
       `}
     >
       <PlayersList players={players} leaderId={leaderId} />
-      <GameChat />
+      <GameChat
+        css={`
+          flex-basis: 30vh;
+        `}
+      />
     </main>
   </div>
 );
