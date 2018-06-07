@@ -12,4 +12,16 @@ export const Row = styled.div`
 export const Cell = styled.div`
   display: table-cell;
   padding: 5px 10px;
+  &:first-of-type {
+    border-radius: ${props => {
+      const { defaultBorderRadius } = props.theme;
+      return `${defaultBorderRadius} 0 0 ${defaultBorderRadius}`;
+    }};
+  }
+  &:last-of-type {
+    border-radius: ${props => {
+      const { defaultBorderRadius } = props.theme;
+      return `0 ${defaultBorderRadius} ${defaultBorderRadius} 0 `;
+    }};
+  }
 `;

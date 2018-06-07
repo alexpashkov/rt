@@ -1,14 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'react-emotion';
 
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
-
-const StyledWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+import { GameChatWrapper } from './styled';
 
 const GameChat = ({
   messages = [],
@@ -17,7 +12,7 @@ const GameChat = ({
   handleMessageSending,
   className
 }) => (
-  <StyledWrapper className={className}>
+  <GameChatWrapper className={className}>
     <h2>Game Chart</h2>
     <MessageList messages={messages} />
     <MessageInput
@@ -25,7 +20,7 @@ const GameChat = ({
       setCurrentMessage={setCurrentMessage}
       handleMessageSending={handleMessageSending}
     />
-  </StyledWrapper>
+  </GameChatWrapper>
 );
 
 GameChat.propTypes = {

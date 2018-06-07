@@ -1,35 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types'; // prop-types are set in the container component
-import styled from 'react-emotion';
+
+import {
+  MessagesWrapper,
+  MessageItemWrapper,
+  UserIdWrapper,
+  MessageWrapper
+} from './styled';
 
 /* eslint react/prop-types: 0 */
 const MessageItem = ({ login, message }) => (
-  <div>
-    <div>{login}</div>
-    <div>{message}</div>
-  </div>
+  <MessageItemWrapper>
+    <UserIdWrapper title={login}>{login}</UserIdWrapper>
+    <MessageWrapper>{message}</MessageWrapper>
+  </MessageItemWrapper>
 );
 
-const Wrapper = styled.div`
-  flex-grow: 1;
-  overflow: auto;
-  &:empty {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    &::after {
-      content: 'Be the first in the chat!';
-      color: ${props => props.theme.colors.secondaryText};
-      display: block;
-    } 
-  }
-`;
-
 const MessageList = ({ messages }) => (
-  <Wrapper>
+  <MessagesWrapper>
     {!!messages.length &&
-      messages.map(message => <MessageItem key={message.id} {...message} />)}
-  </Wrapper>
+      messages.map((message, i) => <MessageItem key={i} {...message} />)}
+  </MessagesWrapper>
 );
 
 MessageList.propTypes = {
