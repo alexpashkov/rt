@@ -16,7 +16,7 @@ import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
 import Game from './Game';
 
-import { client as clientSocketEvents } from '../../../shared/socket-events';
+import { client as clientSocketEvents, server as serverSocketEvents } from '../../../shared/socket-events';
 
 const emitGameJoin = (gameId, cb) =>
   socket.emit(clientSocketEvents.GAME_JOIN, { id: gameId }, cb);
@@ -39,18 +39,17 @@ export default compose(
   lifecycle({
     componentDidMount() {
       const { gameId, setCurrentGameInfo } = this.props;
-      const handleGameJoinResponse = ({ status, gameInfo, description }) => {
+      emitGameJoin(gameId, ({ status, gameInfo, description }) => {
         if (status === 'error') {
           /* failed to join the game, redirect to lobby */
           alert(description || 'Failed to join the game');
           return history.push('/');
         }
-        setTimeout(
-          () => setCurrentGameInfo(gameInfo),
-          1500
-        ); /* FIXME remove artificial delay */
-      };
-      emitGameJoin(gameId, handleGameJoinResponse);
+        setCurrentGameInfo(gameInfo);
+      });
+      /* subscribe to game info updates, e.g when new player joins the game
+      is reflected for players who's in the game lobby */
+      socket.on(serverSocketEvents.GAME_INFO_UPDATE, setCurrentGameInfo);
     },
     componentWillUnmount() {
       const { gameId, setCurrentGameInfo } = this.props;
@@ -58,6 +57,7 @@ export default compose(
       emitGameLeave(gameId);
       /* set current game info to null, so we can use it as indicator for a spinner */
       setCurrentGameInfo(null);
+      socket.off(serverSocketEvents.GAME_INFO_UPDATE);
     }
   }),
   setPropTypes(gamePropTypes),

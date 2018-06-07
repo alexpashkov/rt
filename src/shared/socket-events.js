@@ -1,5 +1,3 @@
-"use strict";
-
 module.exports = {
   client: {
     GAME_CREATE: "GAME_CREATE",
