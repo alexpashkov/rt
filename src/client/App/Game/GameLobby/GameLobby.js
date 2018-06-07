@@ -2,6 +2,7 @@
 import React from 'react';
 import Button from '../../../components/Button';
 import PlayersList from './PlayersList';
+import GameChat from './GameChatContainer';
 
 const GameLobby = ({
   userId,
@@ -29,6 +30,7 @@ const GameLobby = ({
       </div>
     </header>
     <PlayersList players={players} leaderId={leaderId} />
+    <GameChat />
   </div>
 );
 

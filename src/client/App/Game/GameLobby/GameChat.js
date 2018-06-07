@@ -17,7 +17,7 @@ const GameChat = ({
       <input
         type="text"
         value={message}
-        onChange={handleMessageChange}
+        onChange={event => handleMessageChange(event.currentTarget.value)}
       />
       <button>Send</button>
     </form>
