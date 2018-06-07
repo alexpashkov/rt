@@ -16,7 +16,10 @@ import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
 import Game from './Game';
 
-import { client as clientSocketEvents, server as serverSocketEvents } from '../../../shared/socket-events';
+import {
+  client as clientSocketEvents,
+  server as serverSocketEvents
+} from '../../../shared/socket-events';
 
 const emitGameJoin = (gameId, cb) =>
   socket.emit(clientSocketEvents.GAME_JOIN, { id: gameId }, cb);
