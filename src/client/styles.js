@@ -10,7 +10,7 @@ injectGlobal`
     body {
       font-family: 'Passion One', sans-serif;
       color: white;
-      background-color: rgba(25,20,26,0.96);
+      background-color: #19141a;
       margin: 0; 
     }
     h1, h2, h3, h4, h5, h6 {

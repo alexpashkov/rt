@@ -1,6 +1,9 @@
 export default {
   colors: {
     accent: '#f00',
-    background: '#1f1429'
-  }
+    background: '#19141a',
+    primaryText: '#fff',
+    secondaryText: '#786f7f'
+  },
+  defaultBorderRadius: '5px'
 };
