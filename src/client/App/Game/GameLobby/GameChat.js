@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 const GameChat = ({
   messages = [],
-  message,
-  handleMessageChange,
-  handleMessageSend
+  currentMessage,
+  setCurrentMessage,
+  handleMessageSending
 }) => (
   <div css={`
     flex-basis: 30vh;
@@ -15,11 +15,11 @@ const GameChat = ({
         ? messages.map((message, i) => <pre key={i}>{JSON.stringify(message)}</pre>)
         : 'Be the first who will send a message!'}
     </main>
-    <form onSubmit={handleMessageSend}>
+    <form onSubmit={handleMessageSending}>
       <input
         type="text"
-        value={message}
-        onChange={event => handleMessageChange(event.currentTarget.value)}
+        value={currentMessage}
+        onChange={event => setCurrentMessage(event.currentTarget.value)}
       />
       <button>Send</button>
     </form>
@@ -28,9 +28,9 @@ const GameChat = ({
 
 GameChat.propTypes = {
   messages: PropTypes.array.isRequired,
-  message: PropTypes.string.isRequired,
-  handleMessageChange: PropTypes.func.isRequired,
-  handleMessageSend: PropTypes.func.isRequired
+  currentMessage: PropTypes.string.isRequired,
+  setCurrentMessage: PropTypes.func.isRequired,
+  handleMessageSending: PropTypes.func.isRequired
 };
 
 export default GameChat;

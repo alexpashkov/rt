@@ -20,17 +20,17 @@ export default compose(
   ),
   withStateHandlers(
     {
-      message: ''
+      currentMessage: ''
     },
     {
-      handleMessageChange: () => value => ({ message: value })
+      setCurrentMessage: () => value => ({ currentMessage: value })
     }
   ),
   withHandlers({
-    handleMessageSend: ({ message, handleMessageChange }) => event => {
+    handleMessageSending: ({ currentMessage, setCurrentMessage }) => event => {
       event.preventDefault();
-      socket.emit(clientSocketEvents.GAME_CHAT_MESSAGE, message);
-      handleMessageChange(''); /* clear message input */
+      socket.emit(clientSocketEvents.GAME_CHAT_MESSAGE, currentMessage);
+      setCurrentMessage(''); /* clear message input */
     }
   }),
   lifecycle({
