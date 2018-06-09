@@ -23,18 +23,18 @@ class MessageList extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.srollMessagesWrapperToTheBottom();
+    this.scrollMessagesWrapperToTheBottom();
   }
 
   componentDidUpdate({ messages: prevMessages }) {
     const { messages } = this.props;
     if (messages.length !== prevMessages.length) {
       /* scroll to the bottom */
-      this.srollMessagesWrapperToTheBottom();
+      this.scrollMessagesWrapperToTheBottom();
     }
   }
 
-  srollMessagesWrapperToTheBottom() {
+  scrollMessagesWrapperToTheBottom() {
     this.wrapperRef.current.scrollTop = this.wrapperRef.current.scrollHeight;
   }
 
