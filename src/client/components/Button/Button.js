@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import PropTypes from 'prop-types';
+import { darken } from 'polished';
 
 const resolveSize = ({ size }) => {
   switch (size) {
@@ -18,9 +19,14 @@ const Wrapper = styled.button`
   padding: ${resolveSize};
   border-radius: 300px;
   color: ${({ color }) => (color === 'default' ? '#000' : '#fff')};
-  background-color: ${({ color }) => (color === 'default' ? '#fff' : '#f00')};
-  border: none;
-  cursor: pointer;
+  background-color: ${({ color }) => (color === 'default' ? '#fff' : 'red')};
+  border: 1px solid
+    ${({ color }) => darken(0.15, color === 'default' ? '#fff' : 'red')};
+  opacity: 0.9;
+  &:hover {
+    cursor: pointer;
+    opacity: 1;
+  }
   &:focus {
     outline: none;
   }

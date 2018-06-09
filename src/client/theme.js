@@ -6,10 +6,10 @@ export default {
     secondaryText: '#7f8fa4'
   },
   panel: {
-    background: "#273142",
-    borderRadius: "5px",
-    border: "1px solid #313d4f",
-    padding: "10px"
+    background: '#273142',
+    borderRadius: '5px',
+    border: '1px solid #313d4f',
+    padding: '10px'
   },
   defaultBorderRadius: '5px'
 };

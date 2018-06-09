@@ -1,4 +1,4 @@
-import { css } from "react-emotion";
+import { css } from 'react-emotion';
 
 export const panelCss = props => css`
   background-color: ${props.theme.panel.background};
