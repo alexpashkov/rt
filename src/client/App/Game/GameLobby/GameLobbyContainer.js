@@ -17,7 +17,7 @@ export default compose(
   withHandlers({
     handleGameStart: () => () => {
       socket.emit(clientSocketEvents.GAME_START, res =>
-        console.log('game start ', res)
+        console.log('GAME_START event response: ', res)
       );
     }
   }),
