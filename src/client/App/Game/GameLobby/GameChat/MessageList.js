@@ -16,12 +16,38 @@ const MessageItem = ({ login, message }) => (
   </MessageItemWrapper>
 );
 
-const MessageList = ({ messages }) => (
-  <MessagesWrapper>
-    {!!messages.length &&
-      messages.map((message, i) => <MessageItem key={i} {...message} />)}
-  </MessagesWrapper>
-);
+class MessageList extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.wrapperRef = React.createRef();
+  }
+
+  componentDidMount() {
+    this.srollMessagesWrapperToTheBottom();
+  }
+
+  componentDidUpdate({ messages: prevMessages }) {
+    const { messages } = this.props;
+    if (messages.length !== prevMessages.length) {
+      /* scroll to the bottom */
+      this.srollMessagesWrapperToTheBottom();
+    }
+  }
+
+  srollMessagesWrapperToTheBottom() {
+    this.wrapperRef.current.scrollTop = this.wrapperRef.current.scrollHeight;
+  }
+
+  render() {
+    const { messages = [] } = this.props;
+    return (
+      <MessagesWrapper innerRef={this.wrapperRef}>
+        {!!messages.length &&
+          messages.map((message, i) => <MessageItem key={i} {...message} />)}
+      </MessagesWrapper>
+    );
+  }
+}
 
 MessageList.propTypes = {
   messages: PropTypes.arrayOf(
