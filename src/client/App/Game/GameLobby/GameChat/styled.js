@@ -1,5 +1,5 @@
 import styled from 'react-emotion';
-import { lighten } from "polished";
+import { lighten } from 'polished';
 
 export const GameChatWrapper = styled.div`
   display: flex;
@@ -17,7 +17,7 @@ export const MessagesWrapper = styled.div`
       content: 'Be the first in the chat!';
       color: ${props => props.theme.colors.secondaryText};
       display: block;
-    } 
+    }
   }
 `;
 
@@ -41,7 +41,7 @@ export const MessageWrapper = styled.div`
   flex-grow: 1;
   margin-bottom: 20px;
   margin-left: 10px;
-  background-color: ${props => lighten(.1, props.theme.colors.background)};
+  background-color: ${props => lighten(0.1, props.theme.colors.background)};
   padding: 15px;
   border-radius: 10px;
 `;

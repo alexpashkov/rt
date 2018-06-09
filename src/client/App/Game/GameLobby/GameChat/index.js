@@ -1,1 +1,1 @@
-export { default } from "./GameChatContainer";
+export { default } from './GameChatContainer';
