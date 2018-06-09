@@ -1,7 +1,7 @@
 import styled from 'react-emotion';
 
 export const ColoringWrapper = styled.div`
-  font-family: 'Passion One', sans-serif;
+  font-family: 'Bowlby One SC', cursive;
   color: ${({ theme }) => theme.colors.primaryText};
   background-color: ${({ theme }) => theme.colors.background}}
   h1, h2, h3, h4, h5, h6 {
