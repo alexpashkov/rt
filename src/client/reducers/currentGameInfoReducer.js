@@ -9,6 +9,11 @@ const currentGameInfoReducer = (state = null, action) => {
       };
     case actionTypes.SET_INFO:
       return action.payload;
+    case actionTypes.SET_IS_RUNNING:
+      return {
+        ...state,
+        isRunning: action.payload
+      }
     default:
       return state;
   }
