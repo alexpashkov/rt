@@ -9,6 +9,7 @@ export const GameChatWrapper = styled.div`
 export const MessagesWrapper = styled.div`
   flex-grow: 1;
   overflow: auto;
+  height: 30vh;
   &:empty {
     display: flex;
     justify-content: center;

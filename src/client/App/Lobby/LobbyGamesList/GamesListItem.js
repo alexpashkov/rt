@@ -24,7 +24,7 @@ const Cell = styled.div`
 const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
   <Row>
     <Cell>Game {id}</Cell>
-    <Cell>{isRunning ? 'Running' : 'Waiting for players'}</Cell>
+    <Cell>{isRunning ? 'Running' : 'Waiting to start...'}</Cell>
     <Cell>
       {players && players.length
         ? players.map(prop('login')).join(', ')
@@ -36,7 +36,7 @@ const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
         max-width: 70px;
       `}
     >
-      <Button size="sm" onClick={() => handleGameJoin(id)}>
+      <Button color="primary" size="sm" onClick={() => handleGameJoin(id)}>
         Join
       </Button>
     </Cell>
