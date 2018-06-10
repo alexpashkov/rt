@@ -2,11 +2,19 @@ class Player {
   constructor(id, handlers) {
     this.id = id;
     this.pieceIndex = 0;
+    /*
+     *  This 'handlers' thing is just a test.
+     *  I thought there are too much event emitters and it makes
+     *  code bad :(
+     *
+     * This things seems to work ok.
+     */
     this.handlers = handlers;
   }
 
   setBoard(board) {
     this.board = board;
+    this.onBoardUpdate();
   }
 
   getBoard() {
@@ -19,8 +27,7 @@ class Player {
     this.onCurrentPieceUpdate();
   }
 
-  movePiece() {
-
+  movePiece(movementDirection) {
   }
 
   setCurrentPiece(currentPiece) {

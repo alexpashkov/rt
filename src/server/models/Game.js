@@ -38,7 +38,7 @@ class Game extends EventEmitter {
   }
 
   playerJoin(controllerInstance) {
-    if (this.players.filter((playerInList) => playerInList.id === controllerInstance.id).length !== 0)
+    if (this.players.find(playerInList => playerInList.id === controllerInstance.id))
       return false;
 
     if (this.destroyTimeout)
@@ -97,6 +97,10 @@ class Game extends EventEmitter {
     }
   }
 
+  /*
+   *  Because all players have to receive the same pieces in the same order,
+   *  unified pieceQueue and getNewPiece method are required.
+   */
   getNewPiece(index) {
     if (this.pieceQueue.length <= index)
       this.pieceQueue.push(PieceService.generateRandomPiece());

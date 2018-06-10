@@ -137,17 +137,19 @@ class MainController {
   onPieceUpdate(data) {
     assert.ok(data);
     if (data.id !== this.id)
-      return ;
+      return;
 
-    this.socket.emit(events.server.GAME_PIECE_UPDATE, data);
+    logger.debug(`Piece updated -> ${JSON.stringify(data)}`);
+    this.socket.emit(events.server.GAME_PIECE_CURRENT, data);
   }
 
   onBoardUpdate(data) {
     assert.ok(data);
     if (data.id !== this.id)
-      return ;
+      return;
 
-    this.socket.emit(events.server.GAME_BOARD_UPDATE, data);
+    logger.debug(`Board updated -> ${JSON.stringify(data)}`);
+    this.socket.emit(events.server.GAME_BOARD_CURRENT, data);
   }
 
   onGamesUpdateRequest() {
@@ -160,7 +162,8 @@ class MainController {
   }
 
   onChatMessageSend(messageText) {
-    if (!this.inGame) return;
+    if (!this.inGame)
+      return;
 
     const login = UserService.getUserById(this.id).getLogin();
     const id = `${login}_${process.hrtime()}`;
