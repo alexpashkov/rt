@@ -1,9 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'react-emotion';
 import { prop } from 'ramda';
 
-import { Row, Cell } from '../../../components/Table';
+import { panelCss } from '../../../components/Panel';
+
 import Button from '../../../components/Button';
+
+const Row = styled.div`
+  ${panelCss};
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  border-radius: ${props => props.theme.panel.borderRadius};
+`;
+
+const Cell = styled.div`
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
 const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
   <Row>
@@ -16,7 +32,8 @@ const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
     </Cell>
     <Cell
       css={`
-        width: 1px;
+        width: 70px;
+        max-width: 70px;
       `}
     >
       <Button size="sm" onClick={() => handleGameJoin(id)}>

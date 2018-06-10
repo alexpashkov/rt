@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import GamesListItem from './GamesListItem';
 
 const LobbyGamesList = ({ gamesList, handleGameJoin }) => (
-  <div
-    css={`
-      display: table;
-      width: 100%;
-    `}
-  >
+  <div>
     {gamesList.map(game => (
       <GamesListItem key={game.id} {...game} handleGameJoin={handleGameJoin} />
     ))}
