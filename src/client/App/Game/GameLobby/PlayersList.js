@@ -3,25 +3,18 @@ import PropTypes from 'prop-types';
 import { Table, Row, Cell } from '../../../components/Table';
 
 const PlayersList = ({ players = [], leaderId }) => (
-  <section
+  <Table
     css={`
-      flex-grow: 1;
+      width: 100%;
     `}
   >
-    <h2>Players</h2>
-    <Table
-      css={`
-        width: 100%;
-      `}
-    >
-      {players.map(({ login }) => (
-        <Row key={login}>
-          <Cell>{login}</Cell>
-          <Cell>{login === leaderId && 'L'}</Cell>
-        </Row>
-      ))}
-    </Table>
-  </section>
+    {players.map(({ login }) => (
+      <Row key={login}>
+        <Cell>{login}</Cell>
+        <Cell>{login === leaderId && 'L'}</Cell>
+      </Row>
+    ))}
+  </Table>
 );
 
 PlayersList.propTypes = {

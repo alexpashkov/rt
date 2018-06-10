@@ -1,9 +1,30 @@
 /* eslint react/prop-types: 0 */ // prop-types are set in the container component
 import React from 'react';
+import styled from 'react-emotion';
+
 import Button from '../../../components/Button';
 import PlayersList from './PlayersList';
 import GameChat from './GameChat/GameChatContainer';
+import { PanelWrapper, panelCss } from '../../../components/Panel';
 
+const Header = styled.header`
+  ${panelCss};
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  flex-shrink: 0;
+`;
+
+const Main = styled.main`
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`;
+
+const Wrapper = styled.section`
+  ${panelCss};
+  flex-grow: 1;
+`;
 const GameLobby = ({
   userId,
   currentGameInfo: { id, leaderId, players },
@@ -14,14 +35,9 @@ const GameLobby = ({
       display: flex;
       flex-direction: column;
       width: 100%;
-      padding-bottom: 10px;
     `}
   >
-    <header
-      css={`
-        flex-shrink: 0;
-      `}
-    >
+    <Header>
       <h1>Welcome to the game {id}!</h1>
       <div
         css={`
@@ -37,21 +53,24 @@ const GameLobby = ({
           </Button>
         )}
       </div>
-    </header>
-    <main
-      css={`
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-      `}
-    >
-      <PlayersList players={players} leaderId={leaderId} />
-      <GameChat
+    </Header>
+    <Main>
+      <PanelWrapper
         css={`
-          flex-basis: 30vh;
+          flex-grow: 1;
+          margin-bottom: 10px;
         `}
-      />
-    </main>
+      >
+        <PlayersList players={players} leaderId={leaderId} />
+      </PanelWrapper>
+      <PanelWrapper
+        css={`
+          margin-bottom: 10px;
+        `}
+      >
+        <GameChat />
+      </PanelWrapper>
+    </Main>
   </div>
 );
 

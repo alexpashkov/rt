@@ -13,7 +13,6 @@ const GameChat = ({
   className
 }) => (
   <GameChatWrapper className={className}>
-    <h2>Game Chart</h2>
     <MessageList messages={messages} />
     <MessageInput
       currentMessage={currentMessage}
