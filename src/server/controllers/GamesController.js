@@ -1,25 +1,23 @@
-"use strict";
+'use strict';
 
-const logger = require("../logger");
-const uniqid = require("uniqid");
-const Game = require("../models/Game");
-const { EventEmitter } = require("events");
-const R = require("ramda");
+const logger = require('../logger');
+const uniqid = require('uniqid');
+const Game = require('../models/Game');
+const { EventEmitter } = require('events');
+const R = require('ramda');
 
 /* GamesController Events */
 const GCEvents = {
-  GC_GAMES_UPDATED: "GC_GAMES_UPDATED"
+  GC_GAMES_UPDATED: 'GC_GAMES_UPDATED'
 };
 
 class GamesController extends EventEmitter {
-
   constructor() {
     super();
     this.games = [];
     this.interval = setInterval(() => {
       const games = this.getGames();
-      if (games.length)
-        logger.debug(JSON.stringify(games, null, '\t'));
+      if (games.length) logger.debug(JSON.stringify(games, null, '\t'));
     }, 3000);
   }
 
@@ -27,7 +25,7 @@ class GamesController extends EventEmitter {
     const gameCreated = new Game(uniqid());
     this.games[gameCreated.id] = gameCreated;
 
-    gameCreated.on("destroy", this.deleteGame.bind(this));
+    gameCreated.on('destroy', this.deleteGame.bind(this));
 
     this.notifyGamesUpdated();
 
@@ -43,7 +41,7 @@ class GamesController extends EventEmitter {
   }
 
   leaveGame(gameId, userId) {
-    logger.debug(`${userId} has requested to leave ${gameId}`)
+    logger.debug(`${userId} has requested to leave ${gameId}`);
     if (this.games[gameId] && this.games[gameId].playerLeave(userId)) {
       logger.debug(`Left`);
       this.notifyGamesUpdated();
@@ -87,12 +85,20 @@ class GamesController extends EventEmitter {
     this.on(GCEvents.GC_GAMES_UPDATED, callback);
 
     callback(this.getGames());
-    logger.info(`Subscription on games update received. Listeners -> ${this.listenerCount(GCEvents.GC_GAMES_UPDATED)}`);
+    logger.info(
+      `Subscription on games update received. Listeners -> ${this.listenerCount(
+        GCEvents.GC_GAMES_UPDATED
+      )}`
+    );
   }
 
   unsubscribeUserOnGamesUpdate(callback) {
     this.removeListener(GCEvents.GC_GAMES_UPDATED, callback);
-    logger.info(`Unsubscription on games update received. Listeners -> ${this.listenerCount(GCEvents.GC_GAMES_UPDATED)}`);
+    logger.info(
+      `Unsubscription on games update received. Listeners -> ${this.listenerCount(
+        GCEvents.GC_GAMES_UPDATED
+      )}`
+    );
   }
 }
 

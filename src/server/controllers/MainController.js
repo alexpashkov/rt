@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-const logger = require("../logger");
-const events = require("../../shared/socket-events.js");
-const assert = require("assert");
-const GamesController = require("./GamesController");
-const UserService = require("../services/UserService");
+const logger = require('../logger');
+const events = require('../../shared/socket-events.js');
+const assert = require('assert');
+const GamesController = require('./GamesController');
+const UserService = require('../services/UserService');
 
 class MainController {
   constructor(socket, userId) {
@@ -25,20 +25,32 @@ class MainController {
   }
 
   setupEventHandlers() {
-    this.socket.on("disconnect", this.onDisconnect.bind(this));
+    this.socket.on('disconnect', this.onDisconnect.bind(this));
     this.socket.on(events.client.GAME_CREATE, this.onGameCreate.bind(this));
     this.socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
     this.socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
-    this.socket.on(events.client.GAME_START, this.onGameStartRequest.bind(this));
-    this.socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
-    this.socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
-    this.socket.on(events.client.GAME_PIECE_MOVE,  this.onGamePieceMove.bind(this));
+    this.socket.on(
+      events.client.GAME_START,
+      this.onGameStartRequest.bind(this)
+    );
+    this.socket.on(
+      events.client.GAMES_UPDATE_REQUEST,
+      this.onGamesUpdateRequest.bind(this)
+    );
+    this.socket.on(
+      events.client.GAME_CHAT_MESSAGE,
+      this.onChatMessageSend.bind(this)
+    );
+    this.socket.on(
+      events.client.GAME_PIECE_MOVE,
+      this.onGamePieceMove.bind(this)
+    );
   }
 
   onGameCreate(callback) {
     if (this.inGame) {
-      callback(this._respondError({ description: "You are already in game." }));
-      return ;
+      callback(this._respondError({ description: 'You are already in game.' }));
+      return;
     }
 
     const gameId = GamesController.createGame();
@@ -46,7 +58,7 @@ class MainController {
     callback(
       gameId
         ? this._respondSuccess({ gameId: gameId })
-        : this._respondError({ description: "Failed to create game." })
+        : this._respondError({ description: 'Failed to create game.' })
     );
   }
 
@@ -55,8 +67,8 @@ class MainController {
 
     if (this.inGame) {
       logger.info('Already in game.');
-      callback(this._respondError({ description: "Already in game." }));
-      return ;
+      callback(this._respondError({ description: 'Already in game.' }));
+      return;
     }
 
     const { id } = data;
@@ -74,7 +86,7 @@ class MainController {
     callback(
       joined
         ? this._respondSuccess({ gameInfo: gameInfo })
-        : this._respondError({ description: "Failed to join game." })
+        : this._respondError({ description: 'Failed to join game.' })
     );
   }
 
@@ -86,15 +98,15 @@ class MainController {
     logger.info(`User ${this.id} requested to leave game ${id}`);
 
     if (!this.inGame) {
-      callback(this._respondError({ description: "Not in game." }));
-      return ;
+      callback(this._respondError({ description: 'Not in game.' }));
+      return;
     }
 
     if (GamesController.leaveGame(id, this.id)) {
       this.inGame = false;
       callback(this._respondSuccess());
     } else {
-      callback(this._respondError({ description: "Invalid game ID." }));
+      callback(this._respondError({ description: 'Invalid game ID.' }));
     }
   }
 
@@ -102,14 +114,18 @@ class MainController {
     logger.debug(`Request to start game. In game? [${this.inGame}]`);
 
     if (!this.inGame) {
-      callback(this._respondError({ description: "You are not in game." }));
-      return ;
+      callback(this._respondError({ description: 'You are not in game.' }));
+      return;
     } else if (!GamesController.gameExists(this.gameId)) {
       this.inGame = false;
-      callback(this._respondError({ description: "You game has been destroyed." }));
-      return ;
+      callback(
+        this._respondError({ description: 'You game has been destroyed.' })
+      );
+      return;
     } else if (GamesController.getGameById(this.gameId).hasStarted()) {
-      callback(this._respondError({ description: "Your game has already started." }));
+      callback(
+        this._respondError({ description: 'Your game has already started.' })
+      );
     }
 
     try {
@@ -136,8 +152,7 @@ class MainController {
 
   onPieceUpdate(data) {
     assert.ok(data);
-    if (data.id !== this.id)
-      return;
+    if (data.id !== this.id) return;
 
     logger.debug(`Piece updated -> ${JSON.stringify(data)}`);
     this.socket.emit(events.server.GAME_PIECE_CURRENT, data);
@@ -145,25 +160,21 @@ class MainController {
 
   onBoardUpdate(data) {
     assert.ok(data);
-    if (data.id !== this.id)
-      return;
+    if (data.id !== this.id) return;
 
     logger.debug(`Board updated -> ${JSON.stringify(data)}`);
     this.socket.emit(events.server.GAME_BOARD_CURRENT, data);
   }
 
   onGamesUpdateRequest() {
-    logger.debug("GAMES_UPDATE event requested.");
+    logger.debug('GAMES_UPDATE event requested.');
     this.onGamesUpdate(GamesController.getGames());
   }
 
-  onGamePieceMove(data, callback) {
-
-  }
+  onGamePieceMove(data, callback) {}
 
   onChatMessageSend(messageText) {
-    if (!this.inGame)
-      return;
+    if (!this.inGame) return;
 
     const login = UserService.getUserById(this.id).getLogin();
     const id = `${login}_${process.hrtime()}`;
@@ -182,7 +193,7 @@ class MainController {
   }
 
   onDisconnect() {
-    logger.info("DISCONNECT EVENT FIRED");
+    logger.info('DISCONNECT EVENT FIRED');
     GamesController.unsubscribeUserOnGamesUpdate(this.onGamesUpdateCallback);
     if (this.inGame) {
       logger.info(`User ${this.id} leaves game ${this.gameId}`);
@@ -193,11 +204,11 @@ class MainController {
   }
 
   _respondSuccess(data) {
-    return Object.assign({ status: "success" }, data);
+    return Object.assign({ status: 'success' }, data);
   }
 
   _respondError(data) {
-    return Object.assign({ status: "error" }, data);
+    return Object.assign({ status: 'error' }, data);
   }
 }
 

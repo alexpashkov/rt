@@ -1,11 +1,10 @@
-const GameMode = require("./GameMode");
-const BlockCodes = require("../../shared/block-codes");
-const PieceService = require("../services/PieceService");
-const R = require("ramda");
-const logger = require("../logger");
+const GameMode = require('./GameMode');
+const BlockCodes = require('../../shared/block-codes');
+const PieceService = require('../services/PieceService');
+const R = require('ramda');
+const logger = require('../logger');
 
 class DefaultGameMode extends GameMode {
-
   constructor(game) {
     super(game);
   }
@@ -16,7 +15,8 @@ class DefaultGameMode extends GameMode {
 
     const now = Date.now();
 
-    if (now - this.previousPieceUpdate >= 1000) { /* Second passed */
+    if (now - this.previousPieceUpdate >= 1000) {
+      /* Second passed */
       this.previousPieceUpdate = this.previousPieceUpdate + 1000;
       for (let player of this.game.getPlayers()) {
         player.movePiece({ y: 1 });
@@ -30,12 +30,13 @@ class DefaultGameMode extends GameMode {
     this.generateInitialPieces();
   }
 
-  afterFinish() {
-
-  }
+  afterFinish() {}
 
   generatePlayerBoards() {
-    const { boardWidth, boardHeight } = this.params || { boardWidth: 10, boardHeight: 20 };
+    const { boardWidth, boardHeight } = this.params || {
+      boardWidth: 10,
+      boardHeight: 20
+    };
     const defaultBoard = new Array(boardHeight);
 
     for (let y = 0; y < boardHeight; y++) {
@@ -55,7 +56,6 @@ class DefaultGameMode extends GameMode {
       player.initCurrentPiece();
     }
   }
-
-};
+}
 
 module.exports = DefaultGameMode;

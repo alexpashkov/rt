@@ -27,8 +27,7 @@ class Player {
     this.onCurrentPieceUpdate();
   }
 
-  movePiece(movementDirection) {
-  }
+  movePiece(movementDirection) {}
 
   setCurrentPiece(currentPiece) {
     this.currentPiece = currentPiece;
@@ -44,17 +43,19 @@ class Player {
   }
 
   onCurrentPieceUpdate() {
-    this.handlers.onCurrentPieceUpdate && this.handlers.onCurrentPieceUpdate({
-      id: this.id,
-      piece: this.currentPiece
-    });
+    this.handlers.onCurrentPieceUpdate &&
+      this.handlers.onCurrentPieceUpdate({
+        id: this.id,
+        piece: this.currentPiece
+      });
   }
 
   onBoardUpdate() {
-    this.handlers.onBoardUpdate && this.handlers.onBoardUpdate({
-      id: this.id,
-      board: this.board
-    });
+    this.handlers.onBoardUpdate &&
+      this.handlers.onBoardUpdate({
+        id: this.id,
+        board: this.board
+      });
   }
 
   incrementPieceIndex() {

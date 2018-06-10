@@ -1,18 +1,18 @@
-const logger = require("../logger");
-const { EventEmitter } = require("events");
-const UserService = require("../services/UserService");
-const PieceService = require("../services/PieceService");
-const Player = require("./Player");
-const DefaultGameMode = require("./DefaultGameMode");
+const logger = require('../logger');
+const { EventEmitter } = require('events');
+const UserService = require('../services/UserService');
+const PieceService = require('../services/PieceService');
+const Player = require('./Player');
+const DefaultGameMode = require('./DefaultGameMode');
 
 /* Game Events */
 const GEvents = {
-  GE_CHAT_MESSAGE: "GE_CHAT_MESSAGE",
-  GE_INFO_UPDATE: "GE_INFO_UPDATE",
-  GE_STARTED: "GE_STARTED",
-  GE_START_FAILED: "GE_START_FAILED",
-  GE_PLAYER_PIECE_UPDATE: "GE_PLAYER_PIECE_UPDATE",
-  GE_PLAYER_BOARD_UPDATE: "GE_PLAYER_BOARD_UPDATE",
+  GE_CHAT_MESSAGE: 'GE_CHAT_MESSAGE',
+  GE_INFO_UPDATE: 'GE_INFO_UPDATE',
+  GE_STARTED: 'GE_STARTED',
+  GE_START_FAILED: 'GE_START_FAILED',
+  GE_PLAYER_PIECE_UPDATE: 'GE_PLAYER_PIECE_UPDATE',
+  GE_PLAYER_BOARD_UPDATE: 'GE_PLAYER_BOARD_UPDATE'
 };
 
 class Game extends EventEmitter {
@@ -38,16 +38,19 @@ class Game extends EventEmitter {
   }
 
   playerJoin(controllerInstance) {
-    if (this.players.find(playerInList => playerInList.id === controllerInstance.id))
+    if (
+      this.players.find(
+        playerInList => playerInList.id === controllerInstance.id
+      )
+    )
       return false;
 
-    if (this.destroyTimeout)
-      this.cancelDestroyTimeout();
+    if (this.destroyTimeout) this.cancelDestroyTimeout();
 
     const player = new Player(controllerInstance.id, {
-      'onCurrentPieceUpdate': this.onPlayerPieceUpdate.bind(this),
-      'onBoardUpdate': this.onPlayerBoardUpdate.bind(this),
-      'getNewPiece': this.getNewPiece.bind(this),
+      onCurrentPieceUpdate: this.onPlayerPieceUpdate.bind(this),
+      onBoardUpdate: this.onPlayerBoardUpdate.bind(this),
+      getNewPiece: this.getNewPiece.bind(this)
     });
 
     this.players.push(player);
@@ -60,7 +63,7 @@ class Game extends EventEmitter {
   }
 
   playerLeave(playerId) {
-    if (this.players.filter((player) => playerId === player.id).length === 0)
+    if (this.players.filter(player => playerId === player.id).length === 0)
       return false;
 
     this.players = this.players.filter(player => player.id !== playerId);
@@ -76,22 +79,29 @@ class Game extends EventEmitter {
   }
 
   chatMessageSend(message) {
-    if (message.message && message.login && this.isPlayerInGameByLogin(message.login)) {
+    if (
+      message.message &&
+      message.login &&
+      this.isPlayerInGameByLogin(message.login)
+    ) {
       this.chatHistory.push(message);
       this.emit(GEvents.GE_CHAT_MESSAGE, message);
     }
   }
 
   gameStart(startInitiator) {
-    logger.info(`${startInitiator} (leader? [${this.playerIsLeaderById(startInitiator)}]) has requested to start the game.`);
-    if (!this.playerIsLeaderById(startInitiator))
-      throw "You are not a leader.";
+    logger.info(
+      `${startInitiator} (leader? [${this.playerIsLeaderById(
+        startInitiator
+      )}]) has requested to start the game.`
+    );
+    if (!this.playerIsLeaderById(startInitiator)) throw 'You are not a leader.';
 
     try {
       this.isRunning = true;
       this.gameMode.start(this.params);
       this.emit(GEvents.GE_STARTED);
-    } catch(e) {
+    } catch (e) {
       this.isRunning = false;
       throw e;
     }
@@ -136,24 +146,25 @@ class Game extends EventEmitter {
     return {
       id: this.id,
       isRunning: this.isRunning,
-      leaderId: (this.players[0] && this.players[0].id),
-      players: this.players.map((player) => {
-        const user = UserService.getUserById(player.id);
-        logger.info(`User[${player.id}] found? -> ${!!user}`);
-        return user ? { login: user.getLogin() } : null;
-      }).filter((userLogin) => (userLogin !== null)),
-      chatHistory: this.chatHistory,
+      leaderId: this.players[0] && this.players[0].id,
+      players: this.players
+        .map(player => {
+          const user = UserService.getUserById(player.id);
+          logger.info(`User[${player.id}] found? -> ${!!user}`);
+          return user ? { login: user.getLogin() } : null;
+        })
+        .filter(userLogin => userLogin !== null),
+      chatHistory: this.chatHistory
     };
   }
 
   isPlayerInGameByLogin(login) {
     return (
-      this.players
-        .filter( player => {
-          const user = UserService.getUserById(player.id);
-          return user ? user.getLogin() === login : false;
-        })
-        .length !== 0);
+      this.players.filter(player => {
+        const user = UserService.getUserById(player.id);
+        return user ? user.getLogin() === login : false;
+      }).length !== 0
+    );
   }
 
   gameInfoUpdated() {
