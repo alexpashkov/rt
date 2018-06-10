@@ -38,7 +38,7 @@ class Game extends EventEmitter {
   }
 
   playerJoin(controllerInstance) {
-    if (this.players.filter((playerInList) => playerInList.id === controllerInstance.id).length != 0)
+    if (this.players.filter((playerInList) => playerInList.id === controllerInstance.id).length !== 0)
       return false;
 
     if (this.destroyTimeout)

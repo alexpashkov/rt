@@ -24,6 +24,4 @@ class ServerController {
   }
 }
 
-module.exports = server => {
-  new ServerController(server);
-};
+module.exports = server => new ServerController(server);

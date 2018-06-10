@@ -16,7 +16,8 @@ class DefaultGameMode extends GameMode {
 
     const now = Date.now();
 
-    if (now - this.previousPieceUpdate === 1000) { /* Second passed */
+    if (now - this.previousPieceUpdate >= 1000) { /* Second passed */
+      this.previousPieceUpdate = this.previousPieceUpdate + 1000;
       for (let player in this.game.getPlayers()) {
         player.movePiece({ y: 1 });
       }

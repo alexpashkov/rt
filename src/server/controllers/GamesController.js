@@ -18,7 +18,8 @@ class GamesController extends EventEmitter {
     this.games = [];
     this.interval = setInterval(() => {
       const games = this.getGames();
-      if (games.length) logger.debug(games);
+      if (games.length)
+        logger.debug(JSON.stringify(games, null, '\t'));
     }, 3000);
   }
 
@@ -42,10 +43,13 @@ class GamesController extends EventEmitter {
   }
 
   leaveGame(gameId, userId) {
+    logger.debug(`${userId} has requested to leave ${gameId}`)
     if (this.games[gameId] && this.games[gameId].playerLeave(userId)) {
+      logger.debug(`Left`);
       this.notifyGamesUpdated();
       return true;
     }
+    logger.debug(`Not Left`);
     return false;
   }
 
