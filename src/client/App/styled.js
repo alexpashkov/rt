@@ -1,9 +1,17 @@
-import styled from "react-emotion";
+import styled from 'react-emotion';
 
-export const AppContainer = styled.div`
+export const ColoringWrapper = styled.div`
+  font-family: 'Bowlby One SC', cursive;
+  color: ${({ theme }) => theme.colors.primaryText};
+  background-color: ${({ theme }) => theme.colors.background}}
+  h1, h2, h3, h4, h5, h6 {
+    color: ${({ theme }) => theme.colors.accent};
+  }
+`;
+
+export const CenteringWrapper = styled.div`
+  display: flex;
   max-width: 1000px;
   min-height: 100vh;
   margin: auto;
-  border-top: none;
-  border-bottom: none;
 `;

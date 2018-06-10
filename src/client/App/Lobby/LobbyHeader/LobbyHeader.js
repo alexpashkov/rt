@@ -1,24 +1,30 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "react-emotion";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'react-emotion';
 
-import Logo from "../../../components/Logo";
-import Button from "../../../components/Button";
+import Logo from '../../../components/Logo';
+import Button from '../../../components/Button';
+import { panelCss } from '../../../components/Panel';
 
 const StyledContainer = styled.header`
+  ${panelCss};
   display: flex;
-  flex-direction: column;
-  padding: 10px 0;
+  align-items: center;
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 `;
 
-const LobbyHeader = ({ onGameStartRequest }) => (
+const LobbyHeader = ({ handleGameCreate }) => (
   <StyledContainer>
     <Logo />
     <Button
+      color="primary"
+      size="lg"
       css={`
         margin-left: auto;
       `}
-      onClick={onGameStartRequest}
+      onClick={handleGameCreate}
     >
       Start Game
     </Button>
@@ -26,7 +32,7 @@ const LobbyHeader = ({ onGameStartRequest }) => (
 );
 
 LobbyHeader.propTypes = {
-  onGameStartRequest: PropTypes.func.isRequired
+  handleGameCreate: PropTypes.func.isRequired
 };
 
 export default LobbyHeader;

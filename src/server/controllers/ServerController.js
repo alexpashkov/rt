@@ -1,15 +1,15 @@
-"use strict";
+'use strict';
 
-const events = require("../../shared/socket-events.js");
-const logger = require("../logger");
-const MainController = require("./MainController.js");
-const UserService = require("../services/UserService.js");
+// const events = require("../../shared/socket-events.js");
+const logger = require('../logger');
+const MainController = require('./MainController.js');
+const UserService = require('../services/UserService.js');
 
 class ServerController {
   constructor(server) {
-    this.io = require("socket.io")(server);
-    this.io.on("connection", this.onConnection.bind(this));
-    logger.debug("Initialized socket.io");
+    this.io = require('socket.io')(server);
+    this.io.on('connection', this.onConnection.bind(this));
+    logger.debug('Initialized socket.io');
   }
 
   onConnection(socket) {

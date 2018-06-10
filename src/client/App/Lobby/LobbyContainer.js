@@ -1,9 +1,13 @@
 import { compose, lifecycle, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
+import history from '../../history';
 
-import socketEvents from '../../../shared/socket-events';
+import {
+  client as clientSocketEvents,
+  server as serverSocketEvents
+} from '../../../shared/socket-events';
 import socket from '../../socket';
-import { setList } from '../../actions/gamesList';
+import { setList } from '../../actions/gamesListActions';
 import Lobby from './Lobby';
 
 export default compose(
@@ -18,14 +22,26 @@ export default compose(
   lifecycle({
     componentDidMount() {
       const { setList } = this.props;
-      socket.on(socketEvents.server.GAMES_UPDATE, setList);
+      socket.on(serverSocketEvents.GAMES_UPDATE, setList);
     },
     componentWillUnmount() {
-      socket.off(socketEvents.server.GAMES_UPDATE);
+      socket.off(serverSocketEvents.GAMES_UPDATE);
     }
   }),
   withHandlers({
-    gameCreateRequest: () => () =>
-      socket.emit(socketEvents.client.GAME_CREATE, console.log)
+    handleGameCreate: () => emitGameCreate,
+    handleGameJoin: () => navigateToGamePage
   })
 )(Lobby);
+
+const navigateToGamePage = gameId => history.push(`/${gameId}`);
+
+const emitGameCreate = () =>
+  socket.emit(clientSocketEvents.GAME_CREATE, handleGameCreateResponse);
+
+const handleGameCreateResponse = ({ status, gameId }) => {
+  if (status !== 'success') {
+    return alert('Failed to join the game');
+  }
+  navigateToGamePage(gameId);
+};

@@ -1,31 +1,35 @@
-import React from "react";
-import { Provider as StoreProvider } from "react-redux";
-import { Router, Redirect, Switch, Route } from "react-router-dom";
-import { ThemeProvider } from "emotion-theming";
+import React from 'react';
+import { Provider as StoreProvider } from 'react-redux';
+import { Router, Redirect, Switch, Route } from 'react-router-dom';
+import { ThemeProvider } from 'emotion-theming';
 
-import history from "../history";
-import store from "../store";
-import theme from "../theme";
-import "../socket";
-import "../styles.js";
+import history from '../history';
+import store from '../store';
+import theme from '../theme';
+import '../socket';
+import '../styles.js';
 
-import { AppContainer } from "./styled";
+import { ColoringWrapper, CenteringWrapper } from './styled';
 
-import Lobby from "./Lobby";
+import Lobby from './Lobby';
+import Game from './Game';
 
 const App = () => (
-  <AppContainer>
-    <StoreProvider store={store}>
-      <ThemeProvider theme={theme}>
-        <Router history={history}>
-          <Switch>
-            <Route exact path="/" component={Lobby} />
-            <Redirect to="/" />
-          </Switch>
-        </Router>
-      </ThemeProvider>
-    </StoreProvider>
-  </AppContainer>
+  <StoreProvider store={store}>
+    <ThemeProvider theme={theme}>
+      <ColoringWrapper>
+        <CenteringWrapper>
+          <Router history={history}>
+            <Switch>
+              <Route exact path="/" component={Lobby} />
+              <Route exact path="/:gameId" component={Game} />
+              <Redirect to="/" />
+            </Switch>
+          </Router>
+        </CenteringWrapper>
+      </ColoringWrapper>
+    </ThemeProvider>
+  </StoreProvider>
 );
 
 export default App;
