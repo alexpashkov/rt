@@ -95,7 +95,8 @@ class Game extends EventEmitter {
         startInitiator
       )}]) has requested to start the game.`
     );
-    if (!this.playerIsLeaderById(startInitiator)) throw 'You are not a leader.';
+    if (!this.playerIsLeaderById(startInitiator))
+      throw 'You are not a leader.';
 
     try {
       this.isRunning = true;
@@ -124,7 +125,7 @@ class Game extends EventEmitter {
   }
 
   onPlayerBoardUpdate(boardInfo) {
-    logger.info(`BOARD UPDATED -> ${JSON.stringify(player)}`);
+    logger.info(`BOARD UPDATED -> ${JSON.stringify(boardInfo)}`);
     this.emit(GEvents.GE_PLAYER_BOARD_UPDATE, {
       ...boardInfo
     });
