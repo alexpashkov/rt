@@ -14,7 +14,7 @@ import history from '../../history';
 import socket from '../../socket';
 import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
-import runningGameLogicHOC from './runningGameLogicHOC';
+import withRunningGameLogic from './withRunningGameLogic';
 import Game from './Game';
 
 import {
@@ -54,6 +54,8 @@ export default compose(
       /* subscribe to game info updates, e.g when new player joins the game
       is reflected for players who's in the game lobby */
       socket.on(serverSocketEvents.GAME_INFO_UPDATE, setCurrentGameInfo);
+      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, console.log);
+      socket.on(serverSocketEvents.GAME_BOARD_CURRENT, console.log);
     },
     componentWillUnmount() {
       const { gameId, setCurrentGameInfo } = this.props;
@@ -62,6 +64,8 @@ export default compose(
       /* set current game info to null, so we can use it as indicator for a spinner */
       setCurrentGameInfo(null);
       socket.off(serverSocketEvents.GAME_INFO_UPDATE);
+      socket.off(serverSocketEvents.GAME_PIECE_CURRENT);
+      socket.off(serverSocketEvents.GAME_BOARD_CURRENT);
     }
   }),
   setPropTypes(gamePropTypes),
@@ -72,6 +76,6 @@ export default compose(
   branch(
     ({ currentGameInfo }) => !currentGameInfo.isRunning,
     renderComponent(GameLobby)
-  ),
-  runningGameLogicHOC
+  )
+  // withRunningGameLogic
 )(Game);
