@@ -14,7 +14,7 @@ import history from '../../history';
 import socket from '../../socket';
 import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
-import runningGameLogicHOC from './runningGameLogicHOC';
+import withRunningGameLogic from './withRunningGameLogic';
 import Game from './Game';
 
 import {
@@ -73,5 +73,5 @@ export default compose(
     ({ currentGameInfo }) => !currentGameInfo.isRunning,
     renderComponent(GameLobby)
   ),
-  runningGameLogicHOC
+  withRunningGameLogic
 )(Game);
