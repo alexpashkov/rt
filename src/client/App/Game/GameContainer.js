@@ -54,8 +54,12 @@ export default compose(
       /* subscribe to game info updates, e.g when new player joins the game
       is reflected for players who's in the game lobby */
       socket.on(serverSocketEvents.GAME_INFO_UPDATE, setCurrentGameInfo);
-      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, console.log);
-      socket.on(serverSocketEvents.GAME_BOARD_CURRENT, console.log);
+      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, data =>
+        console.log(serverSocketEvents.GAME_PIECE_CURRENT, data)
+      );
+      socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data =>
+        console.log(serverSocketEvents.GAME_BOARD_CURRENT, data)
+      );
     },
     componentWillUnmount() {
       const { gameId, setCurrentGameInfo } = this.props;
