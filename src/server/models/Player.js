@@ -22,7 +22,7 @@ class Player {
   }
 
   initCurrentPiece() {
-    this.piece = this.handlers.getNewPiece(this.pieceIndex);
+    this.currentPiece = this.handlers.getNewPiece(this.pieceIndex);
     this.incrementPieceIndex();
     this.onCurrentPieceUpdate();
   }
