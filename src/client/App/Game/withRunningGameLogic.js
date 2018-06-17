@@ -22,8 +22,11 @@ const handlePieceMovement = R.pipe(
 
 const handlePieceRotation = R.pipe(
   R.prop('keyCode'),
-  R.when(R.equals(38), keyCode =>
-    socket.emit(socketEvents.client.GAME_PIECE_ROTATE, 'right')
+  R.when(
+    R.equals(38),
+    keyCode =>
+      console.log('rotate') ||
+      socket.emit(socketEvents.client.GAME_PIECE_ROTATE, 'right')
   )
 );
 
