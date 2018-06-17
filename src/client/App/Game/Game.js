@@ -2,8 +2,6 @@
 import React from 'react';
 import GameBoard from './GameBoard/GameBoard';
 
-const board = Array.from(new Array(20)).fill(Array.from(new Array(10)));
-
-const Game = () => <GameBoard board={board} />;
+const Game = ({ board = null }) => <GameBoard board={board} />;
 
 export default Game;

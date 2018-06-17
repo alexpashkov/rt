@@ -14,8 +14,9 @@ import history from '../../history';
 import socket from '../../socket';
 import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
-import withRunningGameLogic from './withRunningGameLogic';
+// import withRunningGameLogic from './withRunningGameLogic';
 import Game from './Game';
+import { setBoard } from '../../actions/boardsActions';
 
 import {
   client as clientSocketEvents,
@@ -34,7 +35,8 @@ export default compose(
       currentGameInfo: state.currentGameInfo
     }),
     {
-      setCurrentGameInfo
+      setCurrentGameInfo,
+      setBoard
     }
   ),
   withProps(({ match: { params: { gameId } } }) => ({
@@ -42,7 +44,7 @@ export default compose(
   })),
   lifecycle({
     componentDidMount() {
-      const { gameId, setCurrentGameInfo } = this.props;
+      const { gameId, setCurrentGameInfo, setBoard } = this.props;
       emitGameJoin(gameId, ({ status, gameInfo, description }) => {
         if (status === 'error') {
           /* failed to join the game, redirect to lobby */
@@ -57,9 +59,9 @@ export default compose(
       socket.on(serverSocketEvents.GAME_PIECE_CURRENT, data =>
         console.log(serverSocketEvents.GAME_PIECE_CURRENT, data)
       );
-      socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data =>
-        console.log(serverSocketEvents.GAME_BOARD_CURRENT, data)
-      );
+      socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data => {
+        setBoard(data.id, data.board);
+      });
     },
     componentWillUnmount() {
       const { gameId, setCurrentGameInfo } = this.props;
