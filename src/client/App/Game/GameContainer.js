@@ -18,6 +18,7 @@ import Game from './Game';
 import { setBoard } from '../../actions/boardsActions';
 import { setPiece } from '../../actions/currentPieceActions';
 import { userBoardSelector } from './selectors';
+import withRunningGameLogic from './withRunningGameLogic';
 
 import {
   client as clientSocketEvents,
@@ -59,9 +60,9 @@ export default compose(
       /* subscribe to game info updates, e.g when new player joins the game
       is reflected for players who's in the game lobby */
       socket.on(serverSocketEvents.GAME_INFO_UPDATE, setCurrentGameInfo);
-      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, data =>
-        setPiece(data.piece)
-      );
+      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, ({ piece }) => {
+        setPiece(piece);
+      });
       socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data =>
         setBoard(data.id, data.board)
       );
@@ -78,6 +79,7 @@ export default compose(
     }
   }),
   setPropTypes(gamePropTypes),
+  withRunningGameLogic,
   branch(
     ({ currentGameInfo }) => !currentGameInfo,
     renderComponent(CenteredSpinner)
