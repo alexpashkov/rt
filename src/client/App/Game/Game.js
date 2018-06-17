@@ -4,6 +4,6 @@ import GameBoard from './GameBoard/GameBoard';
 
 const board = Array.from(new Array(20)).fill(Array.from(new Array(10)));
 
-const Game = ({ currentGameInfo }) => <GameBoard board={board} />;
+const Game = () => <GameBoard board={board} />;
 
 export default Game;
