@@ -1,5 +1,9 @@
 import { numToBinary16String } from '../../utils';
 
+export const userBoardSelector = state => {
+  return (state.boards && state.user && state.boards[state.user.id]) || null;
+};
+
 export const mergeBoardAndPiece = (board, piece) => {
   if (!piece) return board;
 
