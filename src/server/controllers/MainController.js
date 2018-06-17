@@ -171,7 +171,71 @@ class MainController {
     this.onGamesUpdate(GamesController.getGames());
   }
 
-  onGamePieceMove(data, callback) {}
+  onGamePieceMove(data, callback = () => true) {
+    if (typeof data !== 'string' && ['left', 'right', 'down'].indexOf(data) === -1) {
+      logger.error(`onGamePieceMove received invalid data = ${data}`);
+      callback(false);
+      return ;
+    }
+
+    if (!this.gameId) {
+      logger.error(`Player[${this.id}] is not in game.`);
+      callback(false);
+      return ;
+    }
+    
+    logger.debug(`Player[${this.id}] has requested to move his piece ${data}.`);
+    const game = GamesController.getGameById(this.gameId);
+    if (!game) {
+      logger.error(`Game ${this.gameId} does not exist.`);
+      this.gameId = null;
+      callback(false);
+      return ;
+    }
+
+    const player = game.getPlayerById(this.id);
+    assert(player);
+
+    if (!player.movePiece(data)) {
+      logger.error(`Can't move player's ${this.id} piece ${data}`);
+      callback(false);
+    }
+
+    callback(true);
+  }
+
+  onGamePieceRotate(data, callback = () => true) {
+    if (typeof data !== 'string' && ['left', 'right'].indexOf(data) === -1) {
+      logger.error(`onGamePieceRotate received invalid data = ${data}`);
+      callback(false);
+      return ;
+    }
+
+    if (!this.gameId) {
+      logger.error(`Player[${this.id}] is not in game`);
+      callback(false);
+      return ;
+    }
+
+    logger.debug(`Player[${this.id}] has requested to rotate his piece ${data}`);
+    const game = GamesController.getGameById(this.gameId);
+    if (!game) {
+      logger.error(`Game ${this.gameId} does not exist.`);
+      this.gameId = null;
+      callback(false);
+      return ;
+    }
+
+    const player = game.getPlayerById(this.id);
+    assert(player);
+
+    if (!player.rotatePiece(data)) {
+      logger.error(`Can't rotate player's ${this.id} piece ${data}`);
+      callback(false);
+    }
+
+    callback(true);
+  }
 
   onChatMessageSend(messageText) {
     if (!this.inGame) return;
