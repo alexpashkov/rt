@@ -169,7 +169,7 @@ class MainController {
     }
 
     if (!this.gameId) {
-      logger.error(`Player${this.id} is not in game.`);
+      logger.error(`Player[${this.id}] is not in game.`);
       callback(false);
       return ;
     }
@@ -184,10 +184,7 @@ class MainController {
     }
 
     const player = game.getPlayerById(this.id);
-    if (!player) {
-      callback(false);
-      throw 'Player has gameId of the Game he does not belong to.';
-    }
+    assert(player);
 
     if (!player.movePiece(data)) {
       logger.error(`Can't move player's ${this.id} piece ${data}`);
@@ -198,7 +195,36 @@ class MainController {
   }
 
   onGamePieceRotate(data, callback = () => true) {
+    if (typeof data !== 'string' && ['left', 'right'].indexOf(data) === -1) {
+      logger.error(`onGamePieceRotate received invalid data = ${data}`);
+      callback(false);
+      return ;
+    }
 
+    if (!this.gameId) {
+      logger.error(`Player[${this.id}] is not in game`);
+      callback(false);
+      return ;
+    }
+
+    logger.debug(`Player[${this.id}] has requested to rotate his piece ${data}`);
+    const game = GamesController.getGameById(this.gameId);
+    if (!game) {
+      logger.error(`Game ${this.gameId} does not exist.`);
+      this.gameId = null;
+      callback(false);
+      return ;
+    }
+
+    const player = game.getPlayerById(this.id);
+    assert(player);
+
+    if (!player.rotatePiece(data)) {
+      logger.error(`Can't rotate player's ${this.id} piece ${data}`);
+      callback(false);
+    }
+
+    callback(true);
   }
 
   onChatMessageSend(messageText) {
