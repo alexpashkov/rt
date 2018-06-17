@@ -11,9 +11,12 @@ import socket from '../../../socket';
 import GameLobby from './GameLobby';
 
 export default compose(
-  connect(null, {
-    setIsRunning
-  }),
+  connect(
+    null,
+    {
+      setIsRunning
+    }
+  ),
   withHandlers({
     handleGameStart: () => () => {
       socket.emit(clientSocketEvents.GAME_START, res =>
@@ -28,7 +31,6 @@ export default compose(
       socket.emit(clientSocketEvents.GAMES_UPDATE_REQUEST);
     },
     componentWillUnmount() {
-      const { setIsRunning } = this.props;
       socket.off(serverSocketEvents.GAME_STARTED);
     }
   })
