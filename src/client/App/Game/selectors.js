@@ -5,19 +5,18 @@ export const mergeBoardAndPiece = (board, piece) => {
   if (!piece) return board;
 
   const pieceCells = getPieceCells(piece.code);
-  return (
-    board &&
-    board.map(
-      (row, y) =>
-        pieceCells.find(cell => cell.y + piece.y === y)
-          ? row.map(
-              (cell, x) =>
-                !!pieceCells.find(
-                  cell => cell.x + piece.x === x && cell.y + piece.y === y
-                )
-            )
-          : row
-    )
+  return board.map(
+    (row, y) =>
+      pieceCells.find(cell => cell.y + piece.y === y)
+        ? row.map(
+            (cell, x) =>
+              pieceCells.find(
+                cell => cell.x + piece.x === x && cell.y + piece.y === y
+              )
+                ? piece.code
+                : 0
+          )
+        : row
   );
 };
 
@@ -39,11 +38,7 @@ export const getPieceCells = pieceCode =>
     );
 
 export const userBoardSelector = createSelector(
-  state => state.boards && state.user && state.boards[state.user.id],
-  state => {
-    const res = state.currentPiece;
-    console.log(res);
-    return res;
-  },
+  state => (state.boards && state.user && state.boards[state.user.id]) || [],
+  state => state.currentPiece,
   mergeBoardAndPiece
 );
