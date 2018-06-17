@@ -14,7 +14,6 @@ import history from '../../history';
 import socket from '../../socket';
 import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
-// import withRunningGameLogic from './withRunningGameLogic';
 import Game from './Game';
 import { setBoard } from '../../actions/boardsActions';
 import { setPiece } from '../../actions/currentPieceActions';
@@ -87,5 +86,4 @@ export default compose(
     ({ currentGameInfo }) => !currentGameInfo.isRunning,
     renderComponent(GameLobby)
   )
-  // withRunningGameLogic
 )(Game);
