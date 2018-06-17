@@ -17,6 +17,7 @@ import GameLobby from './GameLobby';
 // import withRunningGameLogic from './withRunningGameLogic';
 import Game from './Game';
 import { setBoard } from '../../actions/boardsActions';
+import { userBoardSelector } from './selectors';
 
 import {
   client as clientSocketEvents,
@@ -32,6 +33,7 @@ export default compose(
   connect(
     state => ({
       userId: state.user && state.user.id,
+      userBoard: userBoardSelector(state),
       currentGameInfo: state.currentGameInfo
     }),
     {

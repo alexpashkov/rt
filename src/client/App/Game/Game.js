@@ -2,6 +2,6 @@
 import React from 'react';
 import GameBoard from './GameBoard/GameBoard';
 
-const Game = ({ board = null }) => <GameBoard board={board} />;
+const Game = ({ userBoard = null }) => <GameBoard board={userBoard} />;
 
 export default Game;
