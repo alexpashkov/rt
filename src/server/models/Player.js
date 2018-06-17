@@ -34,6 +34,15 @@ class Player {
     this.onCurrentPieceUpdate();
   }
 
+  setCurrentPiece(currentPiece) {
+    this.currentPiece = currentPiece;
+    this.onCurrentPieceUpdate();
+  }
+
+  getCurrentPiece() {
+    return this.currentPiece;
+  }
+
   movePiece(movementDirection) {
     if (!this.currentPiece) return false;
 
@@ -48,22 +57,27 @@ class Player {
       })();
     }
 
-    if (!validator(this.board, this.currentPiece, movementDirection))
+    if (!this.validator(this.board, this.currentPiece, movementDirection))
       return false;
 
     this.currentPiece.x += movementDirection.x;
     this.currentPiece.y += movementDirection.y;
 
     this.onCurrentPieceUpdate();
+    return true;
   }
 
-  setCurrentPiece(currentPiece) {
-    this.currentPiece = currentPiece;
+  rotatePiece(rotationDirection) {
+    if (!this.currentPiece)
+      return false;
+
+    this.currentPiece.code = rotationMap.get(this.currentPiece.code);
     this.onCurrentPieceUpdate();
+    return true;
   }
 
-  getCurrentPiece() {
-    return this.currentPiece;
+  setValidator(validator) {
+    this.validator = validator;
   }
 
   movePiece(movementDirection) {
