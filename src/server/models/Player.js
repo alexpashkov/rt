@@ -34,6 +34,9 @@ class Player {
   }
 
   movePiece(movementDirection) {
+    if (!this.currentPiece)
+      return false;
+
     /*
      *  XXX: Separate as helper.
      */
