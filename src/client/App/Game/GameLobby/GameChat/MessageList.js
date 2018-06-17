@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types'; // prop-types are set in the container component
+import PropTypes from 'prop-types'; // prop-actionTypes are set in the container component
 
 import {
   MessagesWrapper,
@@ -8,7 +8,7 @@ import {
   MessageWrapper
 } from './styled';
 
-/* eslint react/prop-types: 0 */
+/* eslint react/prop-actionTypes: 0 */
 const MessageItem = ({ login, message }) => (
   <MessageItemWrapper>
     <UserIdWrapper title={login}>{login}</UserIdWrapper>

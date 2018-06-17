@@ -17,6 +17,7 @@ import GameLobby from './GameLobby';
 // import withRunningGameLogic from './withRunningGameLogic';
 import Game from './Game';
 import { setBoard } from '../../actions/boardsActions';
+import { setPiece } from '../../actions/currentPieceActions';
 import { userBoardSelector } from './selectors';
 
 import {
@@ -38,7 +39,8 @@ export default compose(
     }),
     {
       setCurrentGameInfo,
-      setBoard
+      setBoard,
+      setPiece
     }
   ),
   withProps(({ match: { params: { gameId } } }) => ({
@@ -46,7 +48,7 @@ export default compose(
   })),
   lifecycle({
     componentDidMount() {
-      const { gameId, setCurrentGameInfo, setBoard } = this.props;
+      const { gameId, setCurrentGameInfo, setPiece, setBoard } = this.props;
       emitGameJoin(gameId, ({ status, gameInfo, description }) => {
         if (status === 'error') {
           /* failed to join the game, redirect to lobby */
@@ -58,9 +60,10 @@ export default compose(
       /* subscribe to game info updates, e.g when new player joins the game
       is reflected for players who's in the game lobby */
       socket.on(serverSocketEvents.GAME_INFO_UPDATE, setCurrentGameInfo);
-      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, data =>
-        console.log(serverSocketEvents.GAME_PIECE_CURRENT, data)
-      );
+      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, data => {
+        console.log(serverSocketEvents.GAME_PIECE_CURRENT, data);
+        setPiece(data.piece);
+      });
       socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data => {
         setBoard(data.id, data.board);
       });

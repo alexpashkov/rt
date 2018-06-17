@@ -4,12 +4,12 @@ import userReducer from './userReducer';
 import gamesListReducer from './gamesListReducer';
 import currentGameInfoReducer from './currentGameInfoReducer';
 import boardsReducer from './boardsReducer';
-import currentPieceReducer from './currentGameInfoReducer';
+import currentPieceReducer from './currentPieceReducer';
 
 export default combineReducers({
   user: userReducer,
   gamesList: gamesListReducer,
   currentGameInfo: currentGameInfoReducer,
   boards: boardsReducer,
-  currentPiece: currentGameInfoReducer
+  currentPiece: currentPieceReducer
 });
