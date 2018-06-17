@@ -19,12 +19,15 @@ const BoardWrapper = styled.div`
   max-width: 400px;
 `;
 
-const GameBoard = ({ board }) => (
-  <BoardWrapper>
-    {board.map((row, y) => (
-      <Row key={y}>{row.map((cell, x) => <Cell key={x} filled={cell} />)}</Row>
-    ))}
-  </BoardWrapper>
-);
+const GameBoard = ({ board }) =>
+  board && (
+    <BoardWrapper>
+      {board.map((row, y) => (
+        <Row key={y}>
+          {row.map((cell, x) => <Cell key={x} filled={cell} />)}
+        </Row>
+      ))}
+    </BoardWrapper>
+  );
 
 export default GameBoard;

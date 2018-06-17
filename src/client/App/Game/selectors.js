@@ -22,7 +22,7 @@ export const getPieceCells = pieceCode =>
     .split('')
     .reduce(
       (acc, curr, i) =>
-        Number(curr)
+        +curr
           ? [
               ...acc,
               {
