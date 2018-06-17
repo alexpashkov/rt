@@ -35,20 +35,16 @@ class Player {
   }
 
   movePiece(movementDirection) {
-    if (!this.currentPiece)
-      return false;
+    if (!this.currentPiece) return false;
 
     /*
      *  XXX: Separate as helper.
      */
     if (typeof movementDirection === 'string') {
       movementDirection = (() => {
-        if (movementDirection === 'down')
-          return {x: 0, y: 1};
-        else if (movementDirection === 'left')
-          return {x: -1, y: 0};
-        else if (movementDirection === 'right')
-          return {x: 1, y: 0};
+        if (movementDirection === 'down') return { x: 0, y: 1 };
+        else if (movementDirection === 'left') return { x: -1, y: 0 };
+        else if (movementDirection === 'right') return { x: 1, y: 0 };
       })();
     }
 
