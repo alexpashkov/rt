@@ -5,6 +5,7 @@ const events = require('../../shared/socket-events.js');
 const assert = require('assert');
 const GamesController = require('./GamesController');
 const UserService = require('../services/UserService');
+const moveValidator = () => true;
 
 class MainController {
   constructor(socket, userId) {
@@ -29,22 +30,11 @@ class MainController {
     this.socket.on(events.client.GAME_CREATE, this.onGameCreate.bind(this));
     this.socket.on(events.client.GAME_JOIN, this.onGameJoin.bind(this));
     this.socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
-    this.socket.on(
-      events.client.GAME_START,
-      this.onGameStartRequest.bind(this)
-    );
-    this.socket.on(
-      events.client.GAMES_UPDATE_REQUEST,
-      this.onGamesUpdateRequest.bind(this)
-    );
-    this.socket.on(
-      events.client.GAME_CHAT_MESSAGE,
-      this.onChatMessageSend.bind(this)
-    );
-    this.socket.on(
-      events.client.GAME_PIECE_MOVE,
-      this.onGamePieceMove.bind(this)
-    );
+    this.socket.on(events.client.GAME_START, this.onGameStartRequest.bind(this));
+    this.socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
+    this.socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
+    this.socket.on(events.client.GAME_PIECE_MOVE, this.onGamePieceMove.bind(this));
+    this.socket.on(events.client.GAME_PIECE_ROTATE, this.onGamePieceRotate.bind(this));
   }
 
   onGameCreate(callback) {
@@ -119,7 +109,7 @@ class MainController {
     } else if (!GamesController.gameExists(this.gameId)) {
       this.inGame = false;
       callback(
-        this._respondError({ description: 'You game has been destroyed.' })
+        this._respondError({ description: 'Your game has been destroyed.' })
       );
       return;
     } else if (GamesController.getGameById(this.gameId).hasStarted()) {
@@ -171,7 +161,45 @@ class MainController {
     this.onGamesUpdate(GamesController.getGames());
   }
 
-  onGamePieceMove(data, callback) {}
+  onGamePieceMove(data, callback = () => true) {
+    if (typeof data !== 'string' && ['left', 'right', 'down'].indexOf(data) === -1) {
+      logger.error(`onGamePieceMove received invalid data = ${data}`);
+      callback(false);
+      return ;
+    }
+
+    if (!this.gameId) {
+      logger.error(`Player${this.id} is not in game.`);
+      callback(false);
+      return ;
+    }
+    
+    logger.debug(`Player[${this.id}] has requested to move his piece ${data}.`);
+    const game = GamesController.getGameById(this.gameId);
+    if (!game) {
+      logger.error(`Game ${this.gameId} does not exist.`);
+      this.gameId = null;
+      callback(false);
+      return ;
+    }
+
+    const player = game.getPlayerById(this.id);
+    if (!player) {
+      callback(false);
+      throw 'Player has gameId of the Game he does not belong to.';
+    }
+
+    if (!player.movePiece(data)) {
+      logger.error(`Can't move player's ${this.id} piece ${data}`);
+      callback(false);
+    }
+
+    callback(true);
+  }
+
+  onGamePieceRotate(data, callback = () => true) {
+
+  }
 
   onChatMessageSend(messageText) {
     if (!this.inGame) return;
