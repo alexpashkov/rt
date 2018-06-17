@@ -1,4 +1,4 @@
-/* eslint react/prop-types: 0 */ // prop-types are set in the container component
+/* eslint react/prop-types: 0 */ // prop-actionTypes are set in the container component
 import React from 'react';
 import styled from 'react-emotion';
 

@@ -1,23 +1,23 @@
+import { createSelector } from 'reselect';
 import { numToBinary16String } from '../../utils';
-
-export const userBoardSelector = state => {
-  return (state.boards && state.user && state.boards[state.user.id]) || null;
-};
 
 export const mergeBoardAndPiece = (board, piece) => {
   if (!piece) return board;
 
   const pieceCells = getPieceCells(piece.code);
-  return board.map(
-    (row, y) =>
-      pieceCells.find(cell => cell.y + piece.y === y)
-        ? row.map(
-            (cell, x) =>
-              !!pieceCells.find(
-                cell => cell.x + piece.x === x && cell.y + piece.y === y
-              )
-          )
-        : row
+  return (
+    board &&
+    board.map(
+      (row, y) =>
+        pieceCells.find(cell => cell.y + piece.y === y)
+          ? row.map(
+              (cell, x) =>
+                !!pieceCells.find(
+                  cell => cell.x + piece.x === x && cell.y + piece.y === y
+                )
+            )
+          : row
+    )
   );
 };
 
@@ -37,3 +37,13 @@ export const getPieceCells = pieceCode =>
           : acc,
       []
     );
+
+export const userBoardSelector = createSelector(
+  state => state.boards && state.user && state.boards[state.user.id],
+  state => {
+    const res = state.currentPiece;
+    console.log(res);
+    return res;
+  },
+  mergeBoardAndPiece
+);
