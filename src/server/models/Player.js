@@ -80,6 +80,43 @@ class Player {
     this.validator = validator;
   }
 
+  movePiece(movementDirection) {
+    if (!this.currentPiece) return false;
+
+    /*
+     *  XXX: Separate as helper.
+     */
+    if (typeof movementDirection === 'string') {
+      movementDirection = (() => {
+        if (movementDirection === 'down') return { x: 0, y: 1 };
+        else if (movementDirection === 'left') return { x: -1, y: 0 };
+        else if (movementDirection === 'right') return { x: 1, y: 0 };
+      })();
+    }
+
+    if (!this.validator(this.board, this.currentPiece, movementDirection))
+      return false;
+
+    this.currentPiece.x += movementDirection.x;
+    this.currentPiece.y += movementDirection.y;
+
+    this.onCurrentPieceUpdate();
+    return true;
+  }
+
+  rotatePiece(rotationDirection) {
+    if (!this.currentPiece)
+      return false;
+
+    this.currentPiece.code = rotationMap.get(this.currentPiece.code);
+    this.onCurrentPieceUpdate();
+    return true;
+  }
+
+  setValidator(validator) {
+    this.validator = validator;
+  }
+
   getPieceIndex() {
     return this.pieceIndex;
   }

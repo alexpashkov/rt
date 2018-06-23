@@ -19,7 +19,7 @@ class DefaultGameMode extends GameMode {
       /* Second passed */
       this.previousPieceUpdate = this.previousPieceUpdate + 1000;
       for (let player of this.game.getPlayers()) {
-        player.movePiece({ x:0, y: 1 });
+        player.movePiece({ x: 0, y: 1 });
       }
     }
   }

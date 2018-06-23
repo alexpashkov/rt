@@ -144,7 +144,7 @@ class Game extends EventEmitter {
   }
 
   getPlayerById(playerId) {
-    return this.players.find((player) => player.id == playerId);
+    return this.players.find((player) => player.id === playerId);
   }
 
   getGameInfo() {
