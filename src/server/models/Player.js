@@ -27,7 +27,32 @@ class Player {
     this.onCurrentPieceUpdate();
   }
 
-  movePiece(movementDirection) {}
+  movePiece(movementDirection) {
+    if (!this.currentPiece)
+      return false;
+
+    /*
+     *  XXX: Separate as helper.
+     */
+    if (typeof movementDirection === 'string') {
+      movementDirection = (() => {
+        if (movementDirection === 'down')
+          return {x: 0, y: 1};
+        else if (movementDirection === 'left')
+          return {x: -1, y: 0};
+        else if (movementDirection === 'right')
+          return {x: 1, y: 0};
+      })();
+    }
+
+    if (!validator(this.board, this.currentPiece, movementDirection))
+      return false;
+
+    this.currentPiece.x += movementDirection.x;
+    this.currentPiece.y += movementDirection.y;
+
+    this.onCurrentPieceUpdate();
+  }
 
   setCurrentPiece(currentPiece) {
     this.currentPiece = currentPiece;
