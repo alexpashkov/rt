@@ -34,7 +34,6 @@ class MainController {
     this.socket.on(events.client.GAMES_UPDATE_REQUEST, this.onGamesUpdateRequest.bind(this));
     this.socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
     this.socket.on(events.client.GAME_PIECE_MOVE, this.onGamePieceMove.bind(this));
-    this.socket.on(events.client.GAME_PIECE_ROTATE, this.onGamePieceRotate.bind(this));
   }
 
   onGameCreate(callback) {
