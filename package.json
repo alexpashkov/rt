@@ -37,6 +37,7 @@
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^22.4.4",
+    "jest-emotion": "^9.2.4",
     "node-sass": "^4.9.0",
     "nodemon": "^1.17.5",
     "prettier": "^1.12.1",
@@ -58,6 +59,7 @@
     "emotion": "^9.1.3",
     "emotion-theming": "^9.1.2",
     "express": "^4.16.3",
+    "identity-obj-proxy": "^3.0.0",
     "lodash": "^4.17.10",
     "morgan": "^1.9.0",
     "normalize.css": "^8.0.0",
@@ -82,11 +84,5 @@
     "socket.io-client": "^2.1.1",
     "uniqid": "^4.1.1",
     "winston": "^2.4.2"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js"
-    },
-    "collectCoverage": true
   }
 }
