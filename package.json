@@ -15,9 +15,11 @@
     "@types/react": "^16.3.14",
     "@types/react-dom": "^16.0.5",
     "babel-core": "^6.26.3",
+    "babel-jest": "^23.2.0",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.11",
     "dotenv": "^5.0.1",
@@ -38,6 +40,7 @@
     "node-sass": "^4.9.0",
     "nodemon": "^1.17.5",
     "prettier": "^1.12.1",
+    "react-test-renderer": "^16.4.1",
     "redux-devtools-extension": "^2.13.2",
     "redux-logger": "^3.0.6",
     "regenerator-runtime": "^0.11.1",
@@ -82,8 +85,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|scss)$": "<rootDir>/__mocks__/styleMock.js"
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js"
     },
     "collectCoverage": true
   }
