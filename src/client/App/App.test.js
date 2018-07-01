@@ -1,8 +1,7 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import ReactDOM from 'react-dom';
 import App from './App';
 
-test("doesn't throw", () => {
-  const component = renderer.create(<App />);
-  expect(component.toJSON()).toMatchSnapshot();
+test('mounts', () => {
+  ReactDOM.render(<App />, document.createElement('div'));
 });
