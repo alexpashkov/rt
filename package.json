@@ -84,5 +84,8 @@
     "socket.io-client": "^2.1.1",
     "uniqid": "^4.1.1",
     "winston": "^2.4.2"
+  },
+  "babel":{
+    "presets": "./.babelrc.js"
   }
 }
