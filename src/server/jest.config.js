@@ -1,5 +1,6 @@
 module.exports = {
   name: 'server',
   displayName: 'server',
-  rootDir: './'
+  rootDir: './',
+  testEnvironment: 'node'
 };
