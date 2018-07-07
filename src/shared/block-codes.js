@@ -1,4 +1,5 @@
 module.exports = {
+  BLOCK_LOCKED: -1,
   BLOCK_FREE: 0,
   BLOCK_RED: 1,
   BLOCK_ORANGE: 2,
@@ -6,6 +7,5 @@ module.exports = {
   BLOCK_GREEN: 4,
   BLOCK_BLUE: 5,
   BLOCK_INDIGO: 6,
-  BLOCK_VIOLET: 7,
-  BLOCK_LOCKED: -1,
+  BLOCK_VIOLET: 7
 };

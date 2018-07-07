@@ -1,5 +1,9 @@
 module.exports = {
-  projects: ['<rootDir>/src/client', '<rootDir>/src/server'],
+  projects: [
+    '<rootDir>/src/client',
+    '<rootDir>/src/server',
+    '<rootDir>/src/shared'
+  ],
   collectCoverage: true,
   collectCoverageFrom: [
     '**/*.{js,jsx}',
