@@ -1,60 +1,82 @@
-"use strict";
+'use strict';
 
-const { EventEmitter } = require("events");
-const Room = require("../models/Room");
+const logger = require('../logger');
+const uniqid = require('uniqid');
+const { EventEmitter } = require('events');
+const Room = require('../models/Room');
 
+/* RoomsController Events */
 const RCEvents = {
-  ROOM_LIST_UPDATE: "ROOM_LIST_UPDATE",
-};
+  RC_ROOMS_UPDATED: 'RC_ROOMS_UPDATED'
+}
 
 class RoomsController extends EventEmitter {
+
   constructor() {
     super();
-    this.rooms = [];
+    this.rooms = {};
+    this.logInterval = setInterval (() => {
+      logger.debug(JSON.stringify(this.getRooms(), null ,'\t'))
+    }, 3000);
   }
 
   createRoom() {
-    const room = new Room(uniqid());
-    this.rooms[room.id] = room;
-
-    room.onDestroy(this.deleteRoom.bind(this));
-    this.notifyRoomsUpdated();
-  }
-
-  joinRoom(roomId, user) {
-    if (this.rooms[roomId] && this.rooms[roomId].playerJoin(user)) {
-      this.notifyRoomsUpdated();
-      return true;
-    }
-    return false;
-  }
-
-  leaveRoom(roomId, userId) {
-    if (this.rooms[roomId] && this.rooms[roomId].playerLeave(userId)) {
-      this.notifyRoomsUpdated();
-      return true;
-    }
-    return false;
-  }
-
-  chatMessageSend(roomId, message) {
-    if (this.rooms[roomId])
-      this.rooms[roomId].chatMessageSend(message);
-  }
-
-  roomExists(roomId) {
-    return !!this.rooms[roomId];
+    const newRoom = new Room(uniqid(), { onDestroy: this.deleteRoom.bind(this) });
+    this.rooms[newRoom.id] = newRoom;
+    this.notifyRoomsListUpdated();
+    return newRoom.id;
   }
 
   deleteRoom(roomId) {
-    this.rooms[roomId] = null;
+    logger.info(`Deleting room ${roomId}`);
+    if (this.rooms[roomId]) {
+      delete this.rooms[roomId];
+      this.notifyRoomsListUpdated();
+    }
+  }
+
+  getRoomById(roomId) {
+    return this.rooms[roomId];
   }
 
   getRooms() {
     return Object.values(this.rooms).map(room => room.getRoomInfo());
   }
 
-  notifyRoomsUpdated() {
-    this.emit(RCEvents.ROOM_LIST_UPDATE, this.getRooms());
+  joinRoom(roomId, user) {
+    if (!this.rooms[roomId] || !this.rooms[roomId].userJoin(user))
+      return false;
+
+    this.notifyRoomsListUpdated();
+    return true;
   }
-};
+
+  leaveRoom(roomId, userId) {
+    if (!this.rooms[roomId] || !this.rooms[roomId].userLeave(userId))
+      return false;
+
+    this.notifyRoomsListUpdated();
+    return true;
+  }
+
+  chatMessageSend(roomId, message) {
+    if (this.rooms[roomId]) {
+      this.rooms[roomId].chatMessageSend(message);
+    }
+  }
+
+  notifyRoomsListUpdated() {
+    this.emit(RCEvents.RC_ROOMS_UPDATED, this.getRooms());
+  }
+
+  subscribeOnUpdates(callback) {
+    this.on(RCEvents.RC_ROOMS_UPDATED, callback);
+    callback(this.getRooms());
+  }
+
+  unsubscribeOnUpdates(callback) {
+    this.removeListener(RCEvents.RC_ROOMS_UPDATED, callback);
+  }
+}
+
+module.exports = new RoomsController();

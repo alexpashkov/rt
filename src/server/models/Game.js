@@ -37,43 +37,6 @@ class Game extends EventEmitter {
     return !this.isRunning;
   }
 
-  playerJoin(controllerInstance) {
-    if (
-      this.players.find(
-        playerInList => playerInList.id === controllerInstance.id
-      )
-    )
-      return false;
-
-    if (this.destroyTimeout) this.cancelDestroyTimeout();
-
-    const player = new Player(controllerInstance.id, {
-      onCurrentPieceUpdate: this.onPlayerPieceUpdate.bind(this),
-      onBoardUpdate: this.onPlayerBoardUpdate.bind(this),
-      getNewPiece: this.getNewPiece.bind(this)
-    });
-
-    this.players.push(player);
-
-    logger.debug(`Player ${JSON.stringify(player, null, '    ')} has joined.`);
-
-    this.setEventHandlersForPlayer(controllerInstance);
-    this.gameInfoUpdated();
-    return true;
-  }
-
-  playerLeave(playerId) {
-    if (this.players.filter(player => playerId === player.id).length === 0)
-      return false;
-
-    this.players = this.players.filter(player => player.id !== playerId);
-
-    if (!this.players.length) this.setDestroyTimeout();
-
-    this.gameInfoUpdated();
-    return true;
-  }
-
   playerIsLeaderById(playerId) {
     return this.players[0] && this.players[0].id === playerId;
   }
@@ -132,8 +95,6 @@ class Game extends EventEmitter {
   }
 
   setEventHandlersForPlayer(player) {
-    this.on(GEvents.GE_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
-    this.on(GEvents.GE_INFO_UPDATE, player.onGameInfoUpdate.bind(player));
     this.on(GEvents.GE_STARTED, player.onGameStarted.bind(player));
     this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player.onPieceUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player.onBoardUpdate.bind(player));

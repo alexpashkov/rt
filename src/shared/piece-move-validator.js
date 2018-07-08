@@ -31,19 +31,20 @@ const transformToCoordsRelativeToPiece = (piece, coordinates) => {
 };
 
 const defaultPieceArray = [
-  [ 0, 0, 0, 0 ],
-  [ 0, 0, 0, 0 ],
-  [ 0, 0, 0, 0 ],
-  [ 0, 0, 0, 0 ],
+  0, 0, 0, 0,
+  0, 0, 0, 0,
+  0, 0, 0, 0,
+  0, 0, 0, 0,
 ];
 
 const pieceCodeToArray = (pieceCode) =>
-  defaultPieceArray.map((xArr, y) =>
-    xArr.map((_, x) =>
+  defaultPieceArray.map((xArr, i) =>
       pieceCode & (1 << ((3 - x) + 4 * (3 - y)))));
 
+const isInRangeInclusive = (num, rangeStart, rangeEnd) => (num >= rangeStart) && (num <= rangeEnd);
+
 /*
- *  board -> pieceCode[][]
+ *  board -> blockCodes[][]
  *  piece -> {
  *    pieceCode: number,
  *    x: number,
@@ -63,17 +64,17 @@ module.exports = (board, piece, movementDirection) => {
     transformToCoordinates(movementDirection)
   );
   const pieceAsArray = pieceCodeToArray(piece.pieceCode);
-  const boardHeight = board.length;
-  const boardWidth = board[0].length;
-
-  /*
-   * TODO: Validate out-of-border cases.
-   * TODO: Fix current code :(
-   */
+  const boardHeight = board.length - 1;
+  const boardWidth = board[0].length - 1;
 
   for (let y = 0; y < 4; y++) {
     for (let x = 0; x < 4; x++) {
-      if (pieceAsArray[y][x] && board[piece.y + direction.y][piece.x + direction.x] != blockCodes.BLOCK_FREE)
+      const boardY = piece.y + direction.y + y;
+      const boardX = piece.x + direction.x + x;
+
+      if (pieceAsArray[y][x] &&
+        isInRangeInclusive(boardY, 0, boardHeight) && isInRangeInclusive(boardX, 0, boardWidth) &&
+        board[boardY][boardX] != blockCodes.BLOCK_FREE)
         return false;
     }
   }
