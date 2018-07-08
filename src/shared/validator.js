@@ -41,6 +41,10 @@ const directionToObject = direction => {
 module.exports = (board, piece, direction) => {
   const pieceCells = getPieceCells(piece.code);
   direction = directionToObject(direction);
+  if (!direction) {
+    return false;
+  }
+
   const nextPosition = { y: piece.y + direction.y, x: piece.x + direction.x };
 
   return pieceCells.every(({ x, y }) => {
