@@ -35,11 +35,11 @@ class Room extends EventEmitter {
     return true;
   }
 
-  userLeave(userId) {
-    if (!this.players.find(user => user.id === userId))
+  userLeave(leavingUserId) {
+    if (!this.players.find(userId => userId === leavingUserId))
       return false;
 
-    this.players = this.players.filter(user => user.id !== userId);
+    this.players = this.players.filter(userId => userId !== leavingUserId);
     if (!this.players.length)
       this.setDestroyTimeout()
 
@@ -47,7 +47,30 @@ class Room extends EventEmitter {
     return true;
   }
 
+  gameStart(starterId) {
+    logger.info(
+      `${starterId} (leader? [${this.playerIsLeaderById(
+        starterId
+      )}]) has requested to start the game.`
+    );
+
+    if (this.leaderId !== starterId)
+      throw `You[${starterId}] are not a leader.`;
+
+    const gameId = GamesController.createGame(
+      this.id,
+      this.players,
+      this.configuratio
+    ); /* New ID or existing one? */
+
+    const game = GamesController.getGameById(gameId);
+    game.gameStart();
+
+    this.emit(RoomEvents.R_STARTED, gameId);
+  }
+
   chatMessageSend(message) {
+    logger.debug(`Sending message: ${JSON.stringify(message)}`);
     if (message.message && message.login && this.isPlayerInRoomByLogin(message.login)) {
       this.chatHistory.push(message);
       this.emit(RoomEvents.R_CHAT_MESSAGE, message);
@@ -57,11 +80,8 @@ class Room extends EventEmitter {
   getRoomInfo() {
     return {
       id: this.id,
-      leaderId: (this.players[0] && this.players[0].id),
-      players: this.players.map((playerId) => {
-        const user = UserService.getUserById(playerId)
-        return user ? { login: user.getLogin() } : undefined;
-      }),
+      leaderId: (this.players[0] && this.players[0]) || null,
+      players: this.players.map(userId => ({ login: UserService.getUserById(userId).getLogin()})),
       chatHistory: this.chatHistory,
     };
   }
@@ -69,10 +89,7 @@ class Room extends EventEmitter {
   isPlayerInRoomByLogin(login) {
     return (
       this.players
-      .filter(playerId => {
-        const user = UserService.getUserById(playerId);
-        return user ? user.getLogin() === login : false;
-      })
+      .filter(userId => UserService.getUserById(userId).getLogin() === login)
       .length !== 0
     );
   }
@@ -84,7 +101,7 @@ class Room extends EventEmitter {
   setEventHandlersForPlayer(player) {
     this.on(RoomEvents.R_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
     this.on(RoomEvents.R_INFO_UPDATE, player.onRoomInfoUpdate.bind(player));
-//    this.on(RoomEvents.R_STARTED, player.onGameStarted.bind(player));
+    this.on(RoomEvents.R_STARTED, player.onGameStarted.bind(player));
   }
 
   setDestroyTimeout() {
@@ -99,7 +116,7 @@ class Room extends EventEmitter {
   }
 
   destroySelf() {
-    this.onDestroyCallback && this.onDestroyCallback();
+    this.onDestroyCallback && this.onDestroyCallback(this.id);
   }
 
   onDestroy(callback) {

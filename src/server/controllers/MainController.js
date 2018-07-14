@@ -11,10 +11,10 @@ const moveValidator = () => true;
 class MainController {
   constructor(socket, userId) {
     this.socket = socket;
-    this.id = userId;
     this.inGame = false;
     this.roomId = null;
     this.gameId = null;
+    this.id = UserService.getUserById(userId) ? userId : UserService.createUser();
 
     this.setupEventHandlers();
 
@@ -29,12 +29,12 @@ class MainController {
 
   setupEventHandlers() {
     this.socket.on('disconnect', this.onDisconnect.bind(this));
-    this.socket.on(events.client.GAME_CREATE, this.onRoomCreate.bind(this));
-    this.socket.on(events.client.GAME_JOIN, this.onRoomJoin.bind(this));
-    this.socket.on(events.client.GAME_LEAVE, this.onRoomLeave.bind(this));
+    this.socket.on(events.client.ROOM_CREATE, this.onRoomCreate.bind(this));
+    this.socket.on(events.client.ROOM_JOIN, this.onRoomJoin.bind(this));
+    this.socket.on(events.client.ROOM_LEAVE, this.onRoomLeave.bind(this));
+    this.socket.on(events.client.ROOMS_UPDATE_REQUEST, this.onRoomsUpdateRequest.bind(this));
+    this.socket.on(events.client.ROOM_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
     this.socket.on(events.client.GAME_START, this.onGameStartRequest.bind(this));
-    this.socket.on(events.client.GAMES_UPDATE_REQUEST, this.onRoomsUpdateRequest.bind(this));
-    this.socket.on(events.client.GAME_CHAT_MESSAGE, this.onChatMessageSend.bind(this));
     this.socket.on(events.client.GAME_PIECE_MOVE, this.onGamePieceMove.bind(this));
     this.socket.on(events.client.GAME_PIECE_ROTATE, this.onGamePieceRotate.bind(this));
   }
@@ -56,9 +56,9 @@ class MainController {
 
   onRoomJoin(data, callback) {
     if (this.inGame || this.roomId) {
-      logger.info('You cannot join the room while playing or being in one already!');
-      callback(this._respondError({ description: 'You are already in room or game for fucks sake.' }));
-      return;
+      logger.info(`Player ${this.id} cannot join the room while playing or being in one already!`);
+      callback(this._respondError({ description: 'You are already in a room or a game.' }));
+      return ;
     }
 
     const { id } = data;
@@ -74,7 +74,7 @@ class MainController {
 
     callback(
       joined
-        ? this._respondSuccess({ gameInfo: roomInfo }) /* XXX: Change pls :( */
+        ? this._respondSuccess({ roomInfo: roomInfo })
         : this._respondError({ description: 'Failed to join game.' })
     );
   }
@@ -134,11 +134,11 @@ class MainController {
 
   onRoomsUpdate(rooms) {
     logger.debug(`Emitting ROOMS_UPDATE: ${rooms}`);
-    this.socket.emit(events.server.ROOMS_UPDATE, rooms); /* XXX: Fix me pls :( */
+    this.socket.emit(events.server.ROOMS_UPDATE, rooms);
   }
 
   onRoomInfoUpdate(roomInfo) {
-    this.socket.emit(events.server.ROOM_INFO_UPDATE, roomInfo); /* XXX: Fix me pls :( */
+    this.socket.emit(events.server.ROOM_INFO_UPDATE, roomInfo);
   }
 
   onPieceUpdate(data) {
@@ -158,7 +158,7 @@ class MainController {
   }
 
   onRoomsUpdateRequest() {
-    logger.debug('ROOMS_UPDATE event requested.'); /* XXX: Fix me :( */
+    logger.debug('ROOMS_UPDATE event requested.');
     this.onRoomsUpdate(RoomsController.getRooms());
   }
 
@@ -237,7 +237,7 @@ class MainController {
 
     logger.debug(`Sending message with id ${id}`);
 
-    RoomsController.chatMessageSend(this.gameId, {
+    RoomsController.chatMessageSend(this.roomId, {
       id: id,
       login: login,
       message: messageText
@@ -254,9 +254,10 @@ class MainController {
     if (this.roomId) {
       logger.info(`User ${this.id} leaves room ${this.roomId}`);
       RoomsController.leaveRoom(this.roomId, this.id);
-    } 
+    }
 
-    /* XXX: Handle disconnect if player is in game.
+    /*
+     * XXX: Handle disconnect if player is in game.
      */
   }
 

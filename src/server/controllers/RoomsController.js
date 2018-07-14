@@ -72,10 +72,16 @@ class RoomsController extends EventEmitter {
   subscribeOnUpdates(callback) {
     this.on(RCEvents.RC_ROOMS_UPDATED, callback);
     callback(this.getRooms());
+    logger.info(`Subscription on games update received. Listeners -> ${this.listenerCount(
+      RCEvents.RC_ROOMS_UPDATED
+    )}`);
   }
 
   unsubscribeOnUpdates(callback) {
     this.removeListener(RCEvents.RC_ROOMS_UPDATED, callback);
+    logger.info(`Unsubscription on games update received. Listeners -> ${this.listenerCount(
+      RCEvents.RC_ROOMS_UPDATED
+    )}`);
   }
 }
 

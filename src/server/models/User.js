@@ -1,7 +1,7 @@
 class User {
   constructor(id) {
     this.id = id;
-    this.login = null;
+    this.login = id;
   }
 
   setLogin(login) {

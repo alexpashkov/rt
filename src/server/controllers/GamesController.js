@@ -16,8 +16,8 @@ class GamesController {
     this.games = [];
   }
 
-  createGame() {
-    const gameCreated = new Game(uniqid());
+  createGame(id = null, players = [], configuration = {}) {
+    const gameCreated = new Game(id || uniqid(), players, configuration);
     this.games[gameCreated.id] = gameCreated;
     gameCreated.on('destroy', this.deleteGame.bind(this));
     return gameCreated.id;

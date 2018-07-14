@@ -7,7 +7,6 @@ const DefaultGameMode = require('./DefaultGameMode');
 
 /* Game Events */
 const GEvents = {
-  GE_CHAT_MESSAGE: 'GE_CHAT_MESSAGE',
   GE_INFO_UPDATE: 'GE_INFO_UPDATE',
   GE_STARTED: 'GE_STARTED',
   GE_START_FAILED: 'GE_START_FAILED',
@@ -16,15 +15,15 @@ const GEvents = {
 };
 
 class Game extends EventEmitter {
-  constructor(id) {
+  constructor(id, players, configuration) {
     super();
     this.id = id;
-    this.players = [];
-    this.chatHistory = [];
+    this.leaderId = players[0];
+    this.players = players;
     this.isRunning = false;
     this.gameMode = new DefaultGameMode(this);
     this.pieceQueue = [];
-    this.gameParams = {};
+    this.gameParams = configuration;
 
     this.setDestroyTimeout();
   }
@@ -41,26 +40,7 @@ class Game extends EventEmitter {
     return this.players[0] && this.players[0].id === playerId;
   }
 
-  chatMessageSend(message) {
-    if (
-      message.message &&
-      message.login &&
-      this.isPlayerInGameByLogin(message.login)
-    ) {
-      this.chatHistory.push(message);
-      this.emit(GEvents.GE_CHAT_MESSAGE, message);
-    }
-  }
-
-  gameStart(startInitiator) {
-    logger.info(
-      `${startInitiator} (leader? [${this.playerIsLeaderById(
-        startInitiator
-      )}]) has requested to start the game.`
-    );
-    if (!this.playerIsLeaderById(startInitiator))
-      throw 'You are not a leader.';
-
+  gameStart() {
     try {
       this.isRunning = true;
       this.gameMode.start(this.params);
