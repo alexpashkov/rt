@@ -1,7 +1,9 @@
 'use strict';
 
-const UserService = require('../services/UserService.js');
-const { EventEmitter } = require('events');
+const UserService = require("../services/UserService");
+const GamesController = require("../controllers/GamesController");
+const { EventEmitter } = require("events");
+const logger = require("../logger");
 
 const RoomEvents = {
   R_STARTED: 'R_STARTED',
@@ -11,56 +13,95 @@ const RoomEvents = {
 };
 
 class Room extends EventEmitter {
-  constructor(id) {
+  constructor(id, handlers) {
     super();
     this.id = id;
+    this.isRunning = false;
     this.players = [];
     this.chatHistory = [];
     this.configuration = {};
     this.setDestroyTimeout();
+    this.onDestroy(handlers.onDestroy);
   }
 
-  playerJoin(userController) {
-    if (this.players.includes(userController)) return false;
+  userJoin(userController) {
+    if (this.players.includes(userController))
+      return false;
 
-    if (this.destroyTimeout) this.cancelDestroyTimeout();
+    if (this.isRunning)
+      return false;
 
+    if (this.destroyTimeout)
+      this.cancelDestroyTimeout();
+
+    this.players.push(userController);
     this.setEventHandlersForPlayer(userController);
     this.roomInfoUpdated();
     return true;
   }
 
-  playerLeave() {}
+  userLeave(leavingUserId) {
+    if (!this.players.find(user => user.id === leavingUserId))
+      return false;
+
+    this.players = this.players.filter(user => user.id !== leavingUserId);
+    if (!this.players.length)
+      this.setDestroyTimeout()
+
+    this.roomInfoUpdated();
+    return true;
+  }
+
+  gameStart(starterId) {
+    logger.info(
+      `${starterId} (leader? [${starterId === this.getLeaderId()}]) has requested to start the game.`
+    );
+
+    if (this.getLeaderId() !== starterId)
+      throw `You[${starterId}] are not a leader.`;
+
+    const gameId = GamesController.createGame(
+      this.id,
+      this.players,
+      this.configuration
+    ); /* New ID or existing one? */
+
+    const game = GamesController.getGameById(gameId);
+    game.gameStart();
+
+    this.gameId = gameId;
+    this.isRunning = true;
+
+    this.emit(RoomEvents.R_STARTED, gameId);
+  }
 
   chatMessageSend(message) {
-    if (
-      message.message &&
-      message.login &&
-      this.isPlayerInRoomByLogin(message.login)
-    ) {
+    logger.debug(`Sending message: ${JSON.stringify(message)}`);
+    if (message.message && message.login && this.isPlayerInRoomByLogin(message.login)) {
       this.chatHistory.push(message);
       this.emit(RoomEvents.R_CHAT_MESSAGE, message);
     }
   }
 
+  getLeaderId() {
+    return this.players[0].id;
+  }
+
   getRoomInfo() {
     return {
       id: this.id,
-      leaderId: this.players[0] && this.players[0].id,
-      players: this.players.map(playerId => {
-        const user = UserService.getUserById(playerId);
-        return user ? { login: user.getLogin() } : undefined;
-      }),
-      chatHistory: this.chatHistory
+      isRunning: this.isRunning,
+      leaderId: (this.players[0] && this.players[0].id) || null,
+      players: this.players.map(user => ({ login: UserService.getUserById(user.id).getLogin()})),
+      chatHistory: this.chatHistory,
     };
   }
 
   isPlayerInRoomByLogin(login) {
     return (
-      this.players.filter(playerId => {
-        const user = UserService.getUserById(playerId);
-        return user ? user.getLogin() === login : false;
-      }).length !== 0
+      this.players
+      .filter(user => UserService.getUserById(user.id).getLogin() === login)
+      .length !== 0
     );
   }
 
@@ -68,20 +109,30 @@ class Room extends EventEmitter {
     this.emit(RoomEvents.R_INFO_UPDATE, this.getRoomInfo());
   }
 
+  setEventHandlersForPlayer(player) {
+    this.on(RoomEvents.R_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
+    this.on(RoomEvents.R_INFO_UPDATE, player.onRoomInfoUpdate.bind(player));
+    this.on(RoomEvents.R_STARTED, player.onGameStarted.bind(player));
+  }
+
   setDestroyTimeout() {
+    logger.debug(`Destroy timeout set for room ${this.id}`);
     this.destroyTimeout = setTimeout(this.destroySelf.bind(this), 5000);
   }
 
   cancelDestroyTimeout() {
+    logger.debug(`Destroy timeout cancelled for room ${this.id}`);
     clearTimeout(this.destroyTimeout);
     this.destroyTimeout = null;
   }
 
   destroySelf() {
-    this.onDestroyCallback && this.onDestroyCallback();
+    this.onDestroyCallback && this.onDestroyCallback(this.id);
   }
 
   onDestroy(callback) {
     this.onDestroyCallback = callback;
   }
 }
+
+module.exports = Room;

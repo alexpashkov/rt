@@ -22,10 +22,10 @@ export default compose(
   lifecycle({
     componentDidMount() {
       const { setList } = this.props;
-      socket.on(serverSocketEvents.GAMES_UPDATE, setList);
+      socket.on(serverSocketEvents.ROOMS_UPDATE, setList);
     },
     componentWillUnmount() {
-      socket.off(serverSocketEvents.GAMES_UPDATE);
+      socket.off(serverSocketEvents.ROOMS_UPDATE);
     }
   }),
   withHandlers({
@@ -37,7 +37,7 @@ export default compose(
 const navigateToGamePage = gameId => history.push(`/${gameId}`);
 
 const emitGameCreate = () =>
-  socket.emit(clientSocketEvents.GAME_CREATE, handleGameCreateResponse);
+  socket.emit(clientSocketEvents.ROOM_CREATE, handleGameCreateResponse);
 
 const handleGameCreateResponse = ({ status, gameId }) => {
   if (status !== 'success') {

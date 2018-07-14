@@ -26,9 +26,9 @@ import {
 } from '../../../shared/socket-events';
 
 const emitGameJoin = (gameId, cb) =>
-  socket.emit(clientSocketEvents.GAME_JOIN, { id: gameId }, cb);
+  socket.emit(clientSocketEvents.ROOM_JOIN, { id: gameId }, cb);
 const emitGameLeave = gameId =>
-  socket.emit(clientSocketEvents.GAME_LEAVE, { id: gameId });
+  socket.emit(clientSocketEvents.ROOM_LEAVE, { id: gameId });
 
 export default compose(
   connect(
@@ -49,17 +49,17 @@ export default compose(
   lifecycle({
     componentDidMount() {
       const { gameId, setCurrentGameInfo, setPiece, setBoard } = this.props;
-      emitGameJoin(gameId, ({ status, gameInfo, description }) => {
+      emitGameJoin(gameId, ({ status, roomInfo, description }) => {
         if (status === 'error') {
           /* failed to join the game, redirect to lobby */
           alert(description || 'Failed to join the game');
           return history.push('/');
         }
-        setCurrentGameInfo(gameInfo);
+        setCurrentGameInfo(roomInfo);
       });
       /* subscribe to game info updates, e.g when new player joins the game
       is reflected for players who's in the game lobby */
-      socket.on(serverSocketEvents.GAME_INFO_UPDATE, setCurrentGameInfo);
+      socket.on(serverSocketEvents.ROOM_INFO_UPDATE, setCurrentGameInfo);
       socket.on(serverSocketEvents.GAME_PIECE_CURRENT, ({ piece }) => {
         setPiece(piece);
       });
@@ -73,7 +73,7 @@ export default compose(
       emitGameLeave(gameId);
       /* set current game info to null, so we can use it as indicator for a spinner */
       setCurrentGameInfo(null);
-      socket.off(serverSocketEvents.GAME_INFO_UPDATE);
+      socket.off(serverSocketEvents.ROOM_INFO_UPDATE);
       socket.off(serverSocketEvents.GAME_PIECE_CURRENT);
       socket.off(serverSocketEvents.GAME_BOARD_CURRENT);
     }

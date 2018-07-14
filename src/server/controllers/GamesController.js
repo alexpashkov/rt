@@ -11,94 +11,26 @@ const GCEvents = {
   GC_GAMES_UPDATED: 'GC_GAMES_UPDATED'
 };
 
-class GamesController extends EventEmitter {
+class GamesController {
   constructor() {
-    super();
     this.games = [];
-    this.interval = setInterval(() => {
-      const games = this.getGames();
-      if (games.length) logger.debug(JSON.stringify(games, null, '\t'));
-    }, 3000);
   }
 
-  createGame() {
-    const gameCreated = new Game(uniqid());
+  createGame(id = null, players = [], configuration = {}) {
+    const gameCreated = new Game(id || uniqid(), players, configuration);
     this.games[gameCreated.id] = gameCreated;
-
-    gameCreated.on('destroy', this.deleteGame.bind(this));
-
-    this.notifyGamesUpdated();
-
     return gameCreated.id;
-  }
-
-  joinGame(gameId, user) {
-    if (this.games[gameId] && this.games[gameId].playerJoin(user)) {
-      this.notifyGamesUpdated();
-      return true;
-    }
-    return false;
-  }
-
-  leaveGame(gameId, userId) {
-    logger.debug(`${userId} has requested to leave ${gameId}`);
-    if (this.games[gameId] && this.games[gameId].playerLeave(userId)) {
-      logger.debug(`Left`);
-      this.notifyGamesUpdated();
-      return true;
-    }
-    logger.debug(`Not Left`);
-    return false;
-  }
-
-  chatMessageSend(gameId, message) {
-    if (this.games[gameId]) {
-      this.games[gameId].chatMessageSend(message);
-    }
-  }
-
-  gameExists(gameId) {
-    return !!this.games[gameId];
   }
 
   getGameById(gameId) {
     return this.games[gameId];
   }
 
-  getGames() {
-    return R.values(this.games).map(game => game.getGameInfo());
-  }
-
   deleteGame(gameId) {
     logger.info(`Destroying game ${gameId}`);
     if (this.games[gameId]) {
       delete this.games[gameId];
-      this.notifyGamesUpdated();
     }
-  }
-
-  notifyGamesUpdated() {
-    this.emit(GCEvents.GC_GAMES_UPDATED, this.getGames());
-  }
-
-  subscribeUserOnGamesUpdate(callback) {
-    this.on(GCEvents.GC_GAMES_UPDATED, callback);
-
-    callback(this.getGames());
-    logger.info(
-      `Subscription on games update received. Listeners -> ${this.listenerCount(
-        GCEvents.GC_GAMES_UPDATED
-      )}`
-    );
-  }
-
-  unsubscribeUserOnGamesUpdate(callback) {
-    this.removeListener(GCEvents.GC_GAMES_UPDATED, callback);
-    logger.info(
-      `Unsubscription on games update received. Listeners -> ${this.listenerCount(
-        GCEvents.GC_GAMES_UPDATED
-      )}`
-    );
   }
 }
 

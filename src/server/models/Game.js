@@ -1,4 +1,5 @@
 const logger = require('../logger');
+const assert = require('assert');
 const { EventEmitter } = require('events');
 const UserService = require('../services/UserService');
 const PieceService = require('../services/PieceService');
@@ -7,7 +8,6 @@ const DefaultGameMode = require('./DefaultGameMode');
 
 /* Game Events */
 const GEvents = {
-  GE_CHAT_MESSAGE: 'GE_CHAT_MESSAGE',
   GE_INFO_UPDATE: 'GE_INFO_UPDATE',
   GE_STARTED: 'GE_STARTED',
   GE_START_FAILED: 'GE_START_FAILED',
@@ -16,17 +16,24 @@ const GEvents = {
 };
 
 class Game extends EventEmitter {
-  constructor(id) {
+  constructor(id, players, configuration) {
     super();
+
+    assert(players[0]);
+
     this.id = id;
-    this.players = [];
-    this.chatHistory = [];
+    this.leaderId = players[0].id;
+    this.players = players.map((player) => new Player(player.id, {
+      onCurrentPieceUpdate: this.onPlayerPieceUpdate.bind(this),
+      onBoardUpdate: this.onPlayerBoardUpdate.bind(this),
+      getNewPiece: this.getNewPiece.bind(this),
+    }));
     this.isRunning = false;
     this.gameMode = new DefaultGameMode(this);
     this.pieceQueue = [];
-    this.gameParams = {};
+    this.gameParams = configuration;
 
-    this.setDestroyTimeout();
+    players.forEach(this.setEventHandlersForPlayer.bind(this));
   }
 
   hasStarted() {
@@ -37,67 +44,11 @@ class Game extends EventEmitter {
     return !this.isRunning;
   }
 
-  playerJoin(controllerInstance) {
-    if (
-      this.players.find(
-        playerInList => playerInList.id === controllerInstance.id
-      )
-    )
-      return false;
-
-    if (this.destroyTimeout) this.cancelDestroyTimeout();
-
-    const player = new Player(controllerInstance.id, {
-      onCurrentPieceUpdate: this.onPlayerPieceUpdate.bind(this),
-      onBoardUpdate: this.onPlayerBoardUpdate.bind(this),
-      getNewPiece: this.getNewPiece.bind(this)
-    });
-
-    this.players.push(player);
-
-    logger.debug(`Player ${JSON.stringify(player, null, '    ')} has joined.`);
-
-    this.setEventHandlersForPlayer(controllerInstance);
-    this.gameInfoUpdated();
-    return true;
-  }
-
-  playerLeave(playerId) {
-    if (this.players.filter(player => playerId === player.id).length === 0)
-      return false;
-
-    this.players = this.players.filter(player => player.id !== playerId);
-
-    if (!this.players.length) this.setDestroyTimeout();
-
-    this.gameInfoUpdated();
-    return true;
-  }
-
   playerIsLeaderById(playerId) {
     return this.players[0] && this.players[0].id === playerId;
   }
 
-  chatMessageSend(message) {
-    if (
-      message.message &&
-      message.login &&
-      this.isPlayerInGameByLogin(message.login)
-    ) {
-      this.chatHistory.push(message);
-      this.emit(GEvents.GE_CHAT_MESSAGE, message);
-    }
-  }
-
-  gameStart(startInitiator) {
-    logger.info(
-      `${startInitiator} (leader? [${this.playerIsLeaderById(
-        startInitiator
-      )}]) has requested to start the game.`
-    );
-    if (!this.playerIsLeaderById(startInitiator))
-      throw 'You are not a leader.';
-
+  gameStart() {
     try {
       this.isRunning = true;
       this.gameMode.start(this.params);
@@ -132,8 +83,6 @@ class Game extends EventEmitter {
   }
 
   setEventHandlersForPlayer(player) {
-    this.on(GEvents.GE_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
-    this.on(GEvents.GE_INFO_UPDATE, player.onGameInfoUpdate.bind(player));
     this.on(GEvents.GE_STARTED, player.onGameStarted.bind(player));
     this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player.onPieceUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player.onBoardUpdate.bind(player));
@@ -176,19 +125,6 @@ class Game extends EventEmitter {
     this.emit(GEvents.GE_INFO_UPDATE, this.getGameInfo());
   }
 
-  setDestroyTimeout() {
-    this.destroyTimeout = setTimeout(this.destroySelf.bind(this), 5000);
-  }
-
-  cancelDestroyTimeout() {
-    clearTimeout(this.destroyTimeout);
-    this.destroyTimeout = null;
-  }
-
-  destroySelf() {
-    logger.info(`Game ${this.id} emits destroy.`);
-    this.emit('destroy', this.id);
-  }
 }
 
 module.exports = Game;
