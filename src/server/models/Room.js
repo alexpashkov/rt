@@ -1,6 +1,7 @@
 "use strict";
 
-const UserService = require("../services/UserService.js");
+const UserService = require("../services/UserService");
+const GamesController = require("../controllers/GamesController");
 const { EventEmitter } = require("events");
 const logger = require("../logger");
 
@@ -15,6 +16,7 @@ class Room extends EventEmitter {
   constructor(id, handlers) {
     super();
     this.id = id;
+    this.isRunning = false;
     this.players = [];
     this.chatHistory = [];
     this.configuration = {};
@@ -26,20 +28,23 @@ class Room extends EventEmitter {
     if (this.players.includes(userController))
       return false;
 
+    if (this.isRunning)
+      return false;
+
     if (this.destroyTimeout)
       this.cancelDestroyTimeout();
 
-    this.players.push(userController.id);
+    this.players.push(userController);
     this.setEventHandlersForPlayer(userController);
     this.roomInfoUpdated();
     return true;
   }
 
   userLeave(leavingUserId) {
-    if (!this.players.find(userId => userId === leavingUserId))
+    if (!this.players.find(user => user.id === leavingUserId))
       return false;
 
-    this.players = this.players.filter(userId => userId !== leavingUserId);
+    this.players = this.players.filter(user => user.id !== leavingUserId);
     if (!this.players.length)
       this.setDestroyTimeout()
 
@@ -49,22 +54,23 @@ class Room extends EventEmitter {
 
   gameStart(starterId) {
     logger.info(
-      `${starterId} (leader? [${this.playerIsLeaderById(
-        starterId
-      )}]) has requested to start the game.`
+      `${starterId} (leader? [${starterId === this.getLeaderId()}]) has requested to start the game.`
     );
 
-    if (this.leaderId !== starterId)
+    if (this.getLeaderId() !== starterId)
       throw `You[${starterId}] are not a leader.`;
 
     const gameId = GamesController.createGame(
       this.id,
       this.players,
-      this.configuratio
+      this.configuration
     ); /* New ID or existing one? */
 
     const game = GamesController.getGameById(gameId);
     game.gameStart();
+
+    this.gameId = gameId;
+    this.isRunning = true;
 
     this.emit(RoomEvents.R_STARTED, gameId);
   }
@@ -77,11 +83,16 @@ class Room extends EventEmitter {
     }
   }
 
+  getLeaderId() {
+    return this.players[0].id;
+  }
+
   getRoomInfo() {
     return {
       id: this.id,
-      leaderId: (this.players[0] && this.players[0]) || null,
-      players: this.players.map(userId => ({ login: UserService.getUserById(userId).getLogin()})),
+      isRunning: this.isRunning,
+      leaderId: (this.players[0] && this.players[0].id) || null,
+      players: this.players.map(user => ({ login: UserService.getUserById(user.id).getLogin()})),
       chatHistory: this.chatHistory,
     };
   }
@@ -89,7 +100,7 @@ class Room extends EventEmitter {
   isPlayerInRoomByLogin(login) {
     return (
       this.players
-      .filter(userId => UserService.getUserById(userId).getLogin() === login)
+      .filter(user => UserService.getUserById(user.id).getLogin() === login)
       .length !== 0
     );
   }

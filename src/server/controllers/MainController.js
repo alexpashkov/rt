@@ -245,7 +245,7 @@ class MainController {
   }
 
   onChatMessageRecv(message) {
-    this.socket.emit(events.server.GAME_CHAT_MESSAGE, message);
+    this.socket.emit(events.server.ROOM_CHAT_MESSAGE, message);
   }
 
   onDisconnect() {

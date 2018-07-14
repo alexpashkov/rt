@@ -1,10 +1,11 @@
 const rotationMap = require('../../shared/piece-rotation-map');
+const validator = require('../../shared/piece-move-validator');
 
 class Player {
   constructor(id, handlers) {
     this.id = id;
     this.pieceIndex = 0;
-    this.validator = () => true;
+    this.validator = validator || (() => true);
     /*
      *  This 'handlers' thing is just a test.
      *  I thought there are too much event emitters and it makes
@@ -44,7 +45,8 @@ class Player {
   }
 
   movePiece(movementDirection) {
-    if (!this.currentPiece) return false;
+    if (!this.currentPiece)
+      return false;
 
     /*
      *  XXX: Separate as helper.
@@ -58,7 +60,13 @@ class Player {
     }
 
     if (!this.validator(this.board, this.currentPiece, movementDirection))
+    {
+      /* 
+       * There is the case where piece collides with the bottom of the map
+       * and has to freeze. This has to be checked, even though the movement is invalid. 
+       */
       return false;
+    }
 
     this.currentPiece.x += movementDirection.x;
     this.currentPiece.y += movementDirection.y;

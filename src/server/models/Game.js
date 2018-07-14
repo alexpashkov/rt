@@ -1,4 +1,5 @@
 const logger = require('../logger');
+const assert = require('assert');
 const { EventEmitter } = require('events');
 const UserService = require('../services/UserService');
 const PieceService = require('../services/PieceService');
@@ -17,15 +18,22 @@ const GEvents = {
 class Game extends EventEmitter {
   constructor(id, players, configuration) {
     super();
+
+    assert(players[0]);
+
     this.id = id;
-    this.leaderId = players[0];
-    this.players = players;
+    this.leaderId = players[0].id;
+    this.players = players.map((player) => new Player(player.id, {
+      onCurrentPieceUpdate: this.onPlayerPieceUpdate.bind(this),
+      onBoardUpdate: this.onPlayerBoardUpdate.bind(this),
+      getNewPiece: this.getNewPiece.bind(this),
+    }));
     this.isRunning = false;
     this.gameMode = new DefaultGameMode(this);
     this.pieceQueue = [];
     this.gameParams = configuration;
 
-    this.setDestroyTimeout();
+    players.forEach(this.setEventHandlersForPlayer.bind(this));
   }
 
   hasStarted() {
@@ -117,19 +125,6 @@ class Game extends EventEmitter {
     this.emit(GEvents.GE_INFO_UPDATE, this.getGameInfo());
   }
 
-  setDestroyTimeout() {
-    this.destroyTimeout = setTimeout(this.destroySelf.bind(this), 5000);
-  }
-
-  cancelDestroyTimeout() {
-    clearTimeout(this.destroyTimeout);
-    this.destroyTimeout = null;
-  }
-
-  destroySelf() {
-    logger.info(`Game ${this.id} emits destroy.`);
-    this.emit('destroy', this.id);
-  }
 }
 
 module.exports = Game;
