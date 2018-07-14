@@ -1,5 +1,6 @@
 const rotationMap = require('../../shared/piece-rotation-map');
-const validator = require('../../shared/piece-move-validator');
+const validator = require('../../shared/validator');
+const helpers = require('../../shared/helpers');
 
 class Player {
   constructor(id, handlers) {
@@ -65,6 +66,10 @@ class Player {
        * There is the case where piece collides with the bottom of the map
        * and has to freeze. This has to be checked, even though the movement is invalid. 
        */
+      if (movementDirection.x === 0 && movementDirection.y > 0) {
+        this.applyPieceToBoard();
+        this.setCurrentPiece(this.getNewCurrentPiece());
+      }
       return false;
     }
 
@@ -79,46 +84,32 @@ class Player {
     if (!this.currentPiece)
       return false;
 
+    const rotatedPiece = Object.assign({}, this.currentPiece, { code: rotationMap.get(this.currentPiece.code) });
+
+    if (!this.validator(this.board, rotatedPiece, { x: 0, y: 0 }))
+      return false;
+
     this.currentPiece.code = rotationMap.get(this.currentPiece.code);
     this.onCurrentPieceUpdate();
     return true;
   }
 
-  setValidator(validator) {
-    this.validator = validator;
-  }
+  applyPieceToBoard() {
+    const pieceArray = helpers.pieceToArray(this.currentPiece.code);
 
-  movePiece(movementDirection) {
-    if (!this.currentPiece) return false;
-
-    /*
-     *  XXX: Separate as helper.
-     */
-    if (typeof movementDirection === 'string') {
-      movementDirection = (() => {
-        if (movementDirection === 'down') return { x: 0, y: 1 };
-        else if (movementDirection === 'left') return { x: -1, y: 0 };
-        else if (movementDirection === 'right') return { x: 1, y: 0 };
-      })();
+    for (let block of pieceArray) {
+      this.board[this.currentPiece.y + block.y][this.currentPiece.x + block.x] = -1;
     }
 
-    if (!this.validator(this.board, this.currentPiece, movementDirection))
-      return false;
-
-    this.currentPiece.x += movementDirection.x;
-    this.currentPiece.y += movementDirection.y;
-
-    this.onCurrentPieceUpdate();
-    return true;
+    this.onBoardUpdate();
   }
 
-  rotatePiece(rotationDirection) {
-    if (!this.currentPiece)
-      return false;
-
-    this.currentPiece.code = rotationMap.get(this.currentPiece.code);
-    this.onCurrentPieceUpdate();
-    return true;
+  getNewCurrentPiece() {
+    return {
+      code: this.handlers.getNewPiece(this.pieceIndex++),
+      x: Math.floor(Math.random() * Math.floor(this.board[0].length - 4)),
+      y: 0
+    }
   }
 
   setValidator(validator) {
