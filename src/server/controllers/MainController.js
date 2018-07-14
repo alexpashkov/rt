@@ -134,11 +134,11 @@ class MainController {
 
   onRoomsUpdate(rooms) {
     logger.debug(`Emitting ROOMS_UPDATE: ${rooms}`);
-    this.socket.emit(events.server.GAMES_UPDATE, rooms); /* XXX: Fix me pls :( */
+    this.socket.emit(events.server.ROOMS_UPDATE, rooms); /* XXX: Fix me pls :( */
   }
 
   onRoomInfoUpdate(roomInfo) {
-    this.socket.emit(events.server.GAME_INFO_UPDATE, roomInfo); /* XXX: Fix me pls :( */
+    this.socket.emit(events.server.ROOM_INFO_UPDATE, roomInfo); /* XXX: Fix me pls :( */
   }
 
   onPieceUpdate(data) {
@@ -158,7 +158,7 @@ class MainController {
   }
 
   onRoomsUpdateRequest() {
-    logger.debug('GAMES_UPDATE event requested.'); /* XXX: Fix me :( */
+    logger.debug('ROOMS_UPDATE event requested.'); /* XXX: Fix me :( */
     this.onRoomsUpdate(RoomsController.getRooms());
   }
 
