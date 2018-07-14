@@ -28,7 +28,7 @@ export default compose(
     componentDidMount() {
       const { setIsRunning } = this.props;
       socket.on(serverSocketEvents.GAME_STARTED, () => setIsRunning(true));
-      socket.emit(clientSocketEvents.GAMES_UPDATE_REQUEST);
+      socket.emit(clientSocketEvents.ROOMS_UPDATE_REQUEST);
     },
     componentWillUnmount() {
       socket.off(serverSocketEvents.GAME_STARTED);

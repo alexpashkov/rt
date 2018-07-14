@@ -29,14 +29,14 @@ export default compose(
   withHandlers({
     handleMessageSending: ({ currentMessage, setCurrentMessage }) => event => {
       event.preventDefault();
-      socket.emit(clientSocketEvents.GAME_CHAT_MESSAGE, currentMessage);
+      socket.emit(clientSocketEvents.ROOM_CHAT_MESSAGE, currentMessage);
       setCurrentMessage(''); /* clear message input */
     }
   }),
   lifecycle({
     componentDidMount() {
       const { addChatMessage } = this.props;
-      socket.on(serverSocketEvents.GAME_CHAT_MESSAGE, addChatMessage);
+      socket.on(serverSocketEvents.ROOM_CHAT_MESSAGE, addChatMessage);
     }
   })
 )(GameChat);

@@ -37,7 +37,7 @@ export default compose(
 const navigateToGamePage = gameId => history.push(`/${gameId}`);
 
 const emitGameCreate = () =>
-  socket.emit(clientSocketEvents.GAME_CREATE, handleGameCreateResponse);
+  socket.emit(clientSocketEvents.ROOM_CREATE, handleGameCreateResponse);
 
 const handleGameCreateResponse = ({ status, gameId }) => {
   if (status !== 'success') {

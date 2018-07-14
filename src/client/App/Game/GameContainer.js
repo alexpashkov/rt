@@ -26,9 +26,9 @@ import {
 } from '../../../shared/socket-events';
 
 const emitGameJoin = (gameId, cb) =>
-  socket.emit(clientSocketEvents.GAME_JOIN, { id: gameId }, cb);
+  socket.emit(clientSocketEvents.ROOM_JOIN, { id: gameId }, cb);
 const emitGameLeave = gameId =>
-  socket.emit(clientSocketEvents.GAME_LEAVE, { id: gameId });
+  socket.emit(clientSocketEvents.ROOM_LEAVE, { id: gameId });
 
 export default compose(
   connect(
