@@ -1,6 +1,9 @@
+'use strict';
 const rotationMap = require('../../shared/piece-rotation-map');
 const validator = require('../../shared/validator');
 const helpers = require('../../shared/helpers');
+const blockCodes = require('../../shared/block-codes');
+const logger = require('../logger');
 
 class Player {
   constructor(id, handlers) {
@@ -29,8 +32,8 @@ class Player {
   initCurrentPiece() {
     this.currentPiece = {
       code: this.handlers.getNewPiece(this.pieceIndex),
-      x: 0,
-      y: 0
+      x: Math.floor(Math.random() * Math.floor(this.board[0].length - 4)),
+      y: -4
     };
     this.incrementPieceIndex();
     this.onCurrentPieceUpdate();
@@ -61,7 +64,7 @@ class Player {
        */
       if (movementDirection.x === 0 && movementDirection.y > 0) {
         this.applyPieceToBoard();
-        this.checkIsLineFilled();
+        this.checkPossiblyFilledLines();
         this.setCurrentPiece(this.getNewCurrentPiece());
       }
       return false;
@@ -92,20 +95,46 @@ class Player {
     const pieceArray = helpers.pieceToArray(this.currentPiece.code);
 
     for (let block of pieceArray) {
+      if (this.currentPiece.y + block.y < 0)
+        continue ;
       this.board[this.currentPiece.y + block.y][this.currentPiece.x + block.x] = this.currentPiece.code;
     }
 
     this.onBoardUpdate();
   }
 
-  checkIsLineFilled() {
+  checkPossiblyFilledLines() {
+    let emptiedLineIndexes = [];
+
+    for (let i = 0; i < this.board.length; i++) {
+      if (this.board[i].every(block => block !== blockCodes.BLOCK_FREE)) {
+        emptiedLineIndexes.push(i);
+      }
+    }
+
+    for (let emptyIndex of emptiedLineIndexes) {
+      logger.error(`DISSOLVING LINE ${emptyIndex}`);
+      this.dissolveLine(emptyIndex);
+    }
+
+    if (emptiedLineIndexes.length) {
+      this.onBoardUpdate();
+    }
+  }
+
+  dissolveLine(lineIndex) {
+    this.board[lineIndex] = this.board[lineIndex].map(() => blockCodes.BLOCK_FREE);
+    for (let i = lineIndex - 1; i >= 0; i--) {
+      logger.error(`COPYING FROM INDEX ${i} TO INDEX ${i + 1}`);
+      this.board[i + 1] = this.board[i].slice();
+    }
   }
 
   getNewCurrentPiece() {
     return {
       code: this.handlers.getNewPiece(this.pieceIndex++),
       x: Math.floor(Math.random() * Math.floor(this.board[0].length - 4)),
-      y: 0
+      y: -4
     }
   }
 

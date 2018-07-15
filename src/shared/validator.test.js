@@ -95,4 +95,12 @@ describe('piece movement validator', () => {
       expect(validator(semiFilledBoard, testTPiece2, 'down')).toBe(false);
     });
   });
+
+  it('lets piece to be placed 4 blocks above the top border', () => {
+    const testPiece = { code: 0xC440, y: -4, x: 5 };
+
+    expect(validator(semiFilledBoard, testPiece, 'down')).toBe(true);
+    expect(validator(semiFilledBoard, testPiece, 'left')).toBe(true);
+    expect(validator(semiFilledBoard, testPiece, 'right')).toBe(true);
+  });
 });

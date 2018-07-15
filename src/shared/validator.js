@@ -29,11 +29,11 @@ module.exports = (board, piece, direction) => {
     const newY = y + nextPosition.y;
     const newX = x + nextPosition.x;
     return (
-      newY >= 0 &&
+      newY >= -4 &&
       newY < board.length &&
       newX >= 0 &&
       newX < board[0].length &&
-      board[y + nextPosition.y][x + nextPosition.x] === blockCodes.BLOCK_FREE
+      (newY < 0 || board[y + nextPosition.y][x + nextPosition.x] === blockCodes.BLOCK_FREE)
     );
   });
 };
