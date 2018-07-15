@@ -39,9 +39,8 @@ const navigateToGamePage = gameId => history.push(`/${gameId}`);
 const emitGameCreate = () =>
   socket.emit(clientSocketEvents.ROOM_CREATE, handleGameCreateResponse);
 
-const handleGameCreateResponse = ({ status, gameId }) => {
-  if (status !== 'success') {
+const handleGameCreateResponse = ({ status, roomId }) => {
+  if (status !== 'success')
     return alert('Failed to join the game');
-  }
-  navigateToGamePage(gameId);
+  navigateToGamePage(roomId);
 };
