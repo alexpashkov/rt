@@ -54,7 +54,6 @@ class Game extends EventEmitter {
     try {
       this.isRunning = true;
       this.gameMode.start(this.params);
-      this.emit(GEvents.GE_STARTED);
     } catch (e) {
       this.isRunning = false;
       throw e;
@@ -90,7 +89,6 @@ class Game extends EventEmitter {
   }
 
   setEventHandlersForPlayer(player) {
-    this.on(GEvents.GE_STARTED, player.onGameStarted.bind(player));
     this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player.onPieceUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player.onBoardUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_LINE_FILLED, player.onLineFilled.bind(player));

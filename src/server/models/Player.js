@@ -49,15 +49,8 @@ class Player {
     if (!this.currentPiece)
       return false;
 
-    /*
-     *  XXX: Separate as helper.
-     */
     if (typeof movementDirection === 'string') {
-      movementDirection = (() => {
-        if (movementDirection === 'down') return { x: 0, y: 1 };
-        else if (movementDirection === 'left') return { x: -1, y: 0 };
-        else if (movementDirection === 'right') return { x: 1, y: 0 };
-      })();
+      movementDirection = helpers.stringToObjectDirection(movementDirection);
     }
 
     if (!this.validator(this.board, this.currentPiece, movementDirection))
@@ -68,6 +61,7 @@ class Player {
        */
       if (movementDirection.x === 0 && movementDirection.y > 0) {
         this.applyPieceToBoard();
+        this.checkIsLineFilled();
         this.setCurrentPiece(this.getNewCurrentPiece());
       }
       return false;
@@ -102,6 +96,9 @@ class Player {
     }
 
     this.onBoardUpdate();
+  }
+
+  checkIsLineFilled() {
   }
 
   getNewCurrentPiece() {
