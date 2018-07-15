@@ -49,7 +49,7 @@ class MainController {
     logger.info(`Created room ${roomId}`);
     callback(
       roomId
-        ? this._respondSuccess({ gameId: roomId }) /* XXX: Change pls :( */
+        ? this._respondSuccess({ roomId: roomId })
         : this._respondError({ description: 'Failed to create room.' })
     );
   }
