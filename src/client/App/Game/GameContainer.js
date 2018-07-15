@@ -53,7 +53,7 @@ export default compose(
       emitGameJoin(gameId, ({ status, roomInfo, description }) => {
         if (status === 'error') {
           /* failed to join the game, redirect to lobby */
-          alert(description || 'Failed to join the game');
+          // alert(description || 'Failed to join the game');
           return history.push('/');
         }
         setCurrentGameInfo(roomInfo);
@@ -61,8 +61,8 @@ export default compose(
       /* subscribe to game info updates, e.g when new player joins the game
       is reflected for players who's in the game lobby */
       socket.on(serverSocketEvents.ROOM_INFO_UPDATE, setCurrentGameInfo);
-      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, ({ piece }) => {
-        setPiece(piece);
+      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, data => {
+        setPiece(data.piece);
       });
       socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data =>
         setBoard(data.id, data.board)
