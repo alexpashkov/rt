@@ -162,6 +162,10 @@ class MainController {
     assert.ok(data);
   }
 
+  onGameFinished() {
+    this.gameId = null;
+  }
+
   onRoomsUpdateRequest() {
     logger.debug('ROOMS_UPDATE event requested.');
     this.onRoomsUpdate(RoomsController.getRooms());

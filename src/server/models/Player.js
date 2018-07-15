@@ -9,6 +9,7 @@ class Player {
   constructor(id, handlers) {
     this.id = id;
     this.pieceIndex = 0;
+    this._hasLost = null;
     this.validator = validator || (() => true);
     /*
      *  This 'handlers' thing is just a test.
@@ -49,7 +50,7 @@ class Player {
   }
 
   movePiece(movementDirection) {
-    if (!this.currentPiece)
+    if (!this.currentPiece || this._hasLost)
       return false;
 
     if (typeof movementDirection === 'string') {
@@ -65,7 +66,11 @@ class Player {
       if (movementDirection.x === 0 && movementDirection.y > 0) {
         this.applyPieceToBoard();
         this.checkPossiblyFilledLines();
-        this.setCurrentPiece(this.getNewCurrentPiece());
+        if (!this.checkHasLost()) {
+          this.setCurrentPiece(this.getNewCurrentPiece());
+        } else {
+          this._hasLost = true;
+        }
       }
       return false;
     }
@@ -78,7 +83,7 @@ class Player {
   }
 
   rotatePiece() {
-    if (!this.currentPiece)
+    if (!this.currentPiece || this._hasLost)
       return false;
 
     const rotatedPiece = Object.assign({}, this.currentPiece, { code: rotationMap.get(this.currentPiece.code) });
@@ -101,6 +106,12 @@ class Player {
     }
 
     this.onBoardUpdate();
+  }
+
+  checkHasLost() {
+    return (helpers.pieceToArray(this.currentPiece.code).some((piece) => {
+      return (piece.y + this.currentPiece.y) < 0
+    }));
   }
 
   checkPossiblyFilledLines() {
@@ -144,6 +155,10 @@ class Player {
 
   getPieceIndex() {
     return this.pieceIndex;
+  }
+
+  hasLost() {
+    return this._hasLost;
   }
 
   onCurrentPieceUpdate() {

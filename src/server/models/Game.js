@@ -60,6 +60,16 @@ class Game extends EventEmitter {
     }
   }
 
+  gameFinish() {
+    try {
+      this.isRunning = false;
+      this.gameMode.finish();
+    } catch (e) {
+      logger.error(`AN ERROR HAS OCCURED: ${e}`);
+      throw e;
+    }
+  }
+
   /*
    *  Because all players have to receive the same pieces in the same order,
    *  unified pieceQueue and getNewPiece method are required.
@@ -92,6 +102,7 @@ class Game extends EventEmitter {
     this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player.onPieceUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player.onBoardUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_LINE_FILLED, player.onLineFilled.bind(player));
+    this.on(GEvents.GE_FINISHED, player.onGameFinished.bind(player));
   }
 
   getPlayers() {
@@ -129,6 +140,10 @@ class Game extends EventEmitter {
 
   gameInfoUpdated() {
     this.emit(GEvents.GE_INFO_UPDATE, this.getGameInfo());
+  }
+
+  destroy() {
+    this.emit('destroy');
   }
 
 }
