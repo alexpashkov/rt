@@ -24,6 +24,14 @@ const getPieceCells = pieceCode =>
       []
     );
 
+const stringDirectionObject = {
+  'right': { x: 1, y: 0 },
+  'left': { x: -1, y: 0 },
+  'down': { x: 0, y: 1 },
+};
+const stringToObjectDirection = str => stringDirectionObject[str] || { x: 0, y: 0 };
+
 module.exports = {
-  pieceToArray: getPieceCells
+  pieceToArray: getPieceCells,
+  stringToObjectDirection: stringToObjectDirection,
 }
