@@ -14,7 +14,7 @@ export const mergeBoardAndPiece = (board, piece) => {
                 cell => cell.x + piece.x === x && cell.y + piece.y === y
               )
                 ? piece.code
-                : 0
+                : board[y][x]
           )
         : row
   );
