@@ -151,7 +151,7 @@ class MainController {
 
   onBoardUpdate(data) {
     assert.ok(data);
-    if (data.id !== this.id) return;
+    // if (data.id !== this.id) return; XXX: Enable for separate spectres.
 
     logger.debug(`Board updated -> ${JSON.stringify(data)}`);
     this.socket.emit(events.server.GAME_BOARD_CURRENT, data);
