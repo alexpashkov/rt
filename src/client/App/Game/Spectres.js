@@ -4,15 +4,12 @@ import Board from './Board/Board';
 
 const Wrapper = styled.div`
   display: flex;
-  flex-grow: 1;
   flex-wrap: wrap;
   align-items: flex-start;
 `;
 
 const SpectreWrapper = styled.div`
   width: 50%;
-  height: 200px;
-  background-color: red;
   border: 1px dotted lime;
 `;
 

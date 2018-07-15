@@ -2,12 +2,21 @@
 import React from 'react';
 import Board from './Board/Board';
 import Spectres from './Spectres';
-import { Wrapper } from './styled';
+import { Wrapper, BoardWrapper, SpectresWrapper } from './styled';
 
 const Game = ({ userBoard = null, spectres }) => (
   <Wrapper>
-    <Board board={userBoard} />
-    <Spectres spectres={spectres} />
+    <BoardWrapper>
+      <Board board={userBoard} />
+    </BoardWrapper>
+    <SpectresWrapper>
+      <Spectres spectres={spectres} />
+    </SpectresWrapper>
+    {/*<audio*/}
+    {/*src="https://www.bensound.com/bensound-music/bensound-epic.mp3"*/}
+    {/*loop*/}
+    {/*autoPlay*/}
+    {/*/>*/}
   </Wrapper>
 );
 

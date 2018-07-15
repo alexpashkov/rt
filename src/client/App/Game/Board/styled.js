@@ -12,11 +12,11 @@ export const Row = styled.div`
   height: 5%;
 `;
 
-export const Wrapper = styled.div`
-  width: 100%;
-  align-self: flex-start;
-  max-width: 400px;
-`;
+// export const Wrapper = styled.div`
+//   width: 100%;
+//   align-self: flex-start;
+//   max-width: 400px;
+// `;
 
 function getCellColor({ cellVal }) {
   if (!cellVal) return '#fff';
