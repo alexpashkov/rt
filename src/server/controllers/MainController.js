@@ -128,7 +128,8 @@ class MainController {
     }
   }
 
-  onGameStarted() {
+  onGameStarted(gameId) {
+    this.gameId = gameId;
     this.socket.emit(events.server.GAME_STARTED);
   }
 
