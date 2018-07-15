@@ -1,6 +1,5 @@
 const GameMode = require('./GameMode');
 const BlockCodes = require('../../shared/block-codes');
-const PieceService = require('../services/PieceService');
 const R = require('ramda');
 const logger = require('../logger');
 

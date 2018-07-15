@@ -157,6 +157,10 @@ class MainController {
     this.socket.emit(events.server.GAME_BOARD_CURRENT, data);
   }
 
+  onLineFilled(data) {
+    assert.ok(data);
+  }
+
   onRoomsUpdateRequest() {
     logger.debug('ROOMS_UPDATE event requested.');
     this.onRoomsUpdate(RoomsController.getRooms());

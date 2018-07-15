@@ -80,7 +80,7 @@ class Player {
     return true;
   }
 
-  rotatePiece(rotationDirection) {
+  rotatePiece() {
     if (!this.currentPiece)
       return false;
 
@@ -98,7 +98,7 @@ class Player {
     const pieceArray = helpers.pieceToArray(this.currentPiece.code);
 
     for (let block of pieceArray) {
-      this.board[this.currentPiece.y + block.y][this.currentPiece.x + block.x] = -1;
+      this.board[this.currentPiece.y + block.y][this.currentPiece.x + block.x] = this.currentPiece.code;
     }
 
     this.onBoardUpdate();

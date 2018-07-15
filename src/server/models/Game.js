@@ -12,7 +12,8 @@ const GEvents = {
   GE_STARTED: 'GE_STARTED',
   GE_START_FAILED: 'GE_START_FAILED',
   GE_PLAYER_PIECE_UPDATE: 'GE_PLAYER_PIECE_UPDATE',
-  GE_PLAYER_BOARD_UPDATE: 'GE_PLAYER_BOARD_UPDATE'
+  GE_PLAYER_BOARD_UPDATE: 'GE_PLAYER_BOARD_UPDATE',
+  GE_PLAYER_LINE_FILLED: 'GE_PLAYER_LINE_FILLED',
 };
 
 class Game extends EventEmitter {
@@ -26,6 +27,7 @@ class Game extends EventEmitter {
     this.players = players.map((player) => new Player(player.id, {
       onCurrentPieceUpdate: this.onPlayerPieceUpdate.bind(this),
       onBoardUpdate: this.onPlayerBoardUpdate.bind(this),
+      onLineFilled: this.onPlayerLineFilled.bind(this),
       getNewPiece: this.getNewPiece.bind(this),
     }));
     this.isRunning = false;
@@ -82,10 +84,16 @@ class Game extends EventEmitter {
     });
   }
 
+  onPlayerLineFilled(lineInfo) {
+    logger.info(`Line has been filled -> ${JSON.stringify(lineInfo)}`);
+    this.emit(GEvents.GE_PLAYER_LINE_FILLED, lineInfo);
+  }
+
   setEventHandlersForPlayer(player) {
     this.on(GEvents.GE_STARTED, player.onGameStarted.bind(player));
     this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player.onPieceUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player.onBoardUpdate.bind(player));
+    this.on(GEvents.GE_PLAYER_LINE_FILLED, player.onLineFilled.bind(player));
   }
 
   getPlayers() {
