@@ -7,7 +7,7 @@ import history from '../history';
 import store from '../store';
 import theme from '../theme';
 import '../socket';
-import '../styles';
+import '../globalStyles';
 
 import { ColoringWrapper, CenteringWrapper } from './styled';
 
