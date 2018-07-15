@@ -49,16 +49,18 @@ export const spectresSelector = createSelector(
   state => state.user && state.user.id,
   (boards, userId) =>
     boards && userId
-      ? Object.keys(pickBy((_, id) => id != userId, boards)).reduce(
-          (spectres, id) => [
-            ...spectres,
-            Object.assign({
-              id,
-              spectre: spectreFromBoard(boards[id])
-            })
-          ],
-          []
-        )
+      ? Object.keys(pickBy((_, id) => id != userId, boards))
+          .reduce(
+            (spectres, id) => [
+              ...spectres,
+              Object.assign({
+                id,
+                spectre: spectreFromBoard(boards[id])
+              })
+            ],
+            []
+          )
+          .sort()
       : []
 );
 
@@ -67,8 +69,7 @@ export const spectreFromBoard = board => {
   for (let x = 0; x < 10; x++) {
     let filledFound = 0;
     for (let y = 0; y < 20; y++) {
-      filledFound = filledFound || board[y][x];
-      spectre[y][x] = filledFound ? 1 : 0;
+      spectre[y][x] = (filledFound = filledFound || board[y][x]) ? 1 : 0;
     }
   }
   return spectre;

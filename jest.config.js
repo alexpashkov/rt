@@ -4,7 +4,7 @@ module.exports = {
     '<rootDir>/src/server',
     '<rootDir>/src/shared'
   ],
-  collectCoverage: true,
+  // collectCoverage: true,
   collectCoverageFrom: [
     '**/*.{js,jsx}',
     '!**/*.test.{js,jsx}',

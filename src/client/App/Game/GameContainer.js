@@ -17,7 +17,7 @@ import GameLobby from './GameLobby';
 import Game from './Game';
 import { setBoard } from '../../actions/boardsActions';
 import { setPiece } from '../../actions/currentPieceActions';
-import { userBoardSelector } from './selectors';
+import { userBoardSelector, spectresSelector } from './selectors';
 import withRunningGameLogic from './withRunningGameLogic';
 
 import {
@@ -35,6 +35,7 @@ export default compose(
     state => ({
       userId: state.user && state.user.id,
       userBoard: userBoardSelector(state),
+      spectres: spectresSelector(state),
       currentGameInfo: state.currentGameInfo
     }),
     {
