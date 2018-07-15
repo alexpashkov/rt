@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { numToBinary16String } from '../../utils';
+import { pickBy } from 'ramda';
 
 export const mergeBoardAndPiece = (board, piece) => {
   if (!piece) return board;
@@ -42,3 +43,33 @@ export const userBoardSelector = createSelector(
   state => state.currentPiece,
   mergeBoardAndPiece
 );
+
+export const spectresSelector = createSelector(
+  state => state.boards || {},
+  state => state.user && state.user.id,
+  (boards, userId) =>
+    boards && userId
+      ? Object.keys(pickBy((_, id) => id != userId, boards)).reduce(
+          (spectres, id) => [
+            ...spectres,
+            Object.assign({
+              id,
+              spectre: spectreFromBoard(boards[id])
+            })
+          ],
+          []
+        )
+      : []
+);
+
+export const spectreFromBoard = board => {
+  const spectre = Array.from(Array(20)).map(() => Array.from(Array(10)));
+  for (let x = 0; x < 10; x++) {
+    let filledFound = 0;
+    for (let y = 0; y < 20; y++) {
+      filledFound = filledFound || board[y][x];
+      spectre[y][x] = filledFound ? 1 : 0;
+    }
+  }
+  return spectre;
+};
