@@ -7,8 +7,12 @@ injectGlobal`
       box-sizing: border-box;
       letter-spacing: .04em;
     }
+    html {
+      font-size: 62.5%;  
+    }
     body {
       margin: 0; 
       font-family: 'Bowlby One SC', cursive;
+      font-size: 1.4rem;
     } 
 `;
