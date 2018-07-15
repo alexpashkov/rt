@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'react-emotion';
-import {BoardWrapper, Row, Cell} from "./styled";
+import {Wrapper, Row, Cell} from "./styled";
 
-const GameBoard = ({ board }) =>
+const Board = ({ board }) =>
   board && (
-    <BoardWrapper>
+    <Wrapper>
       {board.map((row, y) => (
         <Row key={y}>
           {row.map((cell, x) => <Cell key={x} cellVal={cell} />)}
         </Row>
       ))}
-    </BoardWrapper>
+    </Wrapper>
   );
 
-export default GameBoard;
+export default Board;

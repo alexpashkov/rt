@@ -12,7 +12,7 @@ export const Row = styled.div`
   height: 5%;
 `;
 
-export const BoardWrapper = styled.div`
+export const Wrapper = styled.div`
   width: 100%;
   align-self: flex-start;
   max-width: 400px;

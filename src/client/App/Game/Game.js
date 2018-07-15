@@ -1,7 +1,7 @@
 /* eslint react/prop-types: 0 */ // prop-actionTypes are set in the container component
 import React from 'react';
-import GameBoard from './GameBoard/GameBoard';
+import Board from './Board/Board';
 
-const Game = ({ userBoard = null }) => <GameBoard board={userBoard} />;
+const Game = ({ userBoard = null }) => <Board board={userBoard} />;
 
 export default Game;
