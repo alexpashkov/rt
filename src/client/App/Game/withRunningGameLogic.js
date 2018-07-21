@@ -4,34 +4,56 @@ import socket from '../../socket';
 import socketEvents from '../../../shared/socket-events';
 import throttle from 'lodash.throttle';
 
+const LEFT = 37;
+const UP = 38;
+const RIGHT = 39;
+const DOWN = 40;
+const SPACE = 32;
+
 const keyCodeToDirectionStringMap = {
-  37: 'left',
-  39: 'right',
-  40: 'down'
+  [LEFT]: 'left',
+  [RIGHT]: 'right',
+  [DOWN]: 'down'
 };
 
 /* A bit of fun with functional programming, don't do it when other people ought to read this code */
-const handlePieceMovement = throttle(
+const with100msThrottle = fn => throttle(fn, 100);
+const whenKeyCodeSatisfies = (predicate, fn) =>
   R.pipe(
     R.prop('keyCode'),
-    R.when(R.anyPass([R.equals(37), R.equals(39), R.equals(40)]), keyCode =>
-      socket.emit(
-        socketEvents.client.GAME_PIECE_MOVE,
-        keyCodeToDirectionStringMap[keyCode]
-      )
+    R.when(predicate, fn)
+  );
+
+const handlePieceMovement = with100msThrottle(
+  R.pipe(
+    R.prop('keyCode'),
+    R.when(
+      R.anyPass([R.equals(LEFT), R.equals(RIGHT), R.equals(DOWN)]),
+      keyCode =>
+        socket.emit(
+          socketEvents.client.GAME_PIECE_MOVE,
+          keyCodeToDirectionStringMap[keyCode]
+        )
     )
-  ),
-  75
+  )
 );
 
-const handlePieceRotation = throttle(
+const handlePieceRotation = with100msThrottle(
   R.pipe(
     R.prop('keyCode'),
-    R.when(R.equals(38), () =>
+    R.when(R.equals(UP), () =>
       socket.emit(socketEvents.client.GAME_PIECE_ROTATE, 'right')
     )
-  ),
-  75
+  )
+);
+
+const handlePieceDrop = with100msThrottle(
+  R.pipe(
+    R.prop('keyCode'),
+    R.when(R.equals(SPACE), () =>
+      socket.emit(socketEvents.client.GAME_PIECE_DROP)
+    )
+  )
 );
 
 export default compose(
@@ -39,10 +61,12 @@ export default compose(
     componentDidMount() {
       document.addEventListener('keydown', handlePieceMovement);
       document.addEventListener('keydown', handlePieceRotation);
+      document.addEventListener('keydown', handlePieceDrop);
     },
     componentWillUnmount() {
       document.removeEventListener('keydown', handlePieceMovement);
       document.removeEventListener('keydown', handlePieceRotation);
+      document.removeEventListener('keydown', handlePieceDrop);
     }
   })
 );
