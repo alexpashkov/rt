@@ -6,11 +6,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
+  color: ${({ theme }) => theme.colors.secondaryText};
 `;
 
 const SpectreWrapper = styled.div`
   width: 50%;
-  border: 1px dotted lime;
 `;
 
 export default ({ spectres = [] }) => (

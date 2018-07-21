@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader';
 import React from 'react';
 import { Provider as StoreProvider } from 'react-redux';
 import { Router, Redirect, Switch, Route } from 'react-router-dom';
@@ -32,4 +33,4 @@ const App = () => (
   </StoreProvider>
 );
 
-export default App;
+export default hot(module)(App);

@@ -12,11 +12,6 @@ const Game = ({ userBoard = null, spectres }) => (
     <SpectresWrapper>
       <Spectres spectres={spectres} />
     </SpectresWrapper>
-    {/*<audio*/}
-    {/*src="https://www.bensound.com/bensound-music/bensound-epic.mp3"*/}
-    {/*loop*/}
-    {/*autoPlay*/}
-    {/*/>*/}
   </Wrapper>
 );
 

@@ -2,13 +2,13 @@ export default {
   colors: {
     accent: '#f00',
     background: '#1b2431',
-    primaryText: '#fff',
-    secondaryText: '#7f8fa4'
+    primaryText: '#dfe3f6',
+    secondaryText: '#6a798e'
   },
   panel: {
-    background: '#273142',
+    background: '#242d3c',
     borderRadius: '5px',
-    border: '1px solid #313d4f',
+    border: '1px solid #2a3548',
     padding: '10px'
   },
   defaultBorderRadius: '5px'

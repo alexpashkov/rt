@@ -6,6 +6,7 @@ module.exports = {
   plugins: [
     'transform-object-rest-spread',
     'transform-class-properties',
-    'emotion'
+    'emotion',
+    'react-hot-loader/babel'
   ]
 };
