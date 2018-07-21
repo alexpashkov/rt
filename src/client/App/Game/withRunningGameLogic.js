@@ -17,42 +17,33 @@ const keyCodeToDirectionStringMap = {
 };
 
 /* A bit of fun with functional programming, don't do it when other people ought to read this code */
-const with100msThrottle = fn => throttle(fn, 100);
+const withSomeThrottle = fn => throttle(fn, 50);
 const whenKeyCodeSatisfies = (predicate, fn) =>
   R.pipe(
     R.prop('keyCode'),
     R.when(predicate, fn)
   );
 
-const handlePieceMovement = with100msThrottle(
-  R.pipe(
-    R.prop('keyCode'),
-    R.when(
-      R.anyPass([R.equals(LEFT), R.equals(RIGHT), R.equals(DOWN)]),
-      keyCode =>
-        socket.emit(
-          socketEvents.client.GAME_PIECE_MOVE,
-          keyCodeToDirectionStringMap[keyCode]
-        )
-    )
+const handlePieceMovement = withSomeThrottle(
+  whenKeyCodeSatisfies(
+    R.anyPass([R.equals(LEFT), R.equals(RIGHT), R.equals(DOWN)]),
+    keyCode =>
+      socket.emit(
+        socketEvents.client.GAME_PIECE_MOVE,
+        keyCodeToDirectionStringMap[keyCode]
+      )
   )
 );
 
-const handlePieceRotation = with100msThrottle(
-  R.pipe(
-    R.prop('keyCode'),
-    R.when(R.equals(UP), () =>
-      socket.emit(socketEvents.client.GAME_PIECE_ROTATE, 'right')
-    )
+const handlePieceRotation = withSomeThrottle(
+  whenKeyCodeSatisfies(R.equals(UP), () =>
+    socket.emit(socketEvents.client.GAME_PIECE_ROTATE, 'right')
   )
 );
 
-const handlePieceDrop = with100msThrottle(
-  R.pipe(
-    R.prop('keyCode'),
-    R.when(R.equals(SPACE), () =>
-      socket.emit(socketEvents.client.GAME_PIECE_DROP)
-    )
+const handlePieceDrop = withSomeThrottle(
+  whenKeyCodeSatisfies(R.equals(SPACE), () =>
+    socket.emit(socketEvents.client.GAME_PIECE_DROP)
   )
 );
 
