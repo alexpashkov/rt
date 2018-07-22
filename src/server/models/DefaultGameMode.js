@@ -15,6 +15,7 @@ class DefaultGameMode extends GameMode {
       getNewPiece: this.getNewPiece.bind(this),
       onDisconnect: this.onPlayerDisconnect.bind(this),
       onPlayerLost: this.onPlayerLost.bind(this),
+      onPlayerLeave: this.onPlayerLeave.bind(this),
     })));
   }
 
@@ -25,15 +26,11 @@ class DefaultGameMode extends GameMode {
     const now = Date.now();
 
     if (now - this.previousPieceUpdate >= 1000) {
-      /* Second passed */
+      /* Second has passed */
       this.previousPieceUpdate = this.previousPieceUpdate + 1000;
       for (let player of this.game.getPlayers().filter(_player => !_player.hasLost())) {
         player.movePiece({ x: 0, y: 1 });
       }
-    }
-
-    if (this.isGameFinished()) {
-      this.game.gameFinish();
     }
   }
 
@@ -44,10 +41,6 @@ class DefaultGameMode extends GameMode {
   }
 
   afterFinish() {}
-
-  isGameFinished() {
-    return this.game.getPlayers().every(player => player.hasLost());
-  }
 
   generatePlayerBoards() {
     const { boardWidth, boardHeight } = this.params || {
@@ -79,6 +72,10 @@ class DefaultGameMode extends GameMode {
   }
 
   onPlayerLineFilled(lineInfo) {
+    logger.error(`FREEZING LINES OF ${JSON.stringify(lineInfo)}`);
+    this.game.getPlayers()
+        .filter(player => player.id !== lineInfo.id)
+        .forEach(player => player.freezeLine());
     this.game.onPlayerLineFilled(lineInfo);
   }
 
@@ -92,6 +89,10 @@ class DefaultGameMode extends GameMode {
 
   onPlayerLost(playerInfo) {
     this.game.onPlayerLost(playerInfo);
+  }
+
+  onPlayerLeave(playerInfo) {
+    this.game.onPlayerLeave(playerInfo);
   }
 
   onPlayerDisconnect(playerInfo) {

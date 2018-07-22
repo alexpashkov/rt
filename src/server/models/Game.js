@@ -15,6 +15,9 @@ const GEvents = {
   GE_PLAYER_BOARD_UPDATE: 'GE_PLAYER_BOARD_UPDATE',
   GE_PLAYER_LINE_FILLED: 'GE_PLAYER_LINE_FILLED',
   GE_PLAYER_DISCONNECTED: 'GE_PLAYER_DISCONNECTED',
+  GE_PLAYER_HAS_LEFT: 'GE_PLAYER_HAS_LEFT',
+  GE_PLAYER_HAS_LOST: 'GE_PLAYER_HAS_LOST',
+  GE_FINISHED: 'GE_FINISHED',
   GE_DESTROY: 'GE_DESTROY',
 };
 
@@ -65,6 +68,7 @@ class Game extends EventEmitter {
       logger.error(`GAME IS FINISHING ${this.id}`);
       this.isRunning = false;
       this.gameMode.finish();
+      debugger;
       this.emit(GEvents.GE_FINISHED);
       this.destroy();
       /*
@@ -76,6 +80,13 @@ class Game extends EventEmitter {
       logger.error(`AN ERROR HAS OCCURED: ${e}`);
       throw e;
     }
+  }
+
+  playerLeave(playerId) {
+    if (!this.getPlayers().find(player => player.id === playerId))
+      return false;
+
+    this.getPlayerById(playerId).leave();
   }
 
   /*
@@ -107,13 +118,22 @@ class Game extends EventEmitter {
   }
 
   onPlayerLost(playerInfo) {
-    if (this.players.every((player) => player.isDisconnected() || player.hasLost()))
-      this.gameFinish();
+    this.emit(GEvents.GE_PLAYER_HAS_LOST, playerInfo);
+    this.checkIfFinished();
   }
 
   onPlayerDisconnect(playerInfo) {
     this.emit(GEvents.GE_PLAYER_DISCONNECTED, playerInfo);
-    if (this.players.every((player) => player.isDisconnected() || player.hasLost()))
+    this.checkIfFinished();
+  }
+
+  onPlayerLeave(playerInfo) {
+    this.emit(GEvents.GE_PLAYER_HAS_LEFT, playerInfo);
+    this.checkIfFinished();
+  }
+
+  checkIfFinished() {
+    if (this.players.every(player => !player.canRespond()))
       this.gameFinish();
   }
 
@@ -121,9 +141,11 @@ class Game extends EventEmitter {
     this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player.onPieceUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player.onBoardUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_LINE_FILLED, player.onLineFilled.bind(player));
-    this.on(GEvents.GE_PLAYER_DISCONNECTED, player.onPlayerDisconnected.bind(player));
+    this.on(GEvents.GE_PLAYER_DISCONNECTED, player.onPlayerHasDisconnected.bind(player));
     this.on(GEvents.GE_FINISHED, player.onGameFinished.bind(player));
     this.on(GEvents.GE_DESTROY, player.onGameDestroy.bind(player));
+    this.on(GEvents.GE_PLAYER_HAS_LEFT, player.onPlayerHasLeft.bind(player));
+    this.on(GEvents.GE_PLAYER_HAS_LOST, player.onPlayerHasLost.bind(player));
   }
 
   getPlayers() {
@@ -150,15 +172,6 @@ class Game extends EventEmitter {
     };
   }
 
-  isPlayerInGameByLogin(login) {
-    return (
-      this.players.filter(player => {
-        const user = UserService.getUserById(player.id);
-        return user ? user.getLogin() === login : false;
-      }).length !== 0
-    );
-  }
-
   gameInfoUpdated() {
     this.emit(GEvents.GE_INFO_UPDATE, this.getGameInfo());
   }
@@ -174,6 +187,8 @@ class Game extends EventEmitter {
       onLineFilled: this.onPlayerLineFilled.bind(this),
       getNewPiece: this.getNewPiece.bind(this),
       onDisconnect: this.onPlayerDisconnect.bind(this),
+      onPlayerLeave: this.onPlayerLeave.bind(this),
+      onPlayerLost: this.onPlayerLost.bind(this),
     }));
   }
 

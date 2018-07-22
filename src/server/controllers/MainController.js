@@ -38,6 +38,7 @@ class MainController {
     this.socket.on(events.client.GAME_PIECE_MOVE, this.onGamePieceMove.bind(this));
     this.socket.on(events.client.GAME_PIECE_ROTATE, this.onGamePieceRotate.bind(this));
     this.socket.on(events.client.GAME_PIECE_DROP, this.onGamePieceDrop.bind(this));
+    this.socket.on(events.client.GAME_LEAVE, this.onGameLeave.bind(this));
   }
 
   onRoomCreate(callback) {
@@ -128,6 +129,21 @@ class MainController {
     }
   }
 
+  onGameLeave() {
+    if (!this.gameId) {
+      logger.error('Trying to leave the game while not in one.');
+      return ;
+    }
+
+    const game = GamesController.getGameById(this.gameId);
+    assert(game);
+
+    game.playerLeave(this.id);
+
+    this.gameId = null;
+    this.roomId = null;
+  }
+
   onGameStarted(gameId) {
     this.gameId = gameId;
     this.socket.emit(events.server.GAME_STARTED);
@@ -163,6 +179,7 @@ class MainController {
   }
 
   onGameFinished() {
+    this.socket.emit(events.server.GAME_FINISHED);
   }
 
   onRoomsUpdateRequest() {
@@ -272,8 +289,16 @@ class MainController {
     this.socket.emit(events.server.ROOM_CHAT_MESSAGE, message);
   }
 
-  onPlayerDisconnected(playerInfo) {
+  onPlayerHasDisconnected(playerInfo) {
     this.socket.emit(events.server.GAME_PLAYER_DISCONNECTED, playerInfo);
+  }
+
+  onPlayerHasLost(playerInfo) {
+    this.socket.emit(events.server.GAME_PLAYER_HAS_LOST, playerInfo);
+  }
+
+  onPlayerHasLeft(playerInfo) {
+    this.socket.emit(events.server.GAME_PLAYER_HAS_LEFT, playerInfo);
   }
 
   onGameDestroy(gameId) {

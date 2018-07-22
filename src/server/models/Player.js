@@ -6,19 +6,26 @@ const blockCodes = require('../../shared/block-codes');
 const assert = require('assert');
 const logger = require('../logger');
 
+const PlayerState = {
+  IN_GAME: 1,
+  HAS_LOST: 2,
+  HAS_LEFT: 3,
+  DISCONNECTED: 4,
+};
+
 class Player {
   constructor(id, handlers) {
     this.id = id;
     this.pieceIndex = 0;
-    this._hasLost = null;
-    this._disconnected = false;
+    this.playerState = PlayerState.IN_GAME;
     this.validator = validator || (() => true);
+    this.frozenIndex = 1;
     /*
      *  This 'handlers' thing is just a test.
      *  I thought there are too much event emitters and it makes
      *  code bad :(
      *
-     * This things seems to work ok.
+     * This thing seems to work ok.
      */
     this.handlers = handlers;
   }
@@ -52,14 +59,16 @@ class Player {
   }
 
   movePiece(movementDirection) {
-    if (!this.currentPiece || this._hasLost)
+    if (!this.canRespond())
       return false;
+
+    assert(this.getCurrentPiece());
 
     if (typeof movementDirection === 'string') {
       movementDirection = helpers.stringToObjectDirection(movementDirection);
     }
 
-    if (!this.validator(this.board, this.currentPiece, movementDirection))
+    if (!this.validator(this.board, this.getCurrentPiece(), movementDirection))
     {
       /* 
        * There is the case where piece collides with the bottom of the map
@@ -85,8 +94,10 @@ class Player {
   }
 
   rotatePiece() {
-    if (!this.currentPiece || this._hasLost)
+    if (!this.canRespond())
       return false;
+
+    assert(this.getCurrentPiece());
 
     const rotatedPiece = Object.assign({}, this.currentPiece, { code: rotationMap.get(this.currentPiece.code) });
 
@@ -99,7 +110,7 @@ class Player {
   }
 
   dropPiece() {
-    if (this._hasLost)
+    if (!this.canRespond())
       return false;
 
     assert(this.currentPiece);
@@ -137,7 +148,8 @@ class Player {
     let emptiedLineIndexes = [];
 
     for (let i = 0; i < this.board.length; i++) {
-      if (this.board[i].every(block => block !== blockCodes.BLOCK_FREE)) {
+      if (this.board[i].every(block =>
+              block !== blockCodes.BLOCK_FREE && block !== blockCodes.BLOCK_LOCKED)) {
         emptiedLineIndexes.push(i);
       }
     }
@@ -145,6 +157,11 @@ class Player {
     for (let emptyIndex of emptiedLineIndexes) {
       logger.error(`DISSOLVING LINE ${emptyIndex}`);
       this.dissolveLine(emptyIndex);
+      this.handlers.onLineFilled &&
+        this.handlers.onLineFilled({
+          id: this.id,
+          lineId: emptyIndex,
+        });
     }
 
     if (emptiedLineIndexes.length) {
@@ -155,7 +172,6 @@ class Player {
   dissolveLine(lineIndex) {
     this.board[lineIndex] = this.board[lineIndex].map(() => blockCodes.BLOCK_FREE);
     for (let i = lineIndex - 1; i >= 0; i--) {
-      logger.error(`COPYING FROM INDEX ${i} TO INDEX ${i + 1}`);
       this.board[i + 1] = this.board[i].slice();
     }
   }
@@ -176,12 +192,20 @@ class Player {
     return this.pieceIndex;
   }
 
+  canRespond() {
+    return !(this.isDisconnected() || this.hasLost() || this.hasLeft());
+  }
+
   isDisconnected() {
-    return !this._hasLost && !this._disconnected;
+    return this.playerState === PlayerState.DISCONNECTED;
   }
 
   hasLost() {
-    return this._hasLost;
+    return this.playerState === PlayerState.HAS_LOST;
+  }
+
+  hasLeft() {
+    return this.playerState === PlayerState.HAS_LEFT;
   }
 
   onCurrentPieceUpdate() {
@@ -205,13 +229,32 @@ class Player {
   }
 
   lost() {
-    this._hasLost = true;
+    this.playerState = PlayerState.HAS_LOST;
     this.handlers.onPlayerLost &&
-      this.handlers.onPlayerLost(this.id);
+      this.handlers.onPlayerLost({
+          id: this.id
+      });
+  }
+
+  freezeLine() {
+    logger.debug(`FREEZING LINE ${this.frozenIndex}`);
+    for (let i = 0; i < this.board[0].length; i++) {
+        this.board[this.board.length - this.frozenIndex][i] = blockCodes.BLOCK_LOCKED;
+    }
+    this.frozenIndex++;
+    this.onBoardUpdate();
+  }
+
+  leave() {
+    this.playerState = PlayerState.HAS_LEFT;
+    this.handlers.onPlayerLeave &&
+      this.handlers.onPlayerLeave({
+          id: this.id
+      });
   }
 
   disconnect() {
-    this.disconnected = true;
+    this.playerState = PlayerState.DISCONNECTED;
     this.handlers.onDisconnect &&
       this.handlers.onDisconnect({
         id: this.id
