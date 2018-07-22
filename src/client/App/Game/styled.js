@@ -6,11 +6,16 @@ export const Wrapper = styled.div`
   display: flex;
   width: 100%;
   border-radius: 0;
-  flex-direction: column;
+`;
+
+export const JumboWithBoard = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 export const BoardWrapper = styled.div`
-  max-width: 350px;
+  flex-grow: 2;
+  max-width: 500px;
 `;
 
 export const SpectresWrapper = styled.div`

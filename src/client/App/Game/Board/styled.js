@@ -6,7 +6,6 @@ export const Cell = styled.div`
   padding-top: 10%;
   background-color: ${getCellColor};
   border-radius: 10%;
-  //outline: 2p;
 `;
 
 export const Row = styled.div`
@@ -16,6 +15,7 @@ export const Row = styled.div`
 
 function getCellColor({ cellVal }) {
   if (!cellVal) return 'transparent';
+  if (cellVal === 1) return '#c52f37';
   if (
     cellVal === 0x0f00 ||
     cellVal === 0x2222 ||

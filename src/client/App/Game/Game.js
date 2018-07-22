@@ -2,7 +2,12 @@
 import React from 'react';
 import Board from './Board/Board';
 import Spectres from './Spectres';
-import { Wrapper, BoardWrapper, SpectresWrapper } from './styled';
+import {
+  Wrapper,
+  JumboWithBoard,
+  BoardWrapper,
+  SpectresWrapper
+} from './styled';
 
 const Game = ({ userBoard = null, spectres }) => (
   <Wrapper>
