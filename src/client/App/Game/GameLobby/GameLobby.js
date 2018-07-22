@@ -33,7 +33,7 @@ const GameLobby = ({
         <ButtonsWrapper>
             <Button color="primary" onClick={goToLobby}>Go Back</Button>
             {userId === leaderId && (
-                <Button color="primary" onClick={handleGameStart}>
+                <Button glowing color="primary" onClick={handleGameStart}>
                   Start Game
                 </Button>
             )}

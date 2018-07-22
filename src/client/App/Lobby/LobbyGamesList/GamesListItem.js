@@ -34,9 +34,10 @@ const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
       css={`
         width: 70px;
         max-width: 70px;
+        overflow: visible;
       `}
     >
-      <Button color="primary" size="sm" onClick={() => handleGameJoin(id)}>
+      <Button glowing color="primary" size="sm" onClick={() => handleGameJoin(id)}>
         Join
       </Button>
     </Cell>
