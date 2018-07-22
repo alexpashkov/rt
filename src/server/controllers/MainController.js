@@ -37,6 +37,7 @@ class MainController {
     this.socket.on(events.client.GAME_START, this.onGameStartRequest.bind(this));
     this.socket.on(events.client.GAME_PIECE_MOVE, this.onGamePieceMove.bind(this));
     this.socket.on(events.client.GAME_PIECE_ROTATE, this.onGamePieceRotate.bind(this));
+    this.socket.on(events.client.GAME_PIECE_DROP, this.onGamePieceDrop.bind(this));
   }
 
   onRoomCreate(callback) {
@@ -121,7 +122,6 @@ class MainController {
       RoomsController.getRoomById(this.roomId).gameStart(this.id);
       callback(this._respondSuccess());
       this.gameId = this.roomId;
-      this.roomId = null;
     } catch (_error) {
       logger.info(`Error: ${_error}`);
       callback(this._respondError({ description: _error }));
@@ -163,7 +163,6 @@ class MainController {
   }
 
   onGameFinished() {
-    this.gameId = null;
   }
 
   onRoomsUpdateRequest() {
@@ -172,7 +171,7 @@ class MainController {
   }
 
   onGamePieceMove(data, callback = () => true) {
-    if (typeof data !== 'string' && ['left', 'right', 'down'].indexOf(data) === -1) {
+    if (typeof data !== 'string' || !['left', 'right', 'down'].includes(data)) {
       logger.error(`onGamePieceMove received invalid data = ${data}`);
       callback(false);
       return ;
@@ -219,18 +218,34 @@ class MainController {
 
     logger.debug(`Player[${this.id}] has requested to rotate his piece ${data}`);
     const game = GamesController.getGameById(this.gameId);
-    if (!game) {
-      logger.error(`Game ${this.gameId} does not exist.`);
-      this.gameId = null;
-      callback(false);
-      return ;
-    }
+    assert(game);
 
     const player = game.getPlayerById(this.id);
     assert(player);
 
     if (!player.rotatePiece(data)) {
       logger.error(`Can't rotate player's ${this.id} piece ${data}`);
+      callback(false);
+    }
+
+    callback(true);
+  }
+
+  onGamePieceDrop(data, callback = () => true) {
+    if (!this.gameId) {
+      logger.error(`Player [${this.id}] is not in game`);
+      callback(false);
+      return ;
+    }
+
+    const game = GamesController.getGameById(this.gameId);
+    assert(game);
+
+    const player = game.getPlayerById(this.id);
+    assert(player);
+
+    if (!player.dropPiece()) {
+      logger.error(`Can't drop players ${this.id} piece.`);
       callback(false);
     }
 
@@ -257,6 +272,18 @@ class MainController {
     this.socket.emit(events.server.ROOM_CHAT_MESSAGE, message);
   }
 
+  onPlayerDisconnected(playerInfo) {
+    this.socket.emit(events.server.GAME_PLAYER_DISCONNECTED, playerInfo);
+  }
+
+  onGameDestroy(gameId) {
+    logger.error(`${this.gameId} -- ${gameId}`);
+    assert(this.gameId === gameId);
+
+    logger.debug(`The game ${gameId} is destroyed.`);
+    this.gameId = null;
+  }
+
   onDisconnect() {
     logger.info('DISCONNECT EVENT FIRED');
     RoomsController.unsubscribeOnUpdates(this.onRoomsUpdateCallback);
@@ -265,9 +292,14 @@ class MainController {
       RoomsController.leaveRoom(this.roomId, this.id);
     }
 
-    /*
-     * XXX: Handle disconnect if player is in game.
-     */
+    if (this.gameId) {
+      logger.info(`User ${this.id} leaves game ${this.gameId}`);
+      const game = GamesController.getGameById(this.gameId);
+      assert(game);
+      const player = game.getPlayerById(this.id);
+      assert(player);
+      player.disconnect();
+    }
   }
 
   _respondSuccess(data) {

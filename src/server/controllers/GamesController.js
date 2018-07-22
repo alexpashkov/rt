@@ -14,11 +14,13 @@ const GCEvents = {
 class GamesController {
   constructor() {
     this.games = [];
+    setInterval(() => logger.debug(`Games: ${this.games.length}`), 2000);
   }
 
   createGame(id = null, players = [], configuration = {}) {
     const gameCreated = new Game(id || uniqid(), players, configuration);
     this.games[gameCreated.id] = gameCreated;
+    gameCreated.setOnDestroyHandler(this.deleteGame.bind(this));
     return gameCreated.id;
   }
 

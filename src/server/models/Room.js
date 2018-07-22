@@ -4,6 +4,7 @@ const UserService = require("../services/UserService");
 const GamesController = require("../controllers/GamesController");
 const { EventEmitter } = require("events");
 const logger = require("../logger");
+const assert = require('assert');
 
 const RoomEvents = {
   R_STARTED: 'R_STARTED',
@@ -67,6 +68,7 @@ class Room extends EventEmitter {
     ); /* New ID or existing one? */
 
     const game = GamesController.getGameById(gameId);
+    game.setOnDestroyHandler(this.onGameDestroy.bind(this));
     game.gameStart();
 
     this.gameId = gameId;
@@ -113,6 +115,14 @@ class Room extends EventEmitter {
     this.on(RoomEvents.R_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
     this.on(RoomEvents.R_INFO_UPDATE, player.onRoomInfoUpdate.bind(player));
     this.on(RoomEvents.R_STARTED, player.onGameStarted.bind(player));
+  }
+
+  onGameDestroy(gameId) {
+    assert(this.gameId === this.gameId);
+
+    this.isRunning = false;
+    this.gameId = null;
+    this.roomInfoUpdated();
   }
 
   setDestroyTimeout() {

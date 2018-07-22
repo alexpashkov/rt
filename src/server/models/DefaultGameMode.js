@@ -1,11 +1,21 @@
 const GameMode = require('./GameMode');
+const Player = require('./Player');
 const BlockCodes = require('../../shared/block-codes');
 const R = require('ramda');
 const logger = require('../logger');
 
 class DefaultGameMode extends GameMode {
-  constructor(game) {
+  constructor(game, playersControllers) {
     super(game);
+
+    game.setPlayers(playersControllers.map((player) => new Player(player.id, {
+      onCurrentPieceUpdate: this.onPlayerPieceUpdate.bind(this),
+      onBoardUpdate: this.onPlayerBoardUpdate.bind(this),
+      onLineFilled: this.onPlayerLineFilled.bind(this),
+      getNewPiece: this.getNewPiece.bind(this),
+      onDisconnect: this.onPlayerDisconnect.bind(this),
+      onPlayerLost: this.onPlayerLost.bind(this),
+    })));
   }
 
   update() {
@@ -21,6 +31,10 @@ class DefaultGameMode extends GameMode {
         player.movePiece({ x: 0, y: 1 });
       }
     }
+
+    if (this.isGameFinished()) {
+      this.game.gameFinish();
+    }
   }
 
   beforeStart() {
@@ -30,6 +44,10 @@ class DefaultGameMode extends GameMode {
   }
 
   afterFinish() {}
+
+  isGameFinished() {
+    return this.game.getPlayers().every(player => player.hasLost());
+  }
 
   generatePlayerBoards() {
     const { boardWidth, boardHeight } = this.params || {
@@ -50,10 +68,34 @@ class DefaultGameMode extends GameMode {
     }
   }
 
+  getNewPiece(index) {
+    return this.game.getNewPiece(index);
+  }
+
   generateInitialPieces() {
     for (let player of this.game.getPlayers()) {
       player.initCurrentPiece();
     }
+  }
+
+  onPlayerLineFilled(lineInfo) {
+    this.game.onPlayerLineFilled(lineInfo);
+  }
+
+  onPlayerBoardUpdate(boardInfo) {
+    this.game.onPlayerBoardUpdate(boardInfo);
+  }
+
+  onPlayerPieceUpdate(pieceInfo) {
+    this.game.onPlayerPieceUpdate(pieceInfo);
+  }
+
+  onPlayerLost(playerInfo) {
+    this.game.onPlayerLost(playerInfo);
+  }
+
+  onPlayerDisconnect(playerInfo) {
+    this.game.onPlayerDisconnect(playerInfo);
   }
 }
 

@@ -3,6 +3,7 @@ const rotationMap = require('../../shared/piece-rotation-map');
 const validator = require('../../shared/validator');
 const helpers = require('../../shared/helpers');
 const blockCodes = require('../../shared/block-codes');
+const assert = require('assert');
 const logger = require('../logger');
 
 class Player {
@@ -10,6 +11,7 @@ class Player {
     this.id = id;
     this.pieceIndex = 0;
     this._hasLost = null;
+    this._disconnected = false;
     this.validator = validator || (() => true);
     /*
      *  This 'handlers' thing is just a test.
@@ -67,9 +69,9 @@ class Player {
         this.applyPieceToBoard();
         this.checkPossiblyFilledLines();
         if (!this.checkHasLost()) {
-          this.setCurrentPiece(this.getNewCurrentPiece());
+          this.nextPiece();
         } else {
-          this._hasLost = true;
+          this.lost();
         }
       }
       return false;
@@ -94,6 +96,23 @@ class Player {
     this.currentPiece.code = rotationMap.get(this.currentPiece.code);
     this.onCurrentPieceUpdate();
     return true;
+  }
+
+  dropPiece() {
+    if (this._hasLost)
+      return false;
+
+    assert(this.currentPiece);
+
+    const _interval = setInterval(() => {
+      if (!this.movePiece('down'))
+        clearInterval(_interval);
+    }, 20);
+    return true;
+  }
+
+  nextPiece() {
+    this.setCurrentPiece(this.getNewCurrentPiece());
   }
 
   applyPieceToBoard() {
@@ -157,6 +176,10 @@ class Player {
     return this.pieceIndex;
   }
 
+  isDisconnected() {
+    return !this._hasLost && !this._disconnected;
+  }
+
   hasLost() {
     return this._hasLost;
   }
@@ -179,6 +202,20 @@ class Player {
 
   incrementPieceIndex() {
     this.pieceIndex++;
+  }
+
+  lost() {
+    this._hasLost = true;
+    this.handlers.onPlayerLost &&
+      this.handlers.onPlayerLost(this.id);
+  }
+
+  disconnect() {
+    this.disconnected = true;
+    this.handlers.onDisconnect &&
+      this.handlers.onDisconnect({
+        id: this.id
+      });
   }
 }
 
