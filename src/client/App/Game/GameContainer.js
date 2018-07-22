@@ -80,7 +80,6 @@ export default compose(
     }
   }),
   setPropTypes(gamePropTypes),
-  withRunningGameLogic,
   branch(
     ({ currentGameInfo }) => !currentGameInfo,
     renderComponent(CenteredSpinner)
@@ -88,5 +87,6 @@ export default compose(
   branch(
     ({ currentGameInfo }) => !currentGameInfo.isRunning,
     renderComponent(GameLobby)
-  )
+  ),
+  withRunningGameLogic
 )(Game);
