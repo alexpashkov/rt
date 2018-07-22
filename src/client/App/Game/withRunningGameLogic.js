@@ -52,12 +52,12 @@ export default compose(
     componentDidMount() {
       document.addEventListener('keydown', handlePieceMovement);
       document.addEventListener('keydown', handlePieceRotation);
-      document.addEventListener('keydown', handlePieceDrop);
+      document.addEventListener('keyup', handlePieceDrop);
     },
     componentWillUnmount() {
       document.removeEventListener('keydown', handlePieceMovement);
       document.removeEventListener('keydown', handlePieceRotation);
-      document.removeEventListener('keydown', handlePieceDrop);
+      document.removeEventListener('keyup', handlePieceDrop);
     }
   })
 );
