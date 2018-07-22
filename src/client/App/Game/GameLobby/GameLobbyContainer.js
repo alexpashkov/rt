@@ -7,6 +7,7 @@ import {
 } from '../../../../shared/socket-events';
 import { setIsRunning } from '../../../actions/currentGameInfoActions';
 import socket from '../../../socket';
+import history from "../../../history";
 
 import GameLobby from './GameLobby';
 
@@ -22,7 +23,8 @@ export default compose(
       socket.emit(clientSocketEvents.GAME_START, res =>
         console.log(clientSocketEvents.GAME_START, res)
       );
-    }
+    },
+      goToLobby: () => () => history.push("/")
   }),
   lifecycle({
     componentDidMount() {

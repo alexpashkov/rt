@@ -1,34 +1,17 @@
 /* eslint react/prop-types: 0 */ // prop-actionTypes are set in the container component
 import React from 'react';
-import styled from 'react-emotion';
+import { PanelWrapper } from '../../../components/Panel';
+import { Header, Main, Wrapper, ButtonsWrapper } from "./styled"
 
 import Button from '../../../components/Button';
 import PlayersList from './PlayersList';
 import GameChat from './GameChat/GameChatContainer';
-import { PanelWrapper, panelCss } from '../../../components/Panel';
 
-const Header = styled.header`
-  ${panelCss};
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  flex-shrink: 0;
-`;
-
-const Main = styled.main`
-  margin: 10px 0;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-`;
-
-const Wrapper = styled.section`
-  ${panelCss};
-  flex-grow: 1;
-`;
 const GameLobby = ({
   userId,
   currentGameInfo: { id, leaderId, players },
-  handleGameStart
+  handleGameStart,
+  goToLobby
 }) => (
   <div
     css={`
@@ -47,11 +30,14 @@ const GameLobby = ({
         `}
       >
         <p>Waiting while everybody is ready...</p>
-        {userId === leaderId && (
-          <Button color="primary" size="lg" onClick={handleGameStart}>
-            Start Game
-          </Button>
-        )}
+        <ButtonsWrapper>
+            <Button size="lg" onClick={goToLobby}>Go Back</Button>
+            {userId === leaderId && (
+                <Button color="primary" size="lg" onClick={handleGameStart}>
+                  Start Game
+                </Button>
+            )}
+        </ButtonsWrapper>
       </div>
     </Header>
     <Main>
