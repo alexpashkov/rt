@@ -58,10 +58,10 @@ export default compose(
       document.addEventListener('keyup', handlePieceDrop);
     },
     componentWillUnmount() {
+      socket.emit(clientSocketEvents.GAME_LEAVE);
       document.removeEventListener('keydown', handlePieceMovement);
       document.removeEventListener('keydown', handlePieceRotation);
       document.removeEventListener('keyup', handlePieceDrop);
-      socket.emit(clientSocketEvents.GAME_LEAVE);
     }
   })
 );
