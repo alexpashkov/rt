@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table, Row, Cell } from '../../../components/Table';
+import { Table, Head, Body, Row, Cell } from '../../../components/Table';
 
 const PlayersList = ({ players = [], leaderId }) => (
   <Table
@@ -8,12 +8,20 @@ const PlayersList = ({ players = [], leaderId }) => (
       width: 100%;
     `}
   >
-    {players.map(({ login }) => (
-      <Row key={login}>
-        <Cell>{login}</Cell>
-        <Cell>{login === leaderId && 'L'}</Cell>
+    <Head>
+      <Row>
+        <Cell colspan={2}>Players</Cell>
+        <Cell />
       </Row>
-    ))}
+    </Head>
+    <Body>
+      {players.map(({ login }) => (
+        <Row key={login}>
+          <Cell>{login}</Cell>
+          <Cell>{login === leaderId && 'L'}</Cell>
+        </Row>
+      ))}
+    </Body>
   </Table>
 );
 

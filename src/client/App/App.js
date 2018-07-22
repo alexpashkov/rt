@@ -8,7 +8,7 @@ import history from '../history';
 import store from '../store';
 import theme from '../theme';
 import '../socket';
-import '../globalStyles';
+import '../styles/global';
 
 import { ColoringWrapper, CenteringWrapper } from './styled';
 

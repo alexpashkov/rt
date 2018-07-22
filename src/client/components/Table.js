@@ -4,9 +4,17 @@ export const Table = styled.div`
   display: table;
 `;
 
+export const Head = styled.div`
+  display: table-header-group;
+`;
+
+export const Body = styled.div`
+  display: table-row-group;
+  color: ${({ theme: { colors } }) => colors.secondaryText};
+`;
+
 export const Row = styled.div`
   display: table-row;
-  background-color: ${({ theme }) => theme.colors.accent};
 `;
 
 export const Cell = styled.div`

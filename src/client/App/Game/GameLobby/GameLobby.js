@@ -1,17 +1,19 @@
 /* eslint react/prop-types: 0 */ // prop-actionTypes are set in the container component
 import React from 'react';
 import { PanelWrapper } from '../../../components/Panel';
-import { Header, Main, Wrapper, ButtonsWrapper } from "./styled"
+import { Header, Main, Wrapper, ButtonsWrapper, Note } from './styled';
 
 import Button from '../../../components/Button';
 import PlayersList from './PlayersList';
 import GameChat from './GameChat/GameChatContainer';
+import { secondaryTextColor } from '../../../styles/mixins';
 
 const GameLobby = ({
   userId,
   currentGameInfo: { id, leaderId, players },
   handleGameStart,
-  goToLobby
+  goToLobby,
+  theme
 }) => (
   <div
     css={`
@@ -29,14 +31,16 @@ const GameLobby = ({
           justify-content: space-between;
         `}
       >
-        <p>Waiting while everybody is ready...</p>
+        <Note>Waiting while everybody is ready...</Note>
         <ButtonsWrapper>
-            <Button color="primary" onClick={goToLobby}>Go Back</Button>
-            {userId === leaderId && (
-                <Button glowing color="primary" onClick={handleGameStart}>
-                  Start Game
-                </Button>
-            )}
+          <Button color="primary" onClick={goToLobby}>
+            Go Back
+          </Button>
+          {userId === leaderId && (
+            <Button glowing color="primary" onClick={handleGameStart}>
+              Start Game
+            </Button>
+          )}
         </ButtonsWrapper>
       </div>
     </Header>

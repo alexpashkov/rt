@@ -1,11 +1,13 @@
 import { panelCss } from '../../../components/Panel';
 import styled from 'react-emotion';
+import { secondaryTextColor } from '../../../styles/mixins';
 
 export const Header = styled.header`
   ${panelCss};
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   flex-shrink: 0;
+  padding: 20px;
 `;
 
 export const Main = styled.main`
@@ -21,7 +23,11 @@ export const Wrapper = styled.section`
 `;
 
 export const ButtonsWrapper = styled.div`
-    > * {
-      margin-left: 10px;
-    }
+  > * {
+    margin-left: 10px;
+  }
+`;
+
+export const Note = styled.p`
+  ${secondaryTextColor};
 `;
