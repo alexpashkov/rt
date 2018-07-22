@@ -58,7 +58,6 @@ export default compose(
       document.addEventListener('keyup', handlePieceDrop);
     },
     componentWillUnmount() {
-        debugger;
       document.removeEventListener('keydown', handlePieceMovement);
       document.removeEventListener('keydown', handlePieceRotation);
       document.removeEventListener('keyup', handlePieceDrop);
