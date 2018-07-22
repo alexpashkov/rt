@@ -24,7 +24,7 @@ export default compose(
         console.log(clientSocketEvents.GAME_START, res)
       );
     },
-      goToLobby: () => () => history.push("/")
+    goToLobby: () => () => history.push("/")
   }),
   lifecycle({
     componentDidMount() {

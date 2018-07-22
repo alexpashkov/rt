@@ -31,9 +31,9 @@ const GameLobby = ({
       >
         <p>Waiting while everybody is ready...</p>
         <ButtonsWrapper>
-            <Button size="lg" onClick={goToLobby}>Go Back</Button>
+            <Button color="primary" onClick={goToLobby}>Go Back</Button>
             {userId === leaderId && (
-                <Button color="primary" size="lg" onClick={handleGameStart}>
+                <Button color="primary" onClick={handleGameStart}>
                   Start Game
                 </Button>
             )}

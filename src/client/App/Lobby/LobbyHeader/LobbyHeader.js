@@ -20,7 +20,6 @@ const LobbyHeader = ({ handleGameCreate }) => (
     <Logo />
     <Button
       color="primary"
-      size="lg"
       css={`
         margin-left: auto;
       `}

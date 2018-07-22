@@ -15,6 +15,7 @@ export const Row = styled.div`
 
 function getCellColor({ cellVal }) {
   if (!cellVal) return 'transparent';
+  if (cellVal === -1) return "#000";
   if (cellVal === 1) return '#c52f37';
   if (
     cellVal === 0x0f00 ||
