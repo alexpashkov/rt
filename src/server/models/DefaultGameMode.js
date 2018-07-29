@@ -10,6 +10,7 @@ class DefaultGameMode extends GameMode {
 
     game.setPlayers(playersControllers.map((player) => new Player(player.id, {
       onCurrentPieceUpdate: this.onPlayerPieceUpdate.bind(this),
+      onNextPieceUpdate: this.onPlayerNextPieceUpdate.bind(this),
       onBoardUpdate: this.onPlayerBoardUpdate.bind(this),
       onLineFilled: this.onPlayerLineFilled.bind(this),
       getNewPiece: this.getNewPiece.bind(this),
@@ -85,6 +86,10 @@ class DefaultGameMode extends GameMode {
 
   onPlayerPieceUpdate(pieceInfo) {
     this.game.onPlayerPieceUpdate(pieceInfo);
+  }
+
+  onPlayerNextPieceUpdate(pieceInfo) {
+    this.game.onPlayerNextPieceUpdate(pieceInfo);
   }
 
   onPlayerLost(playerInfo) {

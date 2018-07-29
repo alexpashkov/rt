@@ -160,10 +160,20 @@ class MainController {
 
   onPieceUpdate(data) {
     assert.ok(data);
-    if (data.id !== this.id) return;
-
     logger.debug(`Piece updated -> ${JSON.stringify(data)}`);
+    if (data.id !== this.id)
+      return ;
+
     this.socket.emit(events.server.GAME_PIECE_CURRENT, data);
+  }
+
+  onNextPieceUpdate(data) {
+    assert.ok(data);
+    if (data.id !== this.id)
+      return ;
+
+    logger.debug(`Next piece updated -> ${JSON.stringify(data)}`);
+    this.socket.emit(events.server.GAME_PIECE_NEXT, data);
   }
 
   onBoardUpdate(data) {

@@ -47,6 +47,7 @@ class Player {
     };
     this.incrementPieceIndex();
     this.onCurrentPieceUpdate();
+    this.setNextPiece(this.handlers.getNewPiece(this.pieceIndex + 1));
   }
 
   setCurrentPiece(currentPiece) {
@@ -56,6 +57,11 @@ class Player {
 
   getCurrentPiece() {
     return this.currentPiece;
+  }
+
+  setNextPiece(nextPiece) {
+    this.nextPiece = nextPiece;
+    this.onNextPieceUpdate();
   }
 
   movePiece(movementDirection) {
@@ -78,7 +84,7 @@ class Player {
         this.applyPieceToBoard();
         this.checkPossiblyFilledLines();
         if (!this.checkHasLost()) {
-          this.nextPiece();
+          this.getNewPiece();
         } else {
           this.lost();
         }
@@ -122,7 +128,7 @@ class Player {
     return true;
   }
 
-  nextPiece() {
+  getNewPiece() {
     this.setCurrentPiece(this.getNewCurrentPiece());
   }
 
@@ -213,6 +219,14 @@ class Player {
       this.handlers.onCurrentPieceUpdate({
         id: this.id,
         piece: this.currentPiece
+      });
+  }
+
+  onNextPieceUpdate() {
+    this.handlers.onNextPieceUpdate &&
+      this.handlers.onNextPieceUpdate({
+        id: this.id,
+        piece: this.nextPiece
       });
   }
 
