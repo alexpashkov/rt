@@ -1,4 +1,9 @@
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
+
+const frozenCellCss = css`
+  background-color: grey;
+  box-shadow: inset 0 0 0 5px darkgrey;
+`;
 
 export const Cell = styled.div`
   border: 1px solid #0f1e33;
@@ -6,6 +11,7 @@ export const Cell = styled.div`
   padding-top: 10%;
   background-color: ${getCellColor};
   border-radius: 10%;
+  ${({ cellVal }) => (cellVal === -1 ? frozenCellCss : null)};
 `;
 
 export const Row = styled.div`
@@ -15,7 +21,6 @@ export const Row = styled.div`
 
 function getCellColor({ cellVal }) {
   if (!cellVal) return 'transparent';
-  if (cellVal === -1) return "#000";
   if (cellVal === 1) return '#c52f37';
   if (
     cellVal === 0x0f00 ||

@@ -7,6 +7,8 @@ const boardsReducer = (state = null, action) => {
         ...state,
         [action.payload.playerId]: action.payload.board
       };
+    case actionTypes.CLEAR_BOARDS:
+      return {};
     default:
       return state;
   }

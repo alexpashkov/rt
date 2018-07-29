@@ -15,7 +15,7 @@ import socket from '../../socket';
 import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
 import Game from './Game';
-import { setBoard } from '../../actions/boardsActions';
+import { setBoard, clearBoards } from '../../actions/boardsActions';
 import { setPiece } from '../../actions/currentPieceActions';
 import { userBoardSelector, spectresSelector } from './selectors';
 import withRunningGameLogic from './withRunningGameLogic';
@@ -41,6 +41,7 @@ export default compose(
     {
       setCurrentGameInfo,
       setBoard,
+      clearBoards,
       setPiece
     }
   ),
@@ -49,7 +50,13 @@ export default compose(
   })),
   lifecycle({
     componentDidMount() {
-      const { gameId, setCurrentGameInfo, setPiece, setBoard } = this.props;
+      const {
+        gameId,
+        setCurrentGameInfo,
+        setPiece,
+        setBoard,
+        clearBoards
+      } = this.props;
       emitGameJoin(gameId, ({ status, roomInfo, description }) => {
         if (status === 'error') {
           /* failed to join the game, redirect to lobby */
@@ -67,6 +74,7 @@ export default compose(
       socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data =>
         setBoard(data.id, data.board)
       );
+      socket.on(serverSocketEvents.GAME_FINISHED, clearBoards);
     },
     componentWillUnmount() {
       const { gameId, setCurrentGameInfo } = this.props;
