@@ -37,9 +37,16 @@ const GamesListItem = ({ id, players, isRunning, handleGameJoin }) => (
         overflow: visible;
       `}
     >
-      <Button glowing color="primary" size="sm" onClick={() => handleGameJoin(id)}>
-        Join
-      </Button>
+      {!isRunning && (
+        <Button
+          glowing
+          color="primary"
+          size="sm"
+          onClick={() => handleGameJoin(id)}
+        >
+          Join
+        </Button>
+      )}
     </Cell>
   </Row>
 );
