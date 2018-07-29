@@ -16,7 +16,7 @@ import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
 import Game from './Game';
 import { setBoard, clearBoards } from '../../actions/boardsActions';
-import { setPiece } from '../../actions/currentPieceActions';
+import { setCurrentPiece, setNextPiece } from '../../actions/pieceActions';
 import { userBoardSelector, spectresSelector } from './selectors';
 import withRunningGameLogic from './withRunningGameLogic';
 
@@ -42,7 +42,8 @@ export default compose(
       setCurrentGameInfo,
       setBoard,
       clearBoards,
-      setPiece
+      setCurrentPiece,
+      setNextPiece
     }
   ),
   withProps(({ match: { params: { gameId } } }) => ({
@@ -53,7 +54,8 @@ export default compose(
       const {
         gameId,
         setCurrentGameInfo,
-        setPiece,
+        setCurrentPiece,
+        setNextPiece,
         setBoard,
         clearBoards
       } = this.props;
@@ -68,8 +70,12 @@ export default compose(
       /* subscribe to game info updates, e.g when new player joins the game
       is reflected for players who's in the game lobby */
       socket.on(serverSocketEvents.ROOM_INFO_UPDATE, setCurrentGameInfo);
-      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, data => {
-        setPiece(data.piece);
+      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, ({ piece }) =>
+        setCurrentPiece(piece)
+      );
+      socket.on(serverSocketEvents.GAME_PIECE_NEXT, data => {
+        console.error(data);
+        setNextPiece(data.piece);
       });
       socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data =>
         setBoard(data.id, data.board)

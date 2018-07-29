@@ -40,7 +40,7 @@ export const getPieceCells = pieceCode =>
 
 export const userBoardSelector = createSelector(
   state => (state.boards && state.user && state.boards[state.user.id]) || [],
-  state => state.currentPiece,
+  state => state.piece.current,
   mergeBoardAndPiece
 );
 
