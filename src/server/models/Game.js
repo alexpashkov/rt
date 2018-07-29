@@ -12,6 +12,7 @@ const GEvents = {
   GE_STARTED: 'GE_STARTED',
   GE_START_FAILED: 'GE_START_FAILED',
   GE_PLAYER_PIECE_UPDATE: 'GE_PLAYER_PIECE_UPDATE',
+  GE_PLAYER_NEXT_PIECE_UPDATE: 'GE_PLAYER_NEXT_PIECE_UPDATE',
   GE_PLAYER_BOARD_UPDATE: 'GE_PLAYER_BOARD_UPDATE',
   GE_PLAYER_LINE_FILLED: 'GE_PLAYER_LINE_FILLED',
   GE_PLAYER_DISCONNECTED: 'GE_PLAYER_DISCONNECTED',
@@ -105,6 +106,12 @@ class Game extends EventEmitter {
     });
   }
 
+  onPlayerNextPieceUpdate(pieceInfo) {
+    this.emit(GEvents.GE_PLAYER_NEXT_PIECE_UPDATE, {
+      ...pieceInfo
+    });
+  }
+
   onPlayerBoardUpdate(boardInfo) {
     logger.info(`BOARD UPDATED -> ${JSON.stringify(boardInfo)}`);
     this.emit(GEvents.GE_PLAYER_BOARD_UPDATE, {
@@ -133,12 +140,20 @@ class Game extends EventEmitter {
   }
 
   checkIfFinished() {
-    if (this.players.every(player => !player.canRespond()))
+    if (!this.isSingleMode() &&
+        this.players.filter(player => player.canRespond()).length <= 1)
       this.gameFinish();
+    else if (this.players.every(player => !player.canRespond()))
+      this.gameFinish();
+  }
+
+  isSingleMode() {
+    return this.players.length === 1;
   }
 
   setEventHandlersForPlayer(player) {
     this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player.onPieceUpdate.bind(player));
+    this.on(GEvents.GE_PLAYER_NEXT_PIECE_UPDATE, player.onNextPieceUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player.onBoardUpdate.bind(player));
     this.on(GEvents.GE_PLAYER_LINE_FILLED, player.onLineFilled.bind(player));
     this.on(GEvents.GE_PLAYER_DISCONNECTED, player.onPlayerHasDisconnected.bind(player));
@@ -183,6 +198,7 @@ class Game extends EventEmitter {
   setDefaultPlayers(playersControllers) {
     this.players = playersControllers.map((player) => new Player(player.id, {
       onCurrentPieceUpdate: this.onPlayerPieceUpdate.bind(this),
+      onNextPieceUpdate: this.onPlayerNextPieceUpdate.bind(this),
       onBoardUpdate: this.onPlayerBoardUpdate.bind(this),
       onLineFilled: this.onPlayerLineFilled.bind(this),
       getNewPiece: this.getNewPiece.bind(this),
