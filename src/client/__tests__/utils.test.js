@@ -1,5 +1,5 @@
 import { identity } from 'ramda';
-import { numToString, numToBinary16String, queryStringWith } from './utils';
+import { numToString, numToBinary16String, queryStringWith } from '../utils';
 
 describe('utils', () => {
   describe('numToString', () => {
