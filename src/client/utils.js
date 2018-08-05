@@ -23,3 +23,6 @@ export const queryStringWith = R.curry((f, params) => {
 });
 
 export const queryString = queryStringWith(R.identity);
+
+export const getEmptyBoard = (y, x) =>
+  Array.from(Array(y)).fill(Array.from(Array(x)).fill(0));
