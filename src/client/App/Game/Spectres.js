@@ -16,7 +16,7 @@ const SpectreWrapper = styled.div`
 export default ({ spectres = [] }) => (
   <Wrapper>
     {spectres.length
-      ? spectres.map(({ spectre, id }, i) => (
+      ? spectres.sort((a, b) => a.id - b.id).map(({ spectre, id }, i) => (
           <SpectreWrapper key={id}>
             <Board board={spectre} />
           </SpectreWrapper>
