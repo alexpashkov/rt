@@ -9,7 +9,8 @@ module.exports = {
     '**/*.{js,jsx}',
     '!**/*.test.{js,jsx}',
     '!**/*.config.{js,jsx}',
-    '!**/node_modules/**'
+    '!**/node_modules/**',
+    '!**/public/**'
   ],
   coverageThreshold: {
     global: {
