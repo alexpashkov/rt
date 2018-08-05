@@ -1,4 +1,4 @@
-import { spectreFromBoard } from './selectors';
+import { spectreFromBoard } from '../selectors';
 
 describe('Game selectors', () => {
   describe('spectre from board', () => {
