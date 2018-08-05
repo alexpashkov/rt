@@ -1,14 +1,14 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import Game from '../Game';
-import { ThemeProviderWithTheme } from '../../ThemeProviderWithTheme';
+import { ThemeProvider } from '../../ThemeProvider';
 
 describe('Game', () => {
   it('Renders', () => {
     const component = renderer.create(
-      <ThemeProviderWithTheme>
+      <ThemeProvider>
         <Game />
-      </ThemeProviderWithTheme>
+      </ThemeProvider>
     );
     expect(component.toJSON()).toMatchSnapshot();
   });

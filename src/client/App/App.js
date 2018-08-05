@@ -2,7 +2,7 @@ import { hot } from 'react-hot-loader';
 import React from 'react';
 import { Provider as StoreProvider } from 'react-redux';
 import { Router, Redirect, Switch, Route } from 'react-router-dom';
-import ThemeProviderWithTheme from './ThemeProviderWithTheme';
+import ThemeProvider from './ThemeProvider';
 
 import history from '../history';
 import store from '../store';
@@ -16,7 +16,7 @@ import Game from './Game';
 
 const App = () => (
   <StoreProvider store={store}>
-    <ThemeProviderWithTheme>
+    <ThemeProvider>
       <ColoringWrapper>
         <CenteringWrapper>
           <Router history={history}>
@@ -28,7 +28,7 @@ const App = () => (
           </Router>
         </CenteringWrapper>
       </ColoringWrapper>
-    </ThemeProviderWithTheme>
+    </ThemeProvider>
   </StoreProvider>
 );
 
