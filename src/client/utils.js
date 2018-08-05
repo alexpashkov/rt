@@ -13,8 +13,11 @@ export const queryStringWith = R.curry((f, params) => {
     '?' +
     Object.keys(params)
       .sort()
-      .map(key => params[key] && [key, params[key]].join('='))
-      .filter(Boolean)
+      .map(key => {
+        const val = f(params[key]);
+        return val && [key, val].join('=');
+      })
+      .filter(v => v !== null && v !== void 0)
       .join('&')
   );
 });

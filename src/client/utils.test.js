@@ -1,3 +1,4 @@
+import { identity } from 'ramda';
 import { numToString, numToBinary16String, queryStringWith } from './utils';
 
 describe('utils', () => {
@@ -22,8 +23,7 @@ describe('utils', () => {
     );
   });
   describe('queryStringWith', () => {
-    it('Creates a query string from an object, applies a function to a value, keys are sorted', () => {
-      const identity = v => v;
+    it('Creates a query string from an object keys are sorted', () => {
       const timestamp = Date.now();
       const other = 'other';
       expect(
@@ -32,6 +32,27 @@ describe('utils', () => {
           other
         })
       ).toBe(`?other=other&timestamp=${timestamp}`);
+    });
+    it('filters out params that are null or undefined', () => {
+      const timestamp = null,
+        other = undefined;
+      expect(
+        queryStringWith(identity, {
+          timestamp,
+          other
+        })
+      ).toBe(`?`);
+    });
+    it('Applies a function to a value', () => {
+      const timestamp = 5,
+        other = 6;
+      const pow2 = x => x * x;
+      expect(
+        queryStringWith(pow2, {
+          timestamp,
+          other
+        })
+      ).toBe(`?other=36&timestamp=25`);
     });
   });
 });
