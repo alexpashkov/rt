@@ -1,18 +1,28 @@
 import * as R from 'ramda';
 import padStart from 'lodash/padStart';
 
-export const numToString = (num, radix, length = num.length) => {
+export const numToString = (num, radix, length = 0) => {
   const numString = num.toString(radix);
   return padStart(numString, length, '0');
 };
 
 export const numToBinary16String = num => numToString(num, 2, 16);
 
-export const queryStringWith = R.curry((f, params) =>
-  Object.keys(params).reduce((queryString, name) => {
-    const value = f(params[name]);
-    return value ? queryString + `&${name}=${value}` : queryString;
-  }, '?')
-);
+export const queryStringWith = R.curry((f, params) => {
+  return (
+    '?' +
+    Object.keys(params)
+      .sort()
+      .map(key => {
+        const val = f(params[key]);
+        return val && [key, val].join('=');
+      })
+      .filter(v => v !== null && v !== void 0)
+      .join('&')
+  );
+});
 
 export const queryString = queryStringWith(R.identity);
+
+export const getEmptyBoard = (y, x) =>
+  Array.from(Array(y)).fill(Array.from(Array(x)).fill(0));

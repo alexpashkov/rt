@@ -1,5 +1,6 @@
 export const actionTypes = {
-  SET_BOARD: 'BOARDS_SET_BOARD'
+  SET_BOARD: 'BOARDS_SET_BOARD',
+  CLEAR_BOARDS: 'CLEAR_BOARDS'
 };
 
 export const setBoard = (playerId, board) => ({
@@ -8,4 +9,8 @@ export const setBoard = (playerId, board) => ({
     playerId,
     board
   }
+});
+
+export const clearBoards = () => ({
+  type: actionTypes.CLEAR_BOARDS
 });

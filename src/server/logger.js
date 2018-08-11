@@ -1,17 +1,19 @@
-"use strict";
+'use strict';
 
-const winston = require("winston");
+const winston = require('winston');
 
 const tsFormat = () => new Date().toLocaleTimeString();
 const logger = new winston.Logger({
   transports: [
     // colorize the output to the console
-    new winston.transports.Console({
-      timestamp: tsFormat,
-      colorize: true
-    })
-  ]
+    process.env.NODE_ENV !== 'test' &&
+      new winston.transports.Console({
+        timestamp: tsFormat,
+        colorize: true
+      })
+  ].filter(Boolean)
 });
-logger.level = "debug";
+
+logger.level = 'debug';
 
 module.exports = logger;

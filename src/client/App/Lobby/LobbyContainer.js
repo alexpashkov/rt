@@ -23,6 +23,7 @@ export default compose(
     componentDidMount() {
       const { setList } = this.props;
       socket.on(serverSocketEvents.ROOMS_UPDATE, setList);
+      socket.emit(clientSocketEvents.ROOMS_UPDATE_REQUEST);
     },
     componentWillUnmount() {
       socket.off(serverSocketEvents.ROOMS_UPDATE);
@@ -40,7 +41,6 @@ const emitGameCreate = () =>
   socket.emit(clientSocketEvents.ROOM_CREATE, handleGameCreateResponse);
 
 const handleGameCreateResponse = ({ status, roomId }) => {
-  if (status !== 'success')
-    return alert('Failed to join the game');
+  if (status !== 'success') return alert('Failed to join the game');
   navigateToGamePage(roomId);
 };

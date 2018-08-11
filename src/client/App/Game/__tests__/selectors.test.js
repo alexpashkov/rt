@@ -1,6 +1,67 @@
-import { spectreFromBoard } from './selectors';
+import { mergeBoardAndPiece, spectreFromBoard } from '../selectors';
+import { getEmptyBoard } from '../../../utils';
 
 describe('Game selectors', () => {
+  describe('mergeBoardAndPiece', () => {
+    it('merges board and piece 1', () => {
+      const piece = {
+        code: 0b0100010001000100,
+        x: 0,
+        y: 0
+      };
+      expect(mergeBoardAndPiece(getEmptyBoard(20, 10), piece)).toEqual([
+        [0, piece.code, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, piece.code, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, piece.code, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, piece.code, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ]);
+    });
+    it('merges board and piece 2', () => {
+      const piece = {
+        code: 0b0000111100000000,
+        x: 0,
+        y: 0
+      };
+      expect(mergeBoardAndPiece(getEmptyBoard(20, 10), piece)).toEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [piece.code, piece.code, piece.code, piece.code, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ]);
+    });
+  });
   describe('spectre from board', () => {
     it('calculates spectre', () => {
       const board = Array.from(Array(20)).map(() =>
@@ -9,9 +70,6 @@ describe('Game selectors', () => {
       expect(spectreFromBoard(board)).toEqual(board);
     });
     it('calculates spectre', () => {
-      // const board = Array.from(Array(20)).map(() =>
-      //   Array.from(Array(10)).fill(0)
-      // );
       const board = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

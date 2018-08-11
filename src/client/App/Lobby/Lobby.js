@@ -8,10 +8,25 @@ const Lobby = ({ gamesList, handleGameCreate, handleGameJoin }) => (
   <div
     css={`
       width: 100%;
+      display: flex;
+      flex-direction: column;
     `}
   >
     <LobbyHeader handleGameCreate={handleGameCreate} />
-    <LobbyGamesList gamesList={gamesList} handleGameJoin={handleGameJoin} />
+    {gamesList && gamesList.length ? (
+      <LobbyGamesList gamesList={gamesList} handleGameJoin={handleGameJoin} />
+    ) : (
+      <div
+        css={`
+          display: flex;
+          flex-grow: 1;
+          align-items: center;
+          justify-content: center;
+        `}
+      >
+        <span>No games available</span>
+      </div>
+    )}
   </div>
 );
 

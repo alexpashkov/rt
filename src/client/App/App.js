@@ -2,11 +2,10 @@ import { hot } from 'react-hot-loader';
 import React from 'react';
 import { Provider as StoreProvider } from 'react-redux';
 import { Router, Redirect, Switch, Route } from 'react-router-dom';
-import { ThemeProvider } from 'emotion-theming';
+import ThemeProvider from './ThemeProvider';
 
 import history from '../history';
 import store from '../store';
-import theme from '../theme';
 import '../socket';
 import '../styles/global';
 
@@ -17,7 +16,7 @@ import Game from './Game';
 
 const App = () => (
   <StoreProvider store={store}>
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <ColoringWrapper>
         <CenteringWrapper>
           <Router history={history}>

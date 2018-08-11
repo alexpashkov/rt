@@ -3,9 +3,7 @@ import { compose, lifecycle, withHandlers } from 'recompose';
 import socket from '../../socket';
 import socketEvents from '../../../shared/socket-events';
 import throttle from 'lodash.throttle';
-import {
-    client as clientSocketEvents,
-} from '../../../shared/socket-events';
+import { client as clientSocketEvents } from '../../../shared/socket-events';
 
 const LEFT = 37;
 const UP = 38;

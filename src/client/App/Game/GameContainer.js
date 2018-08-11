@@ -15,8 +15,8 @@ import socket from '../../socket';
 import CenteredSpinner from './CenteredSpinner';
 import GameLobby from './GameLobby';
 import Game from './Game';
-import { setBoard } from '../../actions/boardsActions';
-import { setPiece } from '../../actions/currentPieceActions';
+import { setBoard, clearBoards } from '../../actions/boardsActions';
+import { setCurrentPiece, setNextPiece } from '../../actions/pieceActions';
 import { userBoardSelector, spectresSelector } from './selectors';
 import withRunningGameLogic from './withRunningGameLogic';
 
@@ -41,7 +41,9 @@ export default compose(
     {
       setCurrentGameInfo,
       setBoard,
-      setPiece
+      clearBoards,
+      setCurrentPiece,
+      setNextPiece
     }
   ),
   withProps(({ match: { params: { gameId } } }) => ({
@@ -49,7 +51,14 @@ export default compose(
   })),
   lifecycle({
     componentDidMount() {
-      const { gameId, setCurrentGameInfo, setPiece, setBoard } = this.props;
+      const {
+        gameId,
+        setCurrentGameInfo,
+        setCurrentPiece,
+        setNextPiece,
+        setBoard,
+        clearBoards
+      } = this.props;
       emitGameJoin(gameId, ({ status, roomInfo, description }) => {
         if (status === 'error') {
           /* failed to join the game, redirect to lobby */
@@ -61,12 +70,17 @@ export default compose(
       /* subscribe to game info updates, e.g when new player joins the game
       is reflected for players who's in the game lobby */
       socket.on(serverSocketEvents.ROOM_INFO_UPDATE, setCurrentGameInfo);
-      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, data => {
-        setPiece(data.piece);
+      socket.on(serverSocketEvents.GAME_PIECE_CURRENT, ({ piece }) =>
+        setCurrentPiece(piece)
+      );
+      socket.on(serverSocketEvents.GAME_PIECE_NEXT, data => {
+        console.error(data);
+        setNextPiece(data.piece);
       });
       socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data =>
         setBoard(data.id, data.board)
       );
+      socket.on(serverSocketEvents.GAME_FINISHED, clearBoards);
     },
     componentWillUnmount() {
       const { gameId, setCurrentGameInfo } = this.props;
