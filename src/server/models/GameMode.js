@@ -47,6 +47,6 @@ class GameMode extends EventEmitter {
     this.updateLoopInterval = null;
   }
 
-};
+}
 
 module.exports = GameMode;
