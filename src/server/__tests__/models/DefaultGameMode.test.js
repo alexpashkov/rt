@@ -19,6 +19,14 @@ describe("DefaultGameMode", () => {
       playerControllers
     );
   });
+
+  test("update doesn't throw", () => {
+    gameMode.update();
+  });
+  test("beforStart and afterFinish", () => {
+    gameMode.beforeStart();
+    gameMode.afterFinish();
+  });
   test("generatePlayerBoards", () => {
     gameMode.generatePlayerBoards();
     const defaultBoard = DefaultGameMode.getDefaultBoard();
@@ -54,5 +62,41 @@ describe("DefaultGameMode", () => {
             ? frozerFrozenIndex
             : frozerFrozenIndex + 1)
     })
+  });
+  test("onPlayerBoardUpdate calls onPlayerBordUpdate on this.game", () => {
+    const test = {};
+    gameMode.game.onPlayerBoardUpdate = jest.fn();
+    gameMode.onPlayerBoardUpdate(test);
+    expect(gameMode.game.onPlayerBoardUpdate).toHaveBeenCalledWith(test)
+  });
+  test("onPlayerPieceUpdate calls onPlayerBordUpdate on this.game", () => {
+    const test = {};
+    gameMode.game.onPlayerPieceUpdate = jest.fn();
+    gameMode.onPlayerPieceUpdate(test);
+    expect(gameMode.game.onPlayerPieceUpdate).toHaveBeenCalledWith(test)
+  });
+  test("onPlayerNextPieceUpdate calls onPlayerNextPieceUpdate on this.game", () => {
+    const test = {};
+    gameMode.game.onPlayerNextPieceUpdate = jest.fn();
+    gameMode.onPlayerNextPieceUpdate(test);
+    expect(gameMode.game.onPlayerNextPieceUpdate).toHaveBeenCalledWith(test)
+  });
+  test("onPlayerLost calls onPlayerLost on this.game", () => {
+    const test = {};
+    gameMode.game.onPlayerLost = jest.fn();
+    gameMode.onPlayerLost(test);
+    expect(gameMode.game.onPlayerLost).toHaveBeenCalledWith(test)
+  });
+  test("onPlayerLeave calls onPlayerLeave on this.game", () => {
+    const test = {};
+    gameMode.game.onPlayerLeave = jest.fn();
+    gameMode.onPlayerLeave(test);
+    expect(gameMode.game.onPlayerLeave).toHaveBeenCalledWith(test)
+  });
+  test("onPlayerDisconnect calls onPlayerDisconnect on this.game", () => {
+    const test = {};
+    gameMode.game.onPlayerDisconnect = jest.fn();
+    gameMode.onPlayerDisconnect(test);
+    expect(gameMode.game.onPlayerDisconnect).toHaveBeenCalledWith(test)
   });
 });

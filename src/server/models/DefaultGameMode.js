@@ -6,18 +6,10 @@ const logger = require('../logger');
 
 class DefaultGameMode extends GameMode {
   static getDefaultBoard(height = 20, width = 10) {
-
-    return Array.from(Array(height)).fill(Array.from(Array(width)).fill(BlockCodes.BLOCK_FREE))
-    // const defaultBoard = new Array(height);
-    //
-    //
-    // for (let y = 0; y < height; y++) {
-    //   defaultBoard[y] = new Array(width);
-    //   for (let x = 0; x < width; x++) {
-    //     defaultBoard[y][x] = BlockCodes.BLOCK_FREE;
-    //   }
-    // }
-    // return defaultBoard;
+    return Array.from(Array(height))
+      .fill(
+        Array.from(Array(width)).fill(BlockCodes.BLOCK_FREE)
+      )
   }
   constructor(game, playersControllers) {
     super(game);
