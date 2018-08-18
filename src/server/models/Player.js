@@ -59,8 +59,8 @@ class Player {
     return this.currentPiece;
   }
 
-  setNextPiece(nextPiece) {
-    this.nextPiece = nextPiece;
+  setNextPiece(_nextPiece) {
+    this.nextPiece = _nextPiece;
     this.onNextPieceUpdate();
   }
 

@@ -45,7 +45,11 @@ class Room extends EventEmitter {
     if (!this.players.find(user => user.id === leavingUserId))
       return false;
 
+    const leavingPlayer = this.players.find(user => user.id === leavingUserId);
+    this.unsetEventHandlersForPlayer(leavingPlayer);
+
     this.players = this.players.filter(user => user.id !== leavingUserId);
+
     if (!this.players.length)
       this.setDestroyTimeout()
 
@@ -112,9 +116,21 @@ class Room extends EventEmitter {
   }
 
   setEventHandlersForPlayer(player) {
-    this.on(RoomEvents.R_CHAT_MESSAGE, player.onChatMessageRecv.bind(player));
-    this.on(RoomEvents.R_INFO_UPDATE, player.onRoomInfoUpdate.bind(player));
-    this.on(RoomEvents.R_STARTED, player.onGameStarted.bind(player));
+    player._roomHandlers = {
+      onChatMessageRecv: player.onChatMessageRecv.bind(player),
+      onRoomInfoUpdate: player.onRoomInfoUpdate.bind(player),
+      onGameStarted: player.onGameStarted.bind(player)
+    };
+    this.on(RoomEvents.R_CHAT_MESSAGE, player._roomHandlers.onChatMessageRecv);
+    this.on(RoomEvents.R_INFO_UPDATE, player._roomHandlers.onRoomInfoUpdate);
+    this.on(RoomEvents.R_STARTED, player._roomHandlers.onGameStarted);
+  }
+
+  unsetEventHandlersForPlayer(player) {
+    this.removeListener(RoomEvents.R_CHAT_MESSAGE, player._roomHandlers.onChatMessageRecv);
+    this.removeListener(RoomEvents.R_INFO_UPDATE, player._roomHandlers.onRoomInfoUpdate);
+    this.removeListener(RoomEvents.R_STARTED, player._roomHandlers.onGameStarted);
+    player._roomHandlers = undefined;
   }
 
   onGameDestroy(gameId) {
@@ -123,6 +139,7 @@ class Room extends EventEmitter {
     this.isRunning = false;
     this.gameId = null;
     this.roomInfoUpdated();
+    debugger;
   }
 
   setDestroyTimeout() {

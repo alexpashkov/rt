@@ -8,15 +8,16 @@ const Room = require('../models/Room');
 /* RoomsController Events */
 const RCEvents = {
   RC_ROOMS_UPDATED: 'RC_ROOMS_UPDATED'
-}
+};
 
 class RoomsController extends EventEmitter {
 
   constructor() {
     super();
+    this.setMaxListeners(50);
     this.rooms = {};
     this.logInterval = setInterval (() => {
-      logger.debug(JSON.stringify(this.getRooms(), null ,'\t'))
+      logger.debug(JSON.stringify(this.getRooms(), null ,'\t'));
     }, 3000);
   }
 

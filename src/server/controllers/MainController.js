@@ -6,7 +6,6 @@ const assert = require('assert');
 const GamesController = require('./GamesController');
 const RoomsController = require('./RoomsController');
 const UserService = require('../services/UserService');
-const moveValidator = () => true;
 
 class MainController {
   constructor(socket, userId) {
@@ -186,6 +185,8 @@ class MainController {
 
   onLineFilled(data) {
     assert.ok(data);
+
+    this.socket.emit(events.server.GAME_LINE_FILLED, data);
   }
 
   onGameFinished() {

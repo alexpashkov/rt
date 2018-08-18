@@ -3,13 +3,6 @@
 const logger = require('../logger');
 const uniqid = require('uniqid');
 const Game = require('../models/Game');
-const { EventEmitter } = require('events');
-const R = require('ramda');
-
-/* GamesController Events */
-const GCEvents = {
-  GC_GAMES_UPDATED: 'GC_GAMES_UPDATED'
-};
 
 class GamesController {
   constructor() {
@@ -17,7 +10,7 @@ class GamesController {
     setInterval(() => logger.debug(`Games: ${this.games.length}`), 2000);
   }
 
-  createGame(id = null, players = [], configuration = {}) {
+  createGame(id, players, configuration = {}) {
     const gameCreated = new Game(id || uniqid(), players, configuration);
     this.games[gameCreated.id] = gameCreated;
     gameCreated.setOnDestroyHandler(this.deleteGame.bind(this));
