@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CenteredSpinner Renders without throwing an exception 1`] = `
+<div
+  className="css-1lads1q"
+>
+  <div
+    className="css-ph4qhg"
+  >
+    <div
+      className="css-16uiyca"
+    />
+    <div
+      className="css-nh4zb1"
+    />
+    <div
+      className="css-lqc6el"
+    />
+    <div
+      className="css-15k2385"
+    />
+    <div
+      className="css-1p90qyq"
+    />
+    <div
+      className="css-1rg2f2b"
+    />
+  </div>
+</div>
+`;

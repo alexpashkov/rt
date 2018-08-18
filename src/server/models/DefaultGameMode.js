@@ -5,6 +5,20 @@ const R = require('ramda');
 const logger = require('../logger');
 
 class DefaultGameMode extends GameMode {
+  static getDefaultBoard(height = 20, width = 10) {
+
+    return Array.from(Array(height)).fill(Array.from(Array(width)).fill(BlockCodes.BLOCK_FREE))
+    // const defaultBoard = new Array(height);
+    //
+    //
+    // for (let y = 0; y < height; y++) {
+    //   defaultBoard[y] = new Array(width);
+    //   for (let x = 0; x < width; x++) {
+    //     defaultBoard[y][x] = BlockCodes.BLOCK_FREE;
+    //   }
+    // }
+    // return defaultBoard;
+  }
   constructor(game, playersControllers) {
     super(game);
 
@@ -44,21 +58,8 @@ class DefaultGameMode extends GameMode {
   afterFinish() {}
 
   generatePlayerBoards() {
-    const { boardWidth, boardHeight } = this.params || {
-      boardWidth: 10,
-      boardHeight: 20
-    };
-    const defaultBoard = new Array(boardHeight);
-
-    for (let y = 0; y < boardHeight; y++) {
-      defaultBoard[y] = new Array(boardWidth);
-      for (let x = 0; x < boardWidth; x++) {
-        defaultBoard[y][x] = BlockCodes.BLOCK_FREE;
-      }
-    }
-
     for (let player of this.game.getPlayers()) {
-      player.setBoard(R.clone(defaultBoard));
+      player.setBoard(R.clone(DefaultGameMode.getDefaultBoard()));
     }
   }
 

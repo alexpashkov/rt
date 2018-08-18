@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Game Renders 1`] = `
+<div
+  className="css-zdcrpv e1j8727c0"
+>
+  <div
+    className="css-wmnluo e1j8727c2"
+  />
+  <div
+    className="css-1ap4i72 e1j8727c3"
+  >
+    <div
+      className="css-bkjqz6 e9pbz0x0"
+    >
+      You are alone
+    </div>
+  </div>
+</div>
+`;

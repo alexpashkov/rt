@@ -84,6 +84,7 @@
     "rxjs": "^5.6.0-forward-compat.5",
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1",
+    "socket.io-mock": "^1.2.3",
     "uniqid": "^4.1.1",
     "winston": "^2.4.2"
   },
