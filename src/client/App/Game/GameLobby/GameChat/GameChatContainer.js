@@ -37,6 +37,10 @@ export default compose(
     componentDidMount() {
       const { addChatMessage } = this.props;
       socket.on(serverSocketEvents.ROOM_CHAT_MESSAGE, addChatMessage);
+    },
+    componentWillUnmount() {
+      const { addChatMessage } = this.props;
+      socket.off(serverSocketEvents.ROOM_CHAT_MESSAGE, addChatMessage);
     }
   })
 )(GameChat);
