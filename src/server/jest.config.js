@@ -5,8 +5,8 @@ module.exports = {
   testEnvironment: 'node',
   collectCoverage: true,
   collectCoverageFrom: [
-    "**/*.{js,jsx}",
-    "!**/*.test.{js.jsx}",
+    "**/*.js",
+    "!**/*.test.js",
     "!**/node_modules/**",
     "!**/vendor/**",
     "!**/jest.config.js",
