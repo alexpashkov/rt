@@ -1,5 +1,5 @@
-const validator = require('./validator');
-const blockCodes = require('./block-codes');
+const validator = require('../validator');
+const blockCodes = require('../block-codes');
 
 describe('piece movement validator', () => {
   const emptyBoard = Array.from(Array(20)).fill(
@@ -97,7 +97,7 @@ describe('piece movement validator', () => {
   });
 
   it('lets piece to be placed 4 blocks above the top border', () => {
-    const testPiece = { code: 0xC440, y: -4, x: 5 };
+    const testPiece = { code: 0xc440, y: -4, x: 5 };
 
     expect(validator(semiFilledBoard, testPiece, 'down')).toBe(true);
     expect(validator(semiFilledBoard, testPiece, 'left')).toBe(true);
