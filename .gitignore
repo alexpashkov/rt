@@ -4,4 +4,3 @@ src/server/public/*
 *.swp
 *.swo
 .idea
-coverage
