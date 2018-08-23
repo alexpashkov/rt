@@ -25,6 +25,126 @@ describe('MainController', () => {
            MainControllerMock.setupEventHandlers();
        });
 
+       it('creates room successfully', () => {
+           const callback = jest.fn();
+           MainControllerMock.onRoomCreate(callback);
+
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'success'});
+           expect(typeof callback.mock.calls[0][0].roomId).toBe('string');
+       });
+
+       it('should not create room while in game', () => {
+           const callback = jest.fn();
+           MainControllerMock.inGame = true;
+           MainControllerMock.onRoomCreate(callback);
+
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'error'});
+           MainControllerMock.inGame = false;
+       });
+
+       it('should not create room while in one', () => {
+           const callback = jest.fn();
+           MainControllerMock.roomId = "ayy";
+           MainControllerMock.onRoomCreate(callback);
+
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'error'});
+           MainControllerMock.roomId = null;
+       });
+
+       it('should successfully join an existing room', () => {
+           const createCallback = jest.fn();
+           const callback = jest.fn();
+           MainControllerMock.onRoomCreate(createCallback);
+
+           const roomId = createCallback.mock.calls[0][0].roomId;
+
+           MainControllerMock.onRoomJoin({ id: roomId }, callback);
+
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'success'});
+           expect(callback.mock.calls[0][0].roomInfo).toBeTruthy();
+           expect(typeof callback.mock.calls[0][0].roomInfo).toBe('object');
+           expect(MainControllerMock.roomId).toBe(roomId);
+           MainControllerMock.onRoomLeave({id: MainControllerMock.roomId});
+       });
+
+       it('should not join a non-existent room', () => {
+           const callback = jest.fn();
+           MainControllerMock.onRoomJoin({id: 'invalid'}, callback);
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'error'});
+       });
+
+       it('should not join a room while in one already', () => {
+           const createCallback = jest.fn();
+           const callback = jest.fn();
+           MainControllerMock.onRoomCreate(createCallback);
+           const roomId = createCallback.mock.calls[0][0].roomId;
+
+
+           MainControllerMock.roomId = "yes";
+           MainControllerMock.onRoomJoin({ id: roomId }, callback);
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'error'});
+           MainControllerMock.roomId = null;
+       });
+
+       it('should not join a room while in game', () => {
+           const createCallback = jest.fn();
+           const callback = jest.fn();
+           MainControllerMock.onRoomCreate(createCallback);
+           const roomId = createCallback.mock.calls[0][0].roomId;
+
+
+           MainControllerMock.inGame = true;
+           MainControllerMock.onRoomJoin({id: roomId}, callback);
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'error'});
+           MainControllerMock.inGame = false;
+       });
+
+       it('should successfully leave a room previously joined', () => {
+           const createCallback = jest.fn();
+           const callback = jest.fn();
+           MainControllerMock.onRoomCreate(createCallback);
+
+           const roomId = createCallback.mock.calls[0][0].roomId;
+
+           MainControllerMock.onRoomJoin({ id: roomId }, () => {});
+           MainControllerMock.onRoomLeave({id: roomId}, callback);
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'success'});
+           expect(MainControllerMock.roomId).toBeFalsy();
+       });
+
+       it('should not leave a room while not in one', () => {
+           const callback = jest.fn();
+
+           MainControllerMock.onRoomLeave({id: 'yes'}, callback);
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'error'});
+       });
+
+       it('should not leave a room that it doesn\'t belong to', () => {
+           const createCallback = jest.fn();
+           const callback = jest.fn();
+           MainControllerMock.onRoomCreate(createCallback);
+
+           const roomId = createCallback.mock.calls[0][0].roomId;
+
+           MainControllerMock.onRoomJoin({ id: roomId }, () => {});
+           MainControllerMock.onRoomLeave({id: `not${roomId}`}, callback);
+           expect(callback.mock.calls.length).toBe(1);
+           expect(callback.mock.calls[0][0]).toMatchObject({status: 'error'});
+
+           MainControllerMock.onRoomLeave({id: roomId}, () => {});
+       });
+
+       it('should successfully ')
+
        describe('MainController\'s responses to events', () => {
 
            let initialHandlers = {};
