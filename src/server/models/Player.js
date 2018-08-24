@@ -53,6 +53,7 @@ class Player {
   setCurrentPiece(currentPiece) {
     this.currentPiece = currentPiece;
     this.onCurrentPieceUpdate();
+    this.setNextPiece(this.handlers.getNewPiece(this.pieceIndex + 1));
   }
 
   getCurrentPiece() {
