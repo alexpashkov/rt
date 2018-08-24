@@ -47,13 +47,13 @@ class Player {
     };
     this.incrementPieceIndex();
     this.onCurrentPieceUpdate();
-    this.setNextPiece(this.handlers.getNewPiece(this.pieceIndex + 1));
+    this.setNextPiece(this.handlers.getNewPiece(this.pieceIndex));
   }
 
   setCurrentPiece(currentPiece) {
     this.currentPiece = currentPiece;
     this.onCurrentPieceUpdate();
-    this.setNextPiece(this.handlers.getNewPiece(this.pieceIndex + 1));
+    this.setNextPiece(this.handlers.getNewPiece(this.pieceIndex));
   }
 
   getCurrentPiece() {

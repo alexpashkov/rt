@@ -111,6 +111,7 @@ class Game extends EventEmitter {
   getNewPiece(index) {
     if (this.pieceQueue.length <= index)
       this.pieceQueue.push(PieceService.generateRandomPiece());
+    logger.error(`GET_NEW_PIECE -> [${index}]=${this.pieceQueue[index]}`);
     return this.pieceQueue[index];
   }
 
