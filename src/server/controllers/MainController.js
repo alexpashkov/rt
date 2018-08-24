@@ -86,7 +86,7 @@ class MainController {
     callback = callback || (() => {});
 
     logger.info(`User ${this.id} requested to leave room ${id}`);
-    logger.info(`this.roomId -> ${this.roomId}`);
+    logger.debug(`this.roomId -> ${this.roomId}`);
 
     if (!this.roomId || this.roomId !== id) {
       callback(this._respondError({ description: 'Not in room.' }));
@@ -123,7 +123,7 @@ class MainController {
       callback(this._respondSuccess());
       this.gameId = this.roomId;
     } catch (_error) {
-      logger.info(`Error: ${_error}`);
+      logger.error(`Error: ${_error}`);
       callback(this._respondError({ description: _error }));
     }
   }
@@ -281,10 +281,6 @@ class MainController {
     callback(true);
   }
 
-  onPlayerNextPieceUpdate(pieceInfo) {
-    this.socket.emit(events.server.GAME_PIECE_NEXT, pieceInfo);
-  }
-
   onChatMessageSend(messageText) {
     if (!this.roomId)
       return;
@@ -326,7 +322,7 @@ class MainController {
   }
 
   onDisconnect() {
-    logger.info('DISCONNECT EVENT FIRED');
+    logger.info(`Player ${this.id} has disconnected.`);
     RoomsController.unsubscribeOnUpdates(this.onRoomsUpdateCallback);
     if (this.roomId) {
       logger.info(`User ${this.id} leaves room ${this.roomId}`);

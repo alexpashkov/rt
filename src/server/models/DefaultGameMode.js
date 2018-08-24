@@ -28,7 +28,7 @@ class DefaultGameMode extends GameMode {
 
   update() {
     this.previousPieceUpdate = this.previousPieceUpdate || Date.now();
-    logger.info(`Previous update -> ${this.previousPieceUpdate}`);
+    logger.debug(`Previous update -> ${this.previousPieceUpdate}`);
 
     const now = Date.now();
 
@@ -42,7 +42,7 @@ class DefaultGameMode extends GameMode {
   }
 
   beforeStart() {
-    logger.info(`UpdateLoopInterval: ${typeof this.updateLoopInterval}`);
+    logger.debug(`UpdateLoopInterval: ${typeof this.updateLoopInterval}`);
     this.generatePlayerBoards();
     this.generateInitialPieces();
   }
@@ -66,7 +66,7 @@ class DefaultGameMode extends GameMode {
   }
 
   onPlayerLineFilled(lineInfo) {
-    logger.error(`FREEZING LINES OF ${JSON.stringify(lineInfo)}`);
+    logger.debug(`FREEZING LINES OF ${JSON.stringify(lineInfo)}`);
     this.game.getPlayers()
         .filter(player => player.id !== lineInfo.id)
         .forEach(player => player.freezeLine());

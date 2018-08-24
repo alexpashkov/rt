@@ -14,6 +14,6 @@ const logger = new winston.Logger({
   ].filter(Boolean)
 });
 
-logger.level = 'debug';
+logger.level = 'info';
 
 module.exports = logger;

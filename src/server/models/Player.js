@@ -172,7 +172,7 @@ class Player {
     }
 
     for (let emptyIndex of emptiedLineIndexes) {
-      logger.error(`DISSOLVING LINE ${emptyIndex}`);
+      logger.debug(`DISSOLVING LINE ${emptyIndex}`);
       this.dissolveLine(emptyIndex);
       this.handlers.onLineFilled &&
         this.handlers.onLineFilled({
