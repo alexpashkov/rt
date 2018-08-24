@@ -2,8 +2,21 @@
 
 const logger = require('../logger');
 const uniqid = require('uniqid');
+const Chance = require('Chance');
+const chance = new Chance(uniqid());
 const { EventEmitter } = require('events');
 const Room = require('../models/Room');
+
+const namesUsed = [];
+const uniqueName = () => {
+    let name;
+
+    do {
+        name = `${chance.street()}`;
+    } while (namesUsed.includes(name));
+    namesUsed.concat(name);
+    return name;
+};
 
 /* RoomsController Events */
 const RCEvents = {
@@ -22,7 +35,7 @@ class RoomsController extends EventEmitter {
   }
 
   createRoom() {
-    const newRoom = new Room(uniqid(), { onDestroy: this.deleteRoom.bind(this) });
+    const newRoom = new Room(uniqueName(), { onDestroy: this.deleteRoom.bind(this) });
     this.rooms[newRoom.id] = newRoom;
     this.notifyRoomsListUpdated();
     return newRoom.id;
