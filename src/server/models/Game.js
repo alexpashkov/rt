@@ -67,7 +67,7 @@ class Game extends EventEmitter {
 
   gameFinish() {
     try {
-      logger.error(`GAME IS FINISHING ${this.id}`);
+      logger.info(`Game[${this.id}] is finishing now.`);
 
       /* I'm sorry for this piece */
       const winner = this.players.filter(player => !(player.hasLost() || player.hasLeft()));
@@ -85,7 +85,7 @@ class Game extends EventEmitter {
        *  MainControllers should forget about gameId.
        */
     } catch (e) {
-      logger.error(`AN ERROR HAS OCCURED: ${e}`);
+      logger.error(`Error: ${e}`);
       throw e;
     }
   }
@@ -111,7 +111,6 @@ class Game extends EventEmitter {
   getNewPiece(index) {
     if (this.pieceQueue.length <= index)
       this.pieceQueue.push(PieceService.generateRandomPiece());
-    logger.error(`GET_NEW_PIECE -> [${index}]=${this.pieceQueue[index]}`);
     return this.pieceQueue[index];
   }
 
@@ -128,14 +127,13 @@ class Game extends EventEmitter {
   }
 
   onPlayerBoardUpdate(boardInfo) {
-    logger.info(`BOARD UPDATED -> ${JSON.stringify(boardInfo)}`);
     this.emit(GEvents.GE_PLAYER_BOARD_UPDATE, {
       ...boardInfo
     });
   }
 
   onPlayerLineFilled(lineInfo) {
-    logger.info(`Line has been filled -> ${JSON.stringify(lineInfo)}`);
+    logger.debug(`Line has been filled -> ${JSON.stringify(lineInfo)}`);
     this.emit(GEvents.GE_PLAYER_LINE_FILLED, lineInfo);
   }
 
@@ -220,7 +218,7 @@ class Game extends EventEmitter {
       players: this.players
         .map(player => {
           const user = UserService.getUserById(player.id);
-          logger.info(`User[${player.id}] found? -> ${!!user}`);
+          logger.debug(`User[${player.id}] found? -> ${!!user}`);
           return user ? { login: user.getLogin() } : null;
         })
         .filter(userLogin => userLogin !== null),
