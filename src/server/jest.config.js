@@ -3,7 +3,6 @@ module.exports = {
   displayName: 'server',
   rootDir: './',
   testEnvironment: 'node',
-  collectCoverage: true,
   collectCoverageFrom: [
     "**/*.js",
     "!**/*.test.js",

@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GameChat Renders without throwing an exception 1`] = `
+<div
+  className="css-cre6xo euynx711"
+/>
+`;

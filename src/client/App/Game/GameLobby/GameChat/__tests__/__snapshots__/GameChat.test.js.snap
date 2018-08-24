@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GameChat Renders without throwing an exception 1`] = `
+<div
+  className="css-j7qwjs euynx710"
+>
+  <div
+    className="css-cre6xo euynx711"
+  />
+  <form
+    className="css-1q4kx8i ejf5oyo0"
+    onSubmit={undefined}
+  >
+    <input
+      className="css-1s87wor ejf5oyo1"
+      onChange={[Function]}
+      type="text"
+      value={undefined}
+    />
+    <button
+      className="css-13km75h e137ia0s0"
+      color="primary"
+      size="sm"
+      type="submit"
+    >
+      Send
+    </button>
+  </form>
+</div>
+`;

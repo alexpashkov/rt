@@ -54,5 +54,8 @@ describe('utils', () => {
         })
       ).toBe(`?other=36&timestamp=25`);
     });
+    it('Filters out falsey values', () => {
+      expect(queryStringWith(v => v, {a: null, b: "b", c: void 0})).toBe("?b=b")
+    });
   });
 });

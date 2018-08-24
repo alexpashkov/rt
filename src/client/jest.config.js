@@ -4,7 +4,6 @@ module.exports = {
   rootDir: './',
   testEnvironment: 'jsdom',
   testURL: 'http://redtetris.com/',
-  collectCoverage: true,
   collectCoverageFrom: [
     "**/*.{js,jsx}",
     "!**/*.test.{js.jsx}",

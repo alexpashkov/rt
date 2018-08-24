@@ -80,7 +80,10 @@ export default compose(
       socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data =>
         setBoard(data.id, data.board)
       );
-      socket.on(serverSocketEvents.GAME_FINISHED, clearBoards);
+      socket.on(serverSocketEvents.GAME_FINISHED, ({winnerId = ""} = {}) => {
+        alert("Game finished!" + winnerId ? "\nWinner is " + winnerId : "");
+        clearBoards();
+      });
     },
     componentWillUnmount() {
       const { gameId, setCurrentGameInfo } = this.props;

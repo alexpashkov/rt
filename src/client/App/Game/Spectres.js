@@ -11,6 +11,7 @@ const Wrapper = styled.div`
 
 const SpectreWrapper = styled.div`
   width: 50%;
+  padding: 5px;
 `;
 
 export default ({ spectres = [] }) => (
@@ -18,6 +19,11 @@ export default ({ spectres = [] }) => (
     {spectres.length
       ? spectres.sort((a, b) => a.id - b.id).map(({ spectre, id }, i) => (
           <SpectreWrapper key={id}>
+            <h2 css={`
+              font-size: 1rem;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            `}>{id}</h2>
             <Board board={spectre} />
           </SpectreWrapper>
         ))

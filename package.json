@@ -7,7 +7,7 @@
     "start-server:watch": "./node_modules/.bin/nodemon src/server/index.js",
     "start": "webpack-dev-server --open",
     "build-client": "./node_modules/.bin/webpack",
-    "test": "jest --watch --no-cache"
+    "test": "jest --watch"
   },
   "author": "Alex Pashkov alexpashkov123@gmail.com",
   "license": "ISC",

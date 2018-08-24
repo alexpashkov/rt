@@ -35,7 +35,8 @@ class MessageList extends React.PureComponent {
   }
 
   scrollMessagesWrapperToTheBottom() {
-    this.wrapperRef.current.scrollTop = this.wrapperRef.current.scrollHeight;
+    if (this.wrapperRef && this.wrapperRef.current)
+      this.wrapperRef.current.scrollTop = this.wrapperRef.current.scrollHeight;
   }
 
   render() {
