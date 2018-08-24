@@ -31,7 +31,7 @@ class RoomsController extends EventEmitter {
     this.rooms = {};
     this.logInterval = setInterval (() => {
       logger.debug(JSON.stringify(this.getRooms(), null ,'\t'));
-    }, 3000);
+    }, 20000);
   }
 
   createRoom() {

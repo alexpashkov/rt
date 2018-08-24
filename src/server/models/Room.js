@@ -139,7 +139,6 @@ class Room extends EventEmitter {
     this.isRunning = false;
     this.gameId = null;
     this.roomInfoUpdated();
-    debugger;
   }
 
   setDestroyTimeout() {

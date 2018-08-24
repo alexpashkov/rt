@@ -281,6 +281,10 @@ class MainController {
     callback(true);
   }
 
+  onPlayerNextPieceUpdate(pieceInfo) {
+    this.socket.emit(events.server.GAME_PIECE_NEXT, pieceInfo);
+  }
+
   onChatMessageSend(messageText) {
     if (!this.roomId)
       return;
@@ -332,10 +336,12 @@ class MainController {
     if (this.gameId) {
       logger.info(`User ${this.id} leaves game ${this.gameId}`);
       const game = GamesController.getGameById(this.gameId);
-      assert(game);
-      const player = game.getPlayerById(this.id);
-      assert(player);
-      player.disconnect();
+      if (game) {
+          const player = game.getPlayerById(this.id);
+          if (player) {
+              player.disconnect();
+          }
+      }
     }
   }
 

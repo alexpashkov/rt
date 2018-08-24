@@ -121,8 +121,10 @@ class Player {
 
     assert(this.currentPiece);
 
+    const pieceBeingMoved = this.currentPiece;
+
     const _interval = setInterval(() => {
-      if (!this.movePiece('down'))
+      if (pieceBeingMoved !== this.currentPiece || !this.movePiece('down'))
         clearInterval(_interval);
     }, 20);
     return true;
@@ -136,9 +138,17 @@ class Player {
     const pieceArray = helpers.pieceToArray(this.currentPiece.code);
 
     for (let block of pieceArray) {
-      if (this.currentPiece.y + block.y < 0)
+      const newY = this.currentPiece.y + block.y;
+      const newX = this.currentPiece.x + block.x;
+
+      if (newY < 0)
         continue ;
-      this.board[this.currentPiece.y + block.y][this.currentPiece.x + block.x] = this.currentPiece.code;
+
+      if (this.board[newY][newX] === blockCodes.BLOCK_LOCKED) {
+        continue ;
+      }
+
+      this.board[newY][newX] = this.currentPiece.code;
     }
 
     this.onBoardUpdate();
@@ -252,6 +262,9 @@ class Player {
 
   freezeLine() {
     logger.debug(`FREEZING LINE ${this.frozenIndex}`);
+    if (!this.board[this.board.length - this.frozenIndex]) {
+      return ;
+    }
     for (let i = 0; i < this.board[0].length; i++) {
         this.board[this.board.length - this.frozenIndex][i] = blockCodes.BLOCK_LOCKED;
     }
