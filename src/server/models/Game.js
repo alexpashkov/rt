@@ -74,10 +74,10 @@ class Game extends EventEmitter {
       const winnerId = winner.length ? winner[0].id : this.players[0].id;
 
       this.isRunning = false;
-      this._playersControllers.map(controller =>
-        this.unsetEventHandlersForPlayer(controller));
       this.gameMode.finish();
       this.emit(GEvents.GE_FINISHED, {winnerId: winnerId});
+      this._playersControllers.map(controller =>
+        this.unsetEventHandlersForPlayer(controller));
       this.destroy();
       /*
        * XXX:
