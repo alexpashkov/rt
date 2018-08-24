@@ -51,7 +51,7 @@ class Room extends EventEmitter {
     this.players = this.players.filter(user => user.id !== leavingUserId);
 
     if (!this.players.length)
-      this.setDestroyTimeout()
+      this.setDestroyTimeout();
 
     this.roomInfoUpdated();
     return true;

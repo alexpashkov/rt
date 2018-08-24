@@ -7,7 +7,7 @@ const logger = require('../logger');
 class DefaultGameMode extends GameMode {
   static getDefaultBoard(height = 20, width = 10) {
     return Array.from(Array(height))
-      .fill(
+      .map(() =>
         Array.from(Array(width)).fill(BlockCodes.BLOCK_FREE)
       )
   }

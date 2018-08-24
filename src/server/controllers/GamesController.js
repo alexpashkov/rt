@@ -7,7 +7,7 @@ const Game = require('../models/Game');
 class GamesController {
   constructor() {
     this.games = [];
-    setInterval(() => logger.debug(`Games: ${this.games.length}`), 2000);
+    setInterval(() => logger.debug(`Games: ${this.games.length}`), 20000);
   }
 
   createGame(id, players, configuration = {}) {

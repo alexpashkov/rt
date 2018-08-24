@@ -88,7 +88,7 @@ class MainController {
     logger.info(`User ${this.id} requested to leave room ${id}`);
     logger.info(`this.roomId -> ${this.roomId}`);
 
-    if (!this.roomId) {
+    if (!this.roomId || this.roomId !== id) {
       callback(this._respondError({ description: 'Not in room.' }));
       return;
     }
@@ -135,12 +135,12 @@ class MainController {
     }
 
     const game = GamesController.getGameById(this.gameId);
-    assert(game);
+    if (game) {
+        game.playerLeave(this.id);
+    }
 
-    game.playerLeave(this.id);
 
     this.gameId = null;
-    this.roomId = null;
   }
 
   onGameStarted(gameId) {

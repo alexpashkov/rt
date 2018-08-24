@@ -37,6 +37,7 @@ class Game extends EventEmitter {
     }
     this.pieceQueue = [];
     this.gameParams = configuration;
+    this._playersControllers = playersControllers;
 
     /* These are MainController instances */
     playersControllers.forEach(this.setEventHandlersForPlayer.bind(this));
@@ -67,10 +68,16 @@ class Game extends EventEmitter {
   gameFinish() {
     try {
       logger.error(`GAME IS FINISHING ${this.id}`);
+
+      /* I'm sorry for this piece */
+      const winner = this.players.filter(player => !(player.hasLost() || player.hasLeft()));
+      const winnerId = winner.length ? winner[0].id : this.players[0].id;
+
       this.isRunning = false;
+      this._playersControllers.map(controller =>
+        this.unsetEventHandlersForPlayer(controller));
       this.gameMode.finish();
-      debugger;
-      this.emit(GEvents.GE_FINISHED);
+      this.emit(GEvents.GE_FINISHED, {winnerId: winnerId});
       this.destroy();
       /*
        * XXX:
@@ -86,6 +93,13 @@ class Game extends EventEmitter {
   playerLeave(playerId) {
     if (!this.getPlayers().find(player => player.id === playerId))
       return false;
+
+    const playerController = this._playersControllers.find(p => p.id === playerId);
+    if (playerController) {
+      this.unsetEventHandlersForPlayer(playerController);
+      this._playersControllers = this._playersControllers.filter(
+        p => p.id !== playerController.id);
+    }
 
     this.getPlayerById(playerId).leave();
   }
@@ -152,15 +166,41 @@ class Game extends EventEmitter {
   }
 
   setEventHandlersForPlayer(player) {
-    this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player.onPieceUpdate.bind(player));
-    this.on(GEvents.GE_PLAYER_NEXT_PIECE_UPDATE, player.onNextPieceUpdate.bind(player));
-    this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player.onBoardUpdate.bind(player));
-    this.on(GEvents.GE_PLAYER_LINE_FILLED, player.onLineFilled.bind(player));
-    this.on(GEvents.GE_PLAYER_DISCONNECTED, player.onPlayerHasDisconnected.bind(player));
-    this.on(GEvents.GE_FINISHED, player.onGameFinished.bind(player));
-    this.on(GEvents.GE_DESTROY, player.onGameDestroy.bind(player));
-    this.on(GEvents.GE_PLAYER_HAS_LEFT, player.onPlayerHasLeft.bind(player));
-    this.on(GEvents.GE_PLAYER_HAS_LOST, player.onPlayerHasLost.bind(player));
+    player._gameHandlers = {
+      onPieceUpdate: player.onPieceUpdate.bind(player),
+      onNextPieceUpdate: player.onNextPieceUpdate.bind(player),
+      onBoardUpdate: player.onBoardUpdate.bind(player),
+      onLineFilled: player.onLineFilled.bind(player),
+      onPlayerHasDisconnected: player.onPlayerHasDisconnected.bind(player),
+      onGameFinished: player.onGameFinished.bind(player),
+      onGameDestroy: player.onGameDestroy.bind(player),
+      onPlayerHasLeft: player.onPlayerHasLeft.bind(player),
+      onPlayerHasLost: player.onPlayerHasLost.bind(player),
+    };
+
+    this.on(GEvents.GE_PLAYER_PIECE_UPDATE, player._gameHandlers.onPieceUpdate);
+    this.on(GEvents.GE_PLAYER_NEXT_PIECE_UPDATE, player._gameHandlers.onNextPieceUpdate);
+    this.on(GEvents.GE_PLAYER_BOARD_UPDATE, player._gameHandlers.onBoardUpdate);
+    this.on(GEvents.GE_PLAYER_LINE_FILLED, player._gameHandlers.onLineFilled);
+    this.on(GEvents.GE_PLAYER_DISCONNECTED, player._gameHandlers.onPlayerHasDisconnected);
+    this.on(GEvents.GE_FINISHED, player._gameHandlers.onGameFinished);
+    this.on(GEvents.GE_DESTROY, player._gameHandlers.onGameDestroy);
+    this.on(GEvents.GE_PLAYER_HAS_LEFT, player._gameHandlers.onPlayerHasLeft);
+    this.on(GEvents.GE_PLAYER_HAS_LOST, player._gameHandlers.onPlayerHasLost);
+  }
+
+  unsetEventHandlersForPlayer(player) {
+    logger.debug(`Unsetting handlers for player [${player.id}]`);
+    this.removeListener(GEvents.GE_PLAYER_PIECE_UPDATE, player._gameHandlers.onPieceUpdate);
+    this.removeListener(GEvents.GE_PLAYER_NEXT_PIECE_UPDATE, player._gameHandlers.onNextPieceUpdate);
+    this.removeListener(GEvents.GE_PLAYER_BOARD_UPDATE, player._gameHandlers.onBoardUpdate);
+    this.removeListener(GEvents.GE_PLAYER_LINE_FILLED, player._gameHandlers.onLineFilled);
+    this.removeListener(GEvents.GE_PLAYER_DISCONNECTED, player._gameHandlers.onPlayerHasDisconnected);
+    this.removeListener(GEvents.GE_FINISHED, player._gameHandlers.onGameFinished);
+    this.removeListener(GEvents.GE_DESTROY, player._gameHandlers.onGameDestroy);
+    this.removeListener(GEvents.GE_PLAYER_HAS_LEFT, player._gameHandlers.onPlayerHasLeft);
+    this.removeListener(GEvents.GE_PLAYER_HAS_LOST, player._gameHandlers.onPlayerHasLost);
+    player._gameHandlers = undefined;
   }
 
   getPlayers() {
