@@ -7,7 +7,6 @@ import {
   setPropTypes
 } from 'recompose';
 import {connect} from 'react-redux';
-import {once} from "ramda";
 
 import gamePropTypes from './gamePropTypes';
 import {setInfo as setCurrentGameInfo} from '../../actions/currentGameInfoActions';
@@ -30,11 +29,6 @@ const emitGameJoin = (gameId, cb) =>
   socket.emit(clientSocketEvents.ROOM_JOIN, {id: gameId}, cb);
 const emitGameLeave = gameId =>
   socket.emit(clientSocketEvents.ROOM_LEAVE, {id: gameId});
-
-const onGameFinished = once(({winnerId = ""} = {}) => {
-  alert(winnerId ? "Game finished!\nWinner is " + winnerId : "You've lost!" );
-  clearBoards();
-});
 
 export default compose(
   connect(
@@ -79,13 +73,15 @@ export default compose(
         setCurrentPiece(piece)
       );
       socket.on(serverSocketEvents.GAME_PIECE_NEXT, data => {
-        console.error(data);
         setNextPiece(data.piece);
       });
       socket.on(serverSocketEvents.GAME_BOARD_CURRENT, data =>
         setBoard(data.id, data.board)
       );
-      socket.on(serverSocketEvents.GAME_FINISHED, onGameFinished);
+      socket.on(serverSocketEvents.GAME_FINISHED, ({winnerId = ""} = {}) => {
+        alert(winnerId ? "Game finished!\nWinner is " + winnerId : "You've lost!");
+        clearBoards();
+      });
     },
     componentWillUnmount() {
       const {gameId, setCurrentGameInfo} = this.props;
