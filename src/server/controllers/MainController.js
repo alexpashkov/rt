@@ -189,8 +189,9 @@ class MainController {
     this.socket.emit(events.server.GAME_LINE_FILLED, data);
   }
 
-  onGameFinished() {
-    this.socket.emit(events.server.GAME_FINISHED);
+  onGameFinished(data) {
+    logger.debug(`Game is finished: ${JSON.stringify(data)}`)
+    this.socket.emit(events.server.GAME_FINISHED, data);
   }
 
   onRoomsUpdateRequest() {
