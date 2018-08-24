@@ -36,7 +36,8 @@ export default compose(
       userId: state.user && state.user.id,
       userBoard: userBoardSelector(state),
       spectres: spectresSelector(state),
-      currentGameInfo: state.currentGameInfo
+      currentGameInfo: state.currentGameInfo,
+      nextPiece: state.piece.next
     }),
     {
       setCurrentGameInfo,

@@ -4,19 +4,24 @@ import Board from './Board/Board';
 import Spectres from './Spectres';
 import {
   Wrapper,
-  JumboWithBoard,
   BoardWrapper,
   SpectresWrapper
 } from './styled';
+import NextPiece from "./NextPiece";
 
-const Game = ({ userBoard = null, spectres }) => (
+const Game = ({ userBoard = null, nextPiece, spectres, }) => (
   <Wrapper>
     <BoardWrapper>
       <Board board={userBoard} />
     </BoardWrapper>
-    <SpectresWrapper>
-      <Spectres spectres={spectres} />
-    </SpectresWrapper>
+    <div css={`
+      flex-grow: 1;
+    `}>
+      <NextPiece piece={nextPiece}/>
+      <SpectresWrapper>
+        <Spectres spectres={spectres} />
+      </SpectresWrapper>
+    </div>
   </Wrapper>
 );
 

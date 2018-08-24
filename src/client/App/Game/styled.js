@@ -6,6 +6,9 @@ export const Wrapper = styled.div`
   display: flex;
   width: 100%;
   border-radius: 0;
+  h2 {
+    color: ${( {theme} ) => theme.colors.secondaryText}
+  }
 `;
 
 export const JumboWithBoard = styled.div`
@@ -19,7 +22,6 @@ export const BoardWrapper = styled.div`
 `;
 
 export const SpectresWrapper = styled.div`
-  flex-grow: 1;
   margin-left: 20px;
   max-width: 200px;
 `;

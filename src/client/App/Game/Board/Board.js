@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'react-emotion';
 import { Row, Cell } from './styled';
 
 const Board = ({ board }) =>
