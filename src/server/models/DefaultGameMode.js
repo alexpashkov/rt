@@ -66,6 +66,8 @@ class DefaultGameMode extends GameMode {
   }
 
   onPlayerLineFilled(lineInfo) {
+    if (!this.game)
+      return ;
     logger.debug(`FREEZING LINES OF ${JSON.stringify(lineInfo)}`);
     this.game.getPlayers()
         .filter(player => player.id !== lineInfo.id)
@@ -74,27 +76,33 @@ class DefaultGameMode extends GameMode {
   }
 
   onPlayerBoardUpdate(boardInfo) {
-    this.game.onPlayerBoardUpdate(boardInfo);
+    if (this.game)
+      this.game.onPlayerBoardUpdate(boardInfo);
   }
 
   onPlayerPieceUpdate(pieceInfo) {
-    this.game.onPlayerPieceUpdate(pieceInfo);
+    if (this.game)
+      this.game.onPlayerPieceUpdate(pieceInfo);
   }
 
   onPlayerNextPieceUpdate(pieceInfo) {
-    this.game.onPlayerNextPieceUpdate(pieceInfo);
+    if (this.game)
+      this.game.onPlayerNextPieceUpdate(pieceInfo);
   }
 
   onPlayerLost(playerInfo) {
-    this.game.onPlayerLost(playerInfo);
+    if (this.game)
+      this.game.onPlayerLost(playerInfo);
   }
 
   onPlayerLeave(playerInfo) {
-    this.game.onPlayerLeave(playerInfo);
+    if (this.game)
+      this.game.onPlayerLeave(playerInfo);
   }
 
   onPlayerDisconnect(playerInfo) {
-    this.game.onPlayerDisconnect(playerInfo);
+    if (this.game)
+      this.game.onPlayerDisconnect(playerInfo);
   }
 }
 
