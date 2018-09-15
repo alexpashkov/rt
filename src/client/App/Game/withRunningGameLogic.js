@@ -56,6 +56,7 @@ export default compose(
       document.addEventListener('keyup', handlePieceDrop);
     },
     componentWillUnmount() {
+      this.props.clearBoards();
       socket.emit(clientSocketEvents.GAME_LEAVE);
       document.removeEventListener('keydown', handlePieceMovement);
       document.removeEventListener('keydown', handlePieceRotation);
